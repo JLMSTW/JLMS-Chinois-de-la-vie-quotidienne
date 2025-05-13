@@ -1,10 +1,10 @@
-// firebase-config.js
+// js/firebase-config.js
 
 export const firebaseConfig = {
-  apiKey: "AIza...YourKeyHere",
-  authDomain: "your-project-id.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdefg1234567"
+  apiKey: "AIzaSyBBHF_cujKBqLqekZX2CRq4Ue7Mdzp7fy0",
+  authDomain: "jlms-login.firebaseapp.com",
+  projectId: "jlms-login",
+  storageBucket: "jlms-login.appspot.com",
+  messagingSenderId: "309559732738",
+  appId: "1:309559732738:web:180c1d7f9a54b34c9a951b"
 };
