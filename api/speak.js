@@ -1,1 +1,2 @@
-Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+📌 Commit directly to the `main` branch
+✅ [ Commit changes ]
