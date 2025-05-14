@@ -26,8 +26,13 @@
         <input type="checkbox" id="togglePinyin" checked>
         Show pinyin
       </label>
-    </div>
-
+    
+<label>Speed：
+    <input type="range"
+           id="rateSlider"
+           min="0.6" max="1.4" step="0.1" value="1">
+  </label>
+</div>
     <div id="sentenceList"></div>
   </div>
 
@@ -37,6 +42,7 @@
     const lessonSelect  = document.getElementById("lessonSelect");
     const sentenceList  = document.getElementById("sentenceList");
     const togglePinyin  = document.getElementById("togglePinyin");
+    const rateSlider = document.getElementById("rateSlider");
 
     /* ★ 先把 Book 1–4 塞進下拉選單 */
     for (let i = 1; i <= 4; i++) {
@@ -107,15 +113,18 @@
         sentenceList.appendChild(card);
       });
     }
-
     function playBrowserVoice(el){
-      const msg = new SpeechSynthesisUtterance(el.textContent);
-      msg.lang  = "zh-TW";
-      document.querySelectorAll(".sentence-text")
-              .forEach(e=>e.classList.remove("playing"));
-      el.classList.add("playing");
-      speechSynthesis.speak(msg);
-    }
+  const msg = new SpeechSynthesisUtterance(el.textContent);
+  msg.lang  = "zh-TW";
+  msg.rate  = parseFloat(rateSlider.value); // ← 調整語速
+
+  // 高亮顯示目前播放的句子
+  document.querySelectorAll(".sentence-text")
+          .forEach(e=>e.classList.remove("playing"));
+  el.classList.add("playing");
+
+  speechSynthesis.speak(msg);
+}
   </script>
 </body>
 </html>
