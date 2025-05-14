@@ -1,115 +1,114 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JLMS｜教材選擇</title>
+  <title>JLMS｜Sentence Practice</title>
   <link rel="stylesheet" href="style/main.css" />
 </head>
 <body>
   <div class="main-container">
-    <h1>📘 Répétition des phrases – Chinois de la vie quotidienne</h1>
+    <h1>
+      <img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f4d8.svg" alt="book">
+      Répétition des phrases – Chinois de la vie quotidienne
+    </h1>
 
-    <!-- 書冊選擇 -->
-    <label for="bookSelect">選擇書冊：</label>
-    <select id="bookSelect">
-      <option value="1">Book 1</option>
-      <option value="2">Book 2</option>
-      <option value="3">Book 3</option>
-      <option value="4">Book 4</option>
-    </select>
+    <!-- ===== Toolbar ===== -->
+    <div class="toolbar">
+      <label>Book：
+        <select id="bookSelect"></select>
+      </label>
 
-    <!-- 課次選擇 -->
-    <label for="lessonSelect">選擇課次：</label>
-    <select id="lessonSelect">
-      <!-- 課次選項會根據書冊自動產生 -->
-    </select>
+      <label>Lesson：
+        <select id="lessonSelect"></select>
+      </label>
 
-    <div id="sentenceList" class="sentence-area">
-      <!-- 例句會出現在這裡 -->
+      <label>
+        <input type="checkbox" id="togglePinyin" checked>
+        Show pinyin
+      </label>
     </div>
+
+    <!-- ===== Sentence list will be injected here ===== -->
+    <div id="sentenceList"></div>
   </div>
 
+  <!-- ===== Logic ===== -->
   <script>
-    const bookSelect = document.getElementById("bookSelect");
-    const lessonSelect = document.getElementById("lessonSelect");
-    const sentenceList = document.getElementById("sentenceList");
+    const bookSelect    = document.getElementById("bookSelect");
+    const lessonSelect  = document.getElementById("lessonSelect");
+    const sentenceList  = document.getElementById("sentenceList");
+    const togglePinyin  = document.getElementById("togglePinyin");
 
-    // 書冊 → 對應課次區間
-    const lessonMap = {
-      1: [1, 5],
-      2: [6, 10],
-      3: [11, 15],
-      4: [16, 20],
-    };
+    /* Book → lesson range */
+    const lessonMap = { 1:[1,5], 2:[6,10], 3:[11,15], 4:[16,20] };
 
+    /* init */
     bookSelect.addEventListener("change", updateLessonOptions);
     lessonSelect.addEventListener("change", loadLesson);
-
-    // 初始化頁面
+    togglePinyin.addEventListener("change", loadLesson);
     updateLessonOptions();
 
-    function updateLessonOptions() {
-      const book = bookSelect.value;
-      const [start, end] = lessonMap[book];
+    /* ----- functions ----- */
+    function updateLessonOptions () {
+      const [start,end] = lessonMap[bookSelect.value];
       lessonSelect.innerHTML = "";
-      for (let i = start; i <= end; i++) {
+      for(let i=start; i<=end; i++){
         const opt = document.createElement("option");
-        opt.value = "L" + i;
-        opt.textContent = "L." + i;
+        opt.value = "L"+i;
+        opt.textContent = "L."+i;
         lessonSelect.appendChild(opt);
       }
-      loadLesson(); // 選單改變時自動載入
+      loadLesson();
     }
 
-    async function loadLesson() {
+    async function loadLesson () {
       const lesson = lessonSelect.value;
-      sentenceList.innerHTML = "<p>載入中...</p>";
-      try {
-        const res = await fetch(`data/${lesson}.json`);
+      sentenceList.innerHTML = "<p>Loading…</p>";
+      try{
+        const res  = await fetch(`data/${lesson}.json`);
         const data = await res.json();
         renderSentences(data);
-      } catch (err) {
-        sentenceList.innerHTML = "<p>❌ 找不到這課的資料</p>";
+      }catch(err){
+        sentenceList.innerHTML = "<p>❌ Data for this lesson not found.</p>";
       }
     }
 
-    function renderSentences(sentences) {
+    function renderSentences (sentences){
       sentenceList.innerHTML = "";
-      sentences.forEach((item) => {
-        const card = document.createElement("div");
+      const showPinyin = togglePinyin.checked;
+
+      sentences.forEach(item=>{
+        const card   = document.createElement("div");
         card.className = "sentence-card";
 
-        const hanzi = document.createElement("div");
+        const hanzi  = document.createElement("div");
         hanzi.className = "sentence-text";
         hanzi.textContent = item.hanzi;
-        hanzi.onclick = () => playBrowserVoice(hanzi);
+        hanzi.onclick = ()=> playBrowserVoice(hanzi);
 
         const pinyin = document.createElement("div");
         pinyin.className = "pinyin-text";
         pinyin.textContent = item.pinyin;
+        pinyin.style.display = showPinyin ? "block" : "none";
 
-        const btn = document.createElement("button");
+        const btn    = document.createElement("button");
         btn.className = "audio-button";
-        btn.textContent = "🎙 播放自然語音";
-        btn.onclick = () => alert("這裡會串接自然語音 API");
+        btn.textContent = "🎙 Natural TTS";
+        btn.onclick = ()=> alert("TODO: hook up natural TTS API");
 
-        card.appendChild(hanzi);
-        card.appendChild(pinyin);
-        card.appendChild(btn);
+        card.append(hanzi,pinyin,btn);
         sentenceList.appendChild(card);
       });
     }
 
-    function playBrowserVoice(el) {
-      const text = el.textContent;
-      const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "zh-TW";
-
-      // 清除其他句子的高亮
-      document.querySelectorAll(".sentence-text").forEach(e => e.classList.remove("playing"));
+    function playBrowserVoice(el){
+      const msg = new SpeechSynthesisUtterance(el.textContent);
+      msg.lang  = "zh-TW";
+      /* highlight */
+      document.querySelectorAll(".sentence-text")
+              .forEach(e=>e.classList.remove("playing"));
       el.classList.add("playing");
-
       speechSynthesis.speak(msg);
     }
   </script>
