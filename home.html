@@ -13,7 +13,6 @@
       Répétition des phrases – Chinois de la vie quotidienne
     </h1>
 
-    <!-- ===== Toolbar ===== -->
     <div class="toolbar">
       <label>Book：
         <select id="bookSelect"></select>
@@ -29,7 +28,6 @@
       </label>
     </div>
 
-    <!-- ===== Sentence list will be injected here ===== -->
     <div id="sentenceList"></div>
   </div>
 
@@ -39,6 +37,14 @@
     const lessonSelect  = document.getElementById("lessonSelect");
     const sentenceList  = document.getElementById("sentenceList");
     const togglePinyin  = document.getElementById("togglePinyin");
+
+    /* ★ 先把 Book 1–4 塞進下拉選單 */
+    for (let i = 1; i <= 4; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = "Book " + i;
+      bookSelect.appendChild(opt);
+    }
 
     /* Book → lesson range */
     const lessonMap = { 1:[1,5], 2:[6,10], 3:[11,15], 4:[16,20] };
@@ -94,7 +100,7 @@
 
         const btn    = document.createElement("button");
         btn.className = "audio-button";
-        btn.textContent = "🎙 Natural TTS";
+        btn.textContent = "🎙 Natural TTS";
         btn.onclick = ()=> alert("TODO: hook up natural TTS API");
 
         card.append(hanzi,pinyin,btn);
@@ -105,7 +111,6 @@
     function playBrowserVoice(el){
       const msg = new SpeechSynthesisUtterance(el.textContent);
       msg.lang  = "zh-TW";
-      /* highlight */
       document.querySelectorAll(".sentence-text")
               .forEach(e=>e.classList.remove("playing"));
       el.classList.add("playing");
