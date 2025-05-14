@@ -13,6 +13,7 @@
       Répétition des phrases – Chinois de la vie quotidienne
     </h1>
 
+    <!-- ─── Toolbar ─────────────────────────────────────────────────────────── -->
     <div class="toolbar">
       <label>Book：
         <select id="bookSelect"></select>
@@ -26,110 +27,136 @@
         <input type="checkbox" id="togglePinyin" checked>
         Show pinyin
       </label>
-    
-<label>Speed：
-  <input type="range"
-         id="rateSlider"
-         min="0.3" max="1.4" step="0.1" value="0.6">
-  <span id="rateValue">0.6</span>
-</label>
-</div>
+
+      <label>Speed：
+        <input type="range"
+               id="rateSlider"
+               min="0.3" max="1.4" step="0.1" value="0.6">
+        <span id="rateValue">0.6</span>
+      </label>
+    </div>
+
     <div id="sentenceList"></div>
   </div>
 
-  <!-- ===== Logic ===== -->
-  <script>
-    const bookSelect    = document.getElementById("bookSelect");
-    const lessonSelect  = document.getElementById("lessonSelect");
-    const sentenceList  = document.getElementById("sentenceList");
-    const togglePinyin  = document.getElementById("togglePinyin");
-    const rateSlider = document.getElementById("rateSlider");
-    const rateValue = document.getElementById("rateValue");
+<!-- ─── Logic ──────────────────────────────────────────────────────────────── -->
+<script>
+  const bookSelect   = document.getElementById("bookSelect");
+  const lessonSelect = document.getElementById("lessonSelect");
+  const sentenceList = document.getElementById("sentenceList");
+  const togglePinyin = document.getElementById("togglePinyin");
+  const rateSlider   = document.getElementById("rateSlider");
+  const rateValue    = document.getElementById("rateValue");
 
-    /* ★ 先把 Book 1–4 塞進下拉選單 */
-    for (let i = 1; i <= 4; i++) {
-      const opt = document.createElement("option");
-      opt.value = i;
-      opt.textContent = "Book " + i;
-      bookSelect.appendChild(opt);
+  /* 把 Book 1–4 塞進下拉選單 */
+  for (let i = 1; i <= 4; i++) {
+    bookSelect.insertAdjacentHTML("beforeend",
+      `<option value="${i}">Book ${i}</option>`);
+  }
+
+  /* Book → lesson 範圍 */
+  const lessonMap = { 1:[1,5], 2:[6,10], 3:[11,15], 4:[16,20] };
+
+  /* Init 監聽 */
+  bookSelect .addEventListener("change", updateLessonOptions);
+  lessonSelect.addEventListener("change", loadLesson);
+  togglePinyin.addEventListener("change", loadLesson);
+  rateSlider .addEventListener("input", () => rateValue.textContent = rateSlider.value);
+  updateLessonOptions();        // 進頁面先跑一次
+
+  /* 依書冊更新課次選單 */
+  function updateLessonOptions () {
+    const [start,end] = lessonMap[bookSelect.value];
+    lessonSelect.innerHTML = "";
+    for(let i=start; i<=end; i++){
+      lessonSelect.insertAdjacentHTML("beforeend",
+        `<option value="L${i}">L.${i}</option>`);
     }
+    loadLesson();
+  }
 
-    /* Book → lesson range */
-    const lessonMap = { 1:[1,5], 2:[6,10], 3:[11,15], 4:[16,20] };
-
-    /* init */
-    bookSelect.addEventListener("change", updateLessonOptions);
-    lessonSelect.addEventListener("change", loadLesson);
-    togglePinyin.addEventListener("change", loadLesson);
-    updateLessonOptions();
-    rateSlider.addEventListener("input", () => {
-  rateValue.textContent = rateSlider.value;
-});
-
-    /* ----- functions ----- */
-    function updateLessonOptions () {
-      const [start,end] = lessonMap[bookSelect.value];
-      lessonSelect.innerHTML = "";
-      for(let i=start; i<=end; i++){
-        const opt = document.createElement("option");
-        opt.value = "L"+i;
-        opt.textContent = "L."+i;
-        lessonSelect.appendChild(opt);
-      }
-      loadLesson();
+  /* 抓該課 JSON */
+  async function loadLesson () {
+    const lesson = lessonSelect.value;
+    sentenceList.innerHTML = "<p>Loading…</p>";
+    try{
+      const res  = await fetch(`data/${lesson}.json`);
+      const data = await res.json();
+      renderSentences(data);
+    }catch{
+      sentenceList.innerHTML = "<p>❌ Data for this lesson not found.</p>";
     }
+  }
 
-    async function loadLesson () {
-      const lesson = lessonSelect.value;
-      sentenceList.innerHTML = "<p>Loading…</p>";
-      try{
-        const res  = await fetch(`data/${lesson}.json`);
-        const data = await res.json();
-        renderSentences(data);
-      }catch(err){
-        sentenceList.innerHTML = "<p>❌ Data for this lesson not found.</p>";
-      }
-    }
+  /* 產生句子卡 */
+  function renderSentences (sentences){
+    sentenceList.innerHTML = "";
+    const showPinyin = togglePinyin.checked;
 
-    function renderSentences (sentences){
-      sentenceList.innerHTML = "";
-      const showPinyin = togglePinyin.checked;
+    sentences.forEach(item=>{
+      // 外框
+      const card = document.createElement("div");
+      card.className = "sentence-card";
 
-      sentences.forEach(item=>{
-        const card   = document.createElement("div");
-        card.className = "sentence-card";
+      // 漢字
+      const hanzi = document.createElement("div");
+      hanzi.className = "sentence-text";
+      hanzi.textContent = item.hanzi;
+      hanzi.onclick = ()=> playBrowserVoice(hanzi);
 
-        const hanzi  = document.createElement("div");
-        hanzi.className = "sentence-text";
-        hanzi.textContent = item.hanzi;
-        hanzi.onclick = ()=> playBrowserVoice(hanzi);
+      // 拼音
+      const pinyin = document.createElement("div");
+      pinyin.className = "pinyin-text";
+      pinyin.textContent = item.pinyin;
+      pinyin.style.display = showPinyin ? "block" : "none";
 
-        const pinyin = document.createElement("div");
-        pinyin.className = "pinyin-text";
-        pinyin.textContent = item.pinyin;
-        pinyin.style.display = showPinyin ? "block" : "none";
+      // OpenAI TTS 按鈕
+      const btn = document.createElement("button");
+      btn.className = "audio-button";
+      btn.textContent = "🎙 Natural TTS";
+      btn.onclick = () => playOpenAITTS(item.hanzi);
 
-        const btn    = document.createElement("button");
-        btn.className = "audio-button";
-        btn.textContent = "🎙 Natural TTS";
-        btn.onclick = ()=> alert("TODO: hook up natural TTS API");
+      card.append(hanzi,pinyin,btn);
+      sentenceList.appendChild(card);
+    });
+  }
 
-        card.append(hanzi,pinyin,btn);
-        sentenceList.appendChild(card);
+  /* —— 瀏覽器內建語音（點漢字） —— */
+  function playBrowserVoice(el){
+    const msg  = new SpeechSynthesisUtterance(el.textContent);
+    msg.lang   = "zh-TW";
+    msg.rate   = parseFloat(rateSlider.value);
+    document.querySelectorAll(".sentence-text")
+            .forEach(e=>e.classList.remove("playing"));
+    el.classList.add("playing");
+    speechSynthesis.speak(msg);
+  }
+
+  /* —— OpenAI TTS （點 Natural TTS） —— */
+  async function playOpenAITTS(text){
+    try{
+      const res = await fetch("/api/speak",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({
+          text,
+          voice:"shimmer",                 // 你可以改 male‑voice 之類
+          speed:parseFloat(rateSlider.value)
+        })
       });
+
+      if(!res.ok){
+        const err = await res.json();
+        alert("TTS error: "+JSON.stringify(err));
+        return;
+      }
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      new Audio(url).play();
+    }catch(e){
+      alert("Network / CORS error 😥");
     }
-    function playBrowserVoice(el){
-  const msg = new SpeechSynthesisUtterance(el.textContent);
-  msg.lang  = "zh-TW";
-  msg.rate  = parseFloat(rateSlider.value); // ← 調整語速
-
-  // 高亮顯示目前播放的句子
-  document.querySelectorAll(".sentence-text")
-          .forEach(e=>e.classList.remove("playing"));
-  el.classList.add("playing");
-
-  speechSynthesis.speak(msg);
-}
-  </script>
+  }
+</script>
 </body>
 </html>
