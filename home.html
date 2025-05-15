@@ -135,7 +135,9 @@
   /* —— OpenAI TTS （點 Natural TTS） —— */
   async function playOpenAITTS(text){
     try{
-      const res = await fetch("/api/speak",{
+      const res = await fetch(
+  "https://openai-tts-proxy.vercel.app/api/speak",
+  {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body:JSON.stringify({
