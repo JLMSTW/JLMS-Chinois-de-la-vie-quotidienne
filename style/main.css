@@ -89,3 +89,35 @@ select, .toolbar label{
   .pinyin-text{ font-size:0.85rem; }
   .audio-button, .browser-button{ width:100%; }
 }
+/* ===== 手機版 Toolbar 響應式樣式 ===== */
+@media (max-width: 480px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar label {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .toolbar select,
+  .toolbar input[type="range"] {
+    width: 100%;
+  }
+
+  #rateValue {
+    display: inline-block;
+    margin-left: 8px;
+  }
+}
+.download-link {
+  color: #1e90ff;
+  font-size: 0.85rem;
+  text-decoration: none;
+  margin-left: 12px;
+}
+
+.download-link:hover {
+  text-decoration: underline;
+}
