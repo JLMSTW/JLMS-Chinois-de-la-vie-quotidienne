@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JLMS｜Sentence Practice</title>
+  <title>JLMS | Sentence Practice</title>
   <link rel="stylesheet" href="style/main.css" />
 </head>
 <body>
@@ -14,23 +14,21 @@
     </h1>
 
     <div class="toolbar">
-      <label>Book：
+      <label>Book:
         <select id="bookSelect"></select>
       </label>
 
-      <label>Lesson：
+      <label>Lesson:
         <select id="lessonSelect"></select>
       </label>
 
       <label>
         <input type="checkbox" id="togglePinyin" checked>
-        Show pinyin
+        Show pinyin
       </label>
 
-      <label>Speed：
-        <input type="range"
-               id="rateSlider"
-               min="0.5" max="1.5" step="0.1" value="1.0">
+      <label>Speed:
+        <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.1" value="1.0">
         <span id="rateValue">1.0</span>
       </label>
     </div>
@@ -46,12 +44,10 @@
     const rateSlider    = document.getElementById("rateSlider");
     const rateValue     = document.getElementById("rateValue");
 
-    // 更新速率顯示
     rateSlider.addEventListener("input", () => {
       rateValue.textContent = rateSlider.value;
     });
 
-    // 建立書冊選單
     for (let i = 1; i <= 4; i++) {
       const opt = document.createElement("option");
       opt.value = i;
@@ -90,15 +86,27 @@
       }
     }
 
-    function renderSentences (sentences){
+    function renderSentences(sentences){
       sentenceList.innerHTML = "";
       const showPinyin = togglePinyin.checked;
 
-      sentences.forEach(item=>{
-        const card   = document.createElement("div");
+      sentences.forEach(item => {
+        if (item.grammar) {
+          const grammar = document.createElement("div");
+          grammar.className = "grammar-point";
+          grammar.innerHTML = `
+            <span class="grammar-number">${item.grammar.num}</span>
+            <span class="grammar-text">${item.grammar.text}</span>
+            <span class="grammar-pinyin">${item.grammar.pinyin}</span>
+          `;
+          sentenceList.appendChild(grammar);
+          return;
+        }
+
+        const card = document.createElement("div");
         card.className = "sentence-card";
 
-        const hanzi  = document.createElement("div");
+        const hanzi = document.createElement("div");
         hanzi.className = "sentence-text";
         hanzi.textContent = item.hanzi;
         hanzi.onclick = ()=> playBrowserVoice(hanzi);
@@ -108,11 +116,10 @@
         pinyin.textContent = item.pinyin;
         pinyin.style.display = showPinyin ? "block" : "none";
 
-        const btn    = document.createElement("button");
+        const btn = document.createElement("button");
         btn.className = "audio-button";
         btn.textContent = "🔊 Natural Voice";
 
-        // 播放 OpenAI 語音 + 下載 mp3
         btn.onclick = async () => {
           try {
             const res = await fetch("https://jlms-chinois-de-la-vie-quotidienne.vercel.app/api/speak", {
@@ -147,7 +154,7 @@
 
             btn.after(dl);
           } catch (err) {
-            alert("Network error 😢");
+            alert("Network error 😥");
             console.error(err);
           }
         };
@@ -162,7 +169,7 @@
       msg.lang  = "zh-TW";
       msg.rate  = parseFloat(rateSlider.value);
       document.querySelectorAll(".sentence-text")
-              .forEach(e=>e.classList.remove("playing"));
+              .forEach(e => e.classList.remove("playing"));
       el.classList.add("playing");
       speechSynthesis.speak(msg);
     }
