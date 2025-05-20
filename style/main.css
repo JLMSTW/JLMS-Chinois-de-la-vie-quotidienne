@@ -121,3 +121,32 @@ select, .toolbar label{
 .download-link:hover {
   text-decoration: underline;
 }
+.grammar-point {
+  font-size: 1.2rem;
+  margin: 20px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.grammar-number {
+  background-color: #1e90ff;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.grammar-text {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.grammar-pinyin {
+  color: #ccc;
+  font-size: 0.95rem;
+}
