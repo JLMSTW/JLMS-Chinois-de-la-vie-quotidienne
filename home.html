@@ -87,82 +87,93 @@
     }
 
     function renderSentences(sentences){
-      sentenceList.innerHTML = "";
-      const showPinyin = togglePinyin.checked;
+  sentenceList.innerHTML = "";
+  const showPinyin = togglePinyin.checked;
 
-      sentences.forEach(item => {
-        if (item.grammar) {
-          const grammar = document.createElement("div");
-          grammar.className = "grammar-point";
-          grammar.innerHTML = `
-            <span class="grammar-number">${item.grammar.num}</span>
-            <span class="grammar-text">${item.grammar.text}</span>
-            <span class="grammar-pinyin">${item.grammar.pinyin}</span>
-          `;
-          sentenceList.appendChild(grammar);
+  sentences.forEach(item => {
+    // 如果是語法標題
+    if (item.grammar) {
+      const grammar = document.createElement("div");
+      grammar.className = "grammar-point";
+
+      const num = document.createElement("div");
+      num.className = "grammar-number";
+      num.textContent = item.grammar.slice(0, 2); // 例如 "❹"
+
+      const text = document.createElement("div");
+      text.className = "grammar-text";
+      text.textContent = item.grammar.slice(2).split(" ")[0]; // 例如 "比起來"
+
+      const pinyin = document.createElement("div");
+      pinyin.className = "grammar-pinyin";
+      pinyin.textContent = item.grammar.split(" ").slice(1).join(" "); // 例如 "bǐqǐlái"
+
+      grammar.append(num, text, pinyin);
+      sentenceList.appendChild(grammar);
+      return;
+    }
+
+    // 否則為例句內容
+    const card = document.createElement("div");
+    card.className = "sentence-card";
+
+    const hanzi = document.createElement("div");
+    hanzi.className = "sentence-text";
+    hanzi.textContent = item.hanzi;
+    hanzi.onclick = () => playBrowserVoice(hanzi);
+
+    const pinyin = document.createElement("div");
+    pinyin.className = "pinyin-text";
+    pinyin.textContent = item.pinyin;
+    pinyin.style.display = showPinyin ? "block" : "none";
+
+    const btn = document.createElement("button");
+    btn.className = "audio-button";
+    btn.textContent = "🔊 Natural Voice";
+
+    btn.onclick = async () => {
+      try {
+        const res = await fetch("https://jlms-chinois-de-la-vie-quotidienne.vercel.app/api/speak", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: item.hanzi,
+            voice: "shimmer",
+            speed: parseFloat(rateSlider.value)
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          alert("TTS error: " + err);
           return;
         }
 
-        const card = document.createElement("div");
-        card.className = "sentence-card";
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        new Audio(url).play();
 
-        const hanzi = document.createElement("div");
-        hanzi.className = "sentence-text";
-        hanzi.textContent = item.hanzi;
-        hanzi.onclick = ()=> playBrowserVoice(hanzi);
+        const dl = document.createElement("a");
+        dl.href = url;
+        dl.download = `${item.hanzi}.mp3`;
+        dl.textContent = "⬇️ Download MP3";
+        dl.className = "download-link";
+        dl.style.marginLeft = "10px";
 
-        const pinyin = document.createElement("div");
-        pinyin.className = "pinyin-text";
-        pinyin.textContent = item.pinyin;
-        pinyin.style.display = showPinyin ? "block" : "none";
+        const existing = card.querySelector(".download-link");
+        if (existing) existing.remove();
 
-        const btn = document.createElement("button");
-        btn.className = "audio-button";
-        btn.textContent = "🔊 Natural Voice";
+        btn.after(dl);
+      } catch (err) {
+        alert("Network error 😢");
+        console.error(err);
+      }
+    };
 
-        btn.onclick = async () => {
-          try {
-            const res = await fetch("https://jlms-chinois-de-la-vie-quotidienne.vercel.app/api/speak", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                text: item.hanzi,
-                voice: "shimmer",
-                speed: parseFloat(rateSlider.value)
-              })
-            });
-
-            if (!res.ok) {
-              const err = await res.text();
-              alert("TTS error: " + err);
-              return;
-            }
-
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            new Audio(url).play();
-
-            const dl = document.createElement("a");
-            dl.href = url;
-            dl.download = `${item.hanzi}.mp3`;
-            dl.textContent = "⬇️ Download MP3";
-            dl.className = "download-link";
-            dl.style.marginLeft = "10px";
-
-            const existing = card.querySelector(".download-link");
-            if (existing) existing.remove();
-
-            btn.after(dl);
-          } catch (err) {
-            alert("Network error 😥");
-            console.error(err);
-          }
-        };
-
-        card.append(hanzi, pinyin, btn);
-        sentenceList.appendChild(card);
-      });
-    }
+    card.append(hanzi, pinyin, btn);
+    sentenceList.appendChild(card);
+  });
+}
 
     function playBrowserVoice(el){
       const msg = new SpeechSynthesisUtterance(el.textContent);
