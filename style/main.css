@@ -121,24 +121,25 @@ select, .toolbar label{
 .download-link:hover {
   text-decoration: underline;
 }
-.grammar-point {
-  font-size: 1.2rem;
-  margin: 20px 0 10px;
+.grammar-point { 
+  font-size: 1.4rem; /* 整段大一點 */
+  margin: 24px 0 16px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 
 .grammar-number {
-  background-color: #1e90ff;
-  color: white;
+  background-color: #ff69b4; /* 原本是 #1e90ff 藍色 → 改為HotPink */
+  color: black;
   border-radius: 50%;
-  width: 28px;
+  width: 36px;  /* 原本 28px → 字體加大需要更寬 */
   height: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
+  font-size: 1.2rem;               /* 增加字體大小 */
 }
 
 .grammar-text {
