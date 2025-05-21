@@ -121,26 +121,24 @@ select, .toolbar label{
 .download-link:hover {
   text-decoration: underline;
 }
-.grammar-point { 
-  font-size: 1.4rem;
-  margin: 24px 0 16px;
+.grammar-point {
+  font-size: 1.2rem;
+  margin: 20px 0 10px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .grammar-number {
-  background-color: #ff69b4;
-  color: black;
+  background-color: #1e90ff;
+  color: white;
   border-radius: 50%;
-  width: 36px; 
+  width: 28px;
   height: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 1.2rem;
-  
 }
 
 .grammar-text {
