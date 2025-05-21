@@ -37,9 +37,46 @@
     "hanzi": "我覺得今天比昨天熱。",
     "pinyin": "wǒ juéde jīntiān bǐ zuótiān rè."
   },
-  ...
+ "hanzi": "我覺得今天比昨天熱。",
+    "pinyin": "wǒ juéde jīntiān bǐ zuótiān rè."
+  },
+  {
+    "hanzi": "我覺得蘋果比柳橙好吃很多。",
+    "pinyin": "wǒ juéde píngguǒ bǐ liǔchéng hǎochī hěn duō."
+  },
+  {
+    "hanzi": "我昨天比今天忙很多。",
+    "pinyin": "wǒ zuótiān bǐ jīntiān máng hěn duō."
+  },
+  {
+    "hanzi": "你們星期一比星期天有空嗎？",
+    "pinyin": "nǐmen xīngqíyī bǐ xīngqítiān yǒu kòng ma?"
+  },
+  {
+    "hanzi": "我覺得葡萄不比芒果好吃。",
+    "pinyin": "wǒ juéde pútao bù bǐ mángguǒ hǎochī."
+  },
+  {
+    "hanzi": "我覺得美國紅酒不比法國紅酒好喝。",
+    "pinyin": "wǒ juéde Měiguó hóngjiǔ bù bǐ Fàguó hóngjiǔ hǎohē."
+  },
   {
     "grammar": { "num": "❹", "text": "比起來", "pinyin": "bǐqǐlái" }
   },
-  ...
-]
+  {
+    "hanzi": "和蘋果比起來，我比較喜歡葡萄。",
+    "pinyin": "hé píngguǒ bǐqǐlái, wǒ bǐjiào xǐhuān pútao."
+  },
+  {
+    "hanzi": "和白酒比起來，我比較喜歡紅酒。",
+    "pinyin": "hé báijiǔ bǐqǐlái, wǒ bǐjiào xǐhuān hóngjiǔ."
+  },
+  {
+    "hanzi": "和巧克力醬比起來，巧克力醬比較甜。",
+    "pinyin": "hé qiǎokèlì jiàng bǐqǐlái, qiǎokèlì jiàng bǐjiào tián."
+  },
+  {
+    "hanzi": "和星期六比起來，我星期六比較有空。",
+    "pinyin": "hé xīngqíyī bǐqǐlái, wǒ xīngqíliù bǐjiào yǒu kòng."
+  }
+  ]
