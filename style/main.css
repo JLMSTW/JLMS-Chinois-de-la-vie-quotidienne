@@ -122,7 +122,7 @@ select, .toolbar label{
   text-decoration: underline;
 }
 .grammar-point { 
-  font-size: 1.4rem; /* 整段大一點 */
+  font-size: 1.4rem;
   margin: 24px 0 16px;
   display: flex;
   align-items: center;
@@ -130,16 +130,17 @@ select, .toolbar label{
 }
 
 .grammar-number {
-  background-color: #ff69b4; /* 原本是 #1e90ff 藍色 → 改為HotPink */
+  background-color: #ff69b4;
   color: black;
   border-radius: 50%;
-  width: 36px;  /* 原本 28px → 字體加大需要更寬 */
+  width: 36px; 
   height: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 1.2rem;               /* 增加字體大小 */
+  font-size: 1.2rem;
+  
 }
 
 .grammar-text {
