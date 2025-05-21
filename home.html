@@ -77,103 +77,103 @@
     async function loadLesson () {
       const lesson = lessonSelect.value;
       sentenceList.innerHTML = "<p>Loading…</p>";
-      try{
-        const res  = await fetch(`data/${lesson}.json`);
+      try {
+        const res = await fetch(`data/${lesson}.json`);
         const data = await res.json();
         renderSentences(data);
-      }catch(err){
+      } catch(err) {
         sentenceList.innerHTML = "<p>❌ Data for this lesson not found.</p>";
       }
     }
 
-    function renderSentences(sentences){
-  sentenceList.innerHTML = "";
-  const showPinyin = togglePinyin.checked;
+    function renderSentences(sentences) {
+      sentenceList.innerHTML = "";
+      const showPinyin = togglePinyin.checked;
 
-  sentences.forEach(item => {
-    // 如果是語法標題
-    if (item.grammar) {
-      const grammar = document.createElement("div");
-      grammar.className = "grammar-point";
+      sentences.forEach(item => {
+        // ➤ 顯示語法標題區塊
+        if (item.grammar && typeof item.grammar === 'object') {
+          const grammar = document.createElement("div");
+          grammar.className = "grammar-point";
 
-      const num = document.createElement("div");
-      num.className = "grammar-number";
-      num.textContent = item.grammar.slice(0, 2); // 例如 "❹"
+          const num = document.createElement("div");
+          num.className = "grammar-number";
+          num.textContent = item.grammar.num || "";
 
-      const text = document.createElement("div");
-      text.className = "grammar-text";
-      text.textContent = item.grammar.slice(2).split(" ")[0]; // 例如 "比起來"
+          const text = document.createElement("div");
+          text.className = "grammar-text";
+          text.textContent = item.grammar.text || "";
 
-      const pinyin = document.createElement("div");
-      pinyin.className = "grammar-pinyin";
-      pinyin.textContent = item.grammar.split(" ").slice(1).join(" "); // 例如 "bǐqǐlái"
+          const pinyin = document.createElement("div");
+          pinyin.className = "grammar-pinyin";
+          pinyin.textContent = item.grammar.pinyin || "";
 
-      grammar.append(num, text, pinyin);
-      sentenceList.appendChild(grammar);
-      return;
-    }
-
-    // 否則為例句內容
-    const card = document.createElement("div");
-    card.className = "sentence-card";
-
-    const hanzi = document.createElement("div");
-    hanzi.className = "sentence-text";
-    hanzi.textContent = item.hanzi;
-    hanzi.onclick = () => playBrowserVoice(hanzi);
-
-    const pinyin = document.createElement("div");
-    pinyin.className = "pinyin-text";
-    pinyin.textContent = item.pinyin;
-    pinyin.style.display = showPinyin ? "block" : "none";
-
-    const btn = document.createElement("button");
-    btn.className = "audio-button";
-    btn.textContent = "🔊 Natural Voice";
-
-    btn.onclick = async () => {
-      try {
-        const res = await fetch("https://jlms-chinois-de-la-vie-quotidienne.vercel.app/api/speak", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: item.hanzi,
-            voice: "shimmer",
-            speed: parseFloat(rateSlider.value)
-          })
-        });
-
-        if (!res.ok) {
-          const err = await res.text();
-          alert("TTS error: " + err);
+          grammar.append(num, text, pinyin);
+          sentenceList.appendChild(grammar);
           return;
         }
 
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        new Audio(url).play();
+        // ➤ 顯示句子卡片區塊
+        const card = document.createElement("div");
+        card.className = "sentence-card";
 
-        const dl = document.createElement("a");
-        dl.href = url;
-        dl.download = `${item.hanzi}.mp3`;
-        dl.textContent = "⬇️ Download MP3";
-        dl.className = "download-link";
-        dl.style.marginLeft = "10px";
+        const hanzi = document.createElement("div");
+        hanzi.className = "sentence-text";
+        hanzi.textContent = item.hanzi;
+        hanzi.onclick = () => playBrowserVoice(hanzi);
 
-        const existing = card.querySelector(".download-link");
-        if (existing) existing.remove();
+        const pinyin = document.createElement("div");
+        pinyin.className = "pinyin-text";
+        pinyin.textContent = item.pinyin;
+        pinyin.style.display = showPinyin ? "block" : "none";
 
-        btn.after(dl);
-      } catch (err) {
-        alert("Network error 😢");
-        console.error(err);
-      }
-    };
+        const btn = document.createElement("button");
+        btn.className = "audio-button";
+        btn.textContent = "🔊 Natural Voice";
 
-    card.append(hanzi, pinyin, btn);
-    sentenceList.appendChild(card);
-  });
-}
+        btn.onclick = async () => {
+          try {
+            const res = await fetch("https://jlms-chinois-de-la-vie-quotidienne.vercel.app/api/speak", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                text: item.hanzi,
+                voice: "shimmer",
+                speed: parseFloat(rateSlider.value)
+              })
+            });
+
+            if (!res.ok) {
+              const err = await res.text();
+              alert("TTS error: " + err);
+              return;
+            }
+
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            new Audio(url).play();
+
+            const dl = document.createElement("a");
+            dl.href = url;
+            dl.download = `${item.hanzi}.mp3`;
+            dl.textContent = "⬇️ Download MP3";
+            dl.className = "download-link";
+            dl.style.marginLeft = "10px";
+
+            const existing = card.querySelector(".download-link");
+            if (existing) existing.remove();
+
+            btn.after(dl);
+          } catch (err) {
+            alert("Network error 😢");
+            console.error(err);
+          }
+        };
+
+        card.append(hanzi, pinyin, btn);
+        sentenceList.appendChild(card);
+      });
+    }
 
     function playBrowserVoice(el){
       const msg = new SpeechSynthesisUtterance(el.textContent);
