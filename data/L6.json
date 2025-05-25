@@ -3,77 +3,100 @@
     "grammar": { "num": "❷", "text": "還是", "pinyin": "hái shì" }
   },
   {
-    "hanzi": "你要冰的咖啡還是熱的咖啡？",
+    "hanzi": "1. 你要冰的咖啡還是熱的咖啡？",
     "pinyin": "nǐ yào bīng de kāfēi háishì rè de kāfēi?"
   },
   {
-    "hanzi": "你要付現還是刷卡？",
+    "hanzi": "2. 你要付現還是刷卡？",
     "pinyin": "nǐ yào fùxiàn háishì shuākǎ?"
   },
   {
-    "hanzi": "你要麵還是飯？",
+    "hanzi": "3. 你要麵還是飯？",
     "pinyin": "nǐ yào miàn háishì fàn?"
   },
   {
-    "hanzi": "我們明天早上要開會還是要參加活動？",
+    "hanzi": "4. 我們明天早上要開會還是要參加活動？",
     "pinyin": "wǒmen míngtiān zǎoshang yào kāihuì háishì cānjiā huódòng?"
   },
   {
-    "hanzi": "我們禮拜三開會還是禮拜五開會？",
+    "hanzi": "5. 我們禮拜三開會還是禮拜五開會？",
     "pinyin": "wǒmen lǐbài-sān kāihuì háishì lǐbài-wǔ kāihuì?"
   },
   {
-    "hanzi": "他在外交領域還是在金融領域工作？",
+    "hanzi": "6. 他在外交領域還是在金融領域工作？",
     "pinyin": "tā zài wàijiāo lǐngyù háishì zài jīnróng lǐngyù gōngzuò?"
   },
   {
     "grammar": { "num": "❸", "text": "比", "pinyin": "bǐ" }
   },
   {
-    "hanzi": "我覺得 Nutella 比芒果甜。",
+    "hanzi": "1. 我覺得 Nutella 比芒果甜。",
     "pinyin": "wǒ juéde Nutella bǐ mángguǒ tián."
   },
   {
-    "hanzi": "我覺得今天比昨天熱。",
+    "hanzi": "2. 我覺得今天比昨天熱。",
     "pinyin": "wǒ juéde jīntiān bǐ zuótiān rè."
   },
   {
-    "hanzi": "我覺得蘋果比柳橙好吃很多。",
+    "hanzi": "3. 我覺得蘋果比柳橙好吃很多。",
     "pinyin": "wǒ juéde píngguǒ bǐ liǔchéng hǎochī hěn duō."
   },
   {
-    "hanzi": "我昨天比今天忙很多。",
+    "hanzi": "4. 我昨天比今天忙很多。",
     "pinyin": "wǒ zuótiān bǐ jīntiān máng hěn duō."
   },
   {
-    "hanzi": "你們星期一比星期天有空嗎？",
+    "hanzi": "5. 你們星期一比星期天有空嗎？",
     "pinyin": "nǐmen xīngqíyī bǐ xīngqítiān yǒu kòng ma?"
   },
   {
-    "hanzi": "我覺得葡萄不比芒果好吃。",
+    "hanzi": "6. 我覺得葡萄不比芒果好吃。",
     "pinyin": "wǒ juéde pútao bù bǐ mángguǒ hǎochī."
   },
   {
-    "hanzi": "我覺得美國紅酒不比法國紅酒好喝。",
+    "hanzi": "7. 我覺得美國紅酒不比法國紅酒好喝。",
     "pinyin": "wǒ juéde Měiguó hóngjiǔ bù bǐ Fàguó hóngjiǔ hǎohē."
   },
   {
     "grammar": { "num": "❹", "text": "比起來", "pinyin": "bǐqǐlái" }
   },
   {
-    "hanzi": "和蘋果比起來，我比較喜歡葡萄。",
-    "pinyin": "hé píngguǒ bǐqǐlái, wǒ bǐjiào xǐhuān pútao."
+    "hanzi": "1. 葡萄和蘋果比起來，我比較喜歡葡萄。",
+    "pinyin": "Pútao hé píngguǒ bǐqǐlái, wǒ bǐjiào xǐhuān pútao."
   },
   {
-    "hanzi": "和白酒比起來，我比較喜歡紅酒。",
-    "pinyin": "hé báijiǔ bǐqǐlái, wǒ bǐjiào xǐhuān hóngjiǔ."
+    "hanzi": "2. 紅酒和白酒比起來，我比較喜歡紅酒。",
+    "pinyin": "Hóngjiǔ hé báijiǔ bǐqǐlái, wǒ bǐjiào xǐhuān hóngjiǔ."
   },
   {
-    "hanzi": "和巧克力醬比起來，巧克力醬比較甜。",
-    "pinyin": "hé qiǎokèlì jiàng bǐqǐlái, qiǎokèlì jiàng bǐjiào tián."
+    "hanzi": "3. 焦糖醬和巧克力醬比起來，巧克力醬比較甜。",
+    "pinyin": "Jiāo táng jiàng hé qiǎokèlì jiàng bǐqǐlái, qiǎokèlì jiàng bǐjiào tián."
   },
   {
-    "hanzi": "和星期六比起來，我星期六比較有空。",
-    "pinyin": "hé xīngqíyī bǐqǐlái, wǒ xīngqíliù bǐjiào yǒu kòng."
+    "hanzi": "4. 星期一和星期六比起來，我星期六比較有空。",
+    "pinyin": "Xīngqíyī hé xīngqíliù bǐqǐlái, wǒ xīngqíliù bǐjiào yǒu kòng."
+  },
+  {
+    "grammar": { "num": "❺", "text": "的", "pinyin": "de" }
+  },
+  {
+    "hanzi": "1. 這是很酸的蘋果，不好吃。",
+    "pinyin": "zhè shì hěn suān de píngguǒ, bù hǎochī."
+  },
+  {
+    "hanzi": "2. 這是一點也不辣的法國鹹派。",
+    "pinyin": "zhè shì yì diǎn yě bù là de Fǎguó xiánpài."
+  },
+  {
+    "hanzi": "3. 我不喜歡很苦的咖啡。",
+    "pinyin": "wǒ bù xǐhuān hěn kǔ de kāfēi."
+  },
+  {
+    "hanzi": "4. 謝謝你給我非常好吃的葡萄。",
+    "pinyin": "xièxie nǐ gěi wǒ fēicháng hǎochī de pútao."
+  },
+  {
+    "hanzi": "5. 這是一個很好吃的法國鹹派。",
+    "pinyin": "zhè shì yí gè hěn hǎochī de Fǎguó xiánpài."
   }
 ]
