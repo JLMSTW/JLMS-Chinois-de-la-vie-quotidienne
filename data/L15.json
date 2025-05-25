@@ -33,5 +33,102 @@
   {
     "hanzi": "離我上次去美國已經兩年了。",
     "pinyin": "lí wǒ shàng cì qù Měiguó yǐjīng liǎng nián le."
+  },
+  {
+    "grammar": { "num": "❺", "text": "又...又...", "pinyin": "yòu...yòu..." }
+  },
+  {
+    "hanzi": "台北冬天又濕又冷。",
+    "pinyin": "Táiběi dōngtiān yòu shī yòu lěng."
+  },
+  {
+    "hanzi": "她又親切又善良，而且還很聰明。",
+    "pinyin": "Tā yòu qīnqiè yòu shànliáng, érqiě hái hěn cōngmíng."
+  },
+  {
+    "hanzi": "他的家又大又新，很舒服。",
+    "pinyin": "Tā de jiā yòu dà yòu xīn, hěn shūfú."
+  },
+  {
+    "hanzi": "我今天早上又打網球又游泳，現在好累。",
+    "pinyin": "Wǒ jīntiān zǎoshang yòu dǎ wǎngqiú yòu yóuyǒng, xiànzài hǎo lèi."
+  },
+  {
+    "hanzi": "他又不休息，又不看醫師，所以感冒一直沒好。",
+    "pinyin": "Tā yòu bù xiūxí, yòu bù kàn yīshī, suǒyǐ gǎnmào yīzhí méi hǎo."
+  },
+{
+  "grammar": { "num": "❻", "text": "對…很講究", "pinyin": "duì... hěn jiǎngjiu" }
+  },
+  {
+    "hanzi": "他對家裡的裝潢很講究，所以他們家裝潢了一年。",
+    "pinyin": "tā duì jiālǐ de zhuānghuáng hěn jiǎngjiu, suǒyǐ tāmen jiā zhuānghuáng le yì nián."
+  },
+  {
+    "hanzi": "我和太太對孩子的教育很講究。",
+    "pinyin": "wǒ hé tàitai duì háizi de jiàoyù hěn jiǎngjiu."
+  },
+  {
+    "hanzi": "一方面他對吃很講究，另一方面他對住也很講究，所以我們訂了這家飯店。",
+    "pinyin": "yì fāngmiàn tā duì chī hěn jiǎngjiu, lìng yì fāngmiàn tā duì zhù yě hěn jiǎngjiu, suǒyǐ wǒmen dìng le zhè jiā fàndiàn."
+  },
+  {
+    "hanzi": "我爸爸對吃不太講究。",
+    "pinyin": "wǒ bàba duì chī bù tài jiǎngjiu."
+  },
+  {
+    "grammar": { "num": "❼", "text": "最", "pinyin": "zuì" }
+  },
+  {
+    "hanzi": "我覺得這家餐廳的小籠包最道地。",
+    "pinyin": "wǒ juéde zhè jiā cāntīng de xiǎolóngbāo zuì dàodì."
+  },
+  {
+    "hanzi": "每年我們最忙的時間是十月。",
+    "pinyin": "měi nián wǒmen zuì máng de shíjiān shì shíyuè."
+  },
+  {
+    "hanzi": "這是我小時候的衣服，也是我最喜歡的。",
+    "pinyin": "zhè shì wǒ xiǎoshíhòu de yīfú, yě shì wǒ zuì xǐhuān de."
+  },
+  {
+    "hanzi": "在台灣，我最不習慣台灣的天氣，好熱！",
+    "pinyin": "zài Táiwān, wǒ zuì bù xíguàn Táiwān de tiānqì, hǎo rè!"
+  },
+  {
+    "hanzi": "他是我們公司最細心的人。",
+    "pinyin": "tā shì wǒmen gōngsī zuì xìxīn de rén."
+  },
+  {
+    "hanzi": "你最喜歡什麼顏色？",
+    "pinyin": "nǐ zuì xǐhuān shénme yánsè?"
+  },
+
+  {
+    "grammar": { "num": "❽", "text": "怕", "pinyin": "pà" }
+  },
+  {
+    "hanzi": "我們很怕蟑螂。",
+    "pinyin": "wǒmen hěn pà zhāngláng."
+  },
+  {
+    "hanzi": "我不怕辣！",
+    "pinyin": "wǒ bù pà là!"
+  },
+  {
+    "hanzi": "我怕他明天不能來參加活動。",
+    "pinyin": "wǒ pà tā míngtiān bù néng lái cānjiā huódòng."
+  },
+  {
+    "hanzi": "我們怕等一下下雨。",
+    "pinyin": "wǒmen pà děng yíxià xiàyǔ."
+  },
+  {
+    "hanzi": "我怕明天會遲到，所以我要早一點起床。",
+    "pinyin": "wǒ pà míngtiān huì chídào, suǒyǐ wǒ yào zǎo yìdiǎn qǐchuáng."
+  },
+  {
+    "hanzi": "他怕坐飛機，所以他很少出國。",
+    "pinyin": "tā pà zuò fēijī, suǒyǐ tā hěn shǎo chūguó."
   }
 ]
