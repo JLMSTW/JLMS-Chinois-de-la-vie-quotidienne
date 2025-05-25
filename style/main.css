@@ -144,10 +144,10 @@ select, .toolbar label{
 
 .grammar-text {
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 2.4rem;
 }
 
 .grammar-pinyin {
   color: #eee;
-  font-size: 1.2rem;
+  font-size: 2.0rem;
 }
