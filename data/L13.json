@@ -1,0 +1,80 @@
+[
+  {
+    "grammar": { "num": "❶", "text": "Construction directionnelle V1.V2. et V1.V2.V3" }
+  },
+  {
+    "hanzi": "請進來。",
+    "pinyin": "qǐng jìnlái."
+  },
+  {
+    "hanzi": "請出去。",
+    "pinyin": "qǐng chūqù."
+  },
+  {
+    "hanzi": "請下來。",
+    "pinyin": "qǐng xiàlái."
+  },
+  {
+    "hanzi": "請上去。",
+    "pinyin": "qǐng shàngqù."
+  },
+  {
+    "hanzi": "跳下來。",
+    "pinyin": "tiào xiàlái."
+  },
+  {
+    "hanzi": "跑上去。",
+    "pinyin": "pǎo shàngqù."
+  },
+  {
+    "hanzi": "拿進去。",
+    "pinyin": "ná jìnqù."
+  },
+  {
+    "hanzi": "下個月，我要飛回法國去。",
+    "pinyin": "xià ge yuè, wǒ yào fēi huí Fǎguó qù."
+  },
+  {
+    "hanzi": "這個週末，我要開車開回法國去。",
+    "pinyin": "zhè ge zhōumò, wǒ yào kāichē kāi huí Fǎguó qù."
+  },
+  {
+    "hanzi": "他不要走回家來，他要跑回家來。",
+    "pinyin": "tā bú yào zǒu huí jiā lái, tā yào pǎo huí jiā lái."
+  },
+  {
+    "hanzi": "這個資料請你拿上二樓去。",
+    "pinyin": "zhè ge zīliào qǐng nǐ ná shàng èr lóu qù."
+  },
+  {
+    "grammar": { "num": "❷", "text": "把", "pinyin": "bǎ" }
+  },
+  {
+    "hanzi": "他剛剛把啤酒喝完了。",
+    "pinyin": "tā gānggāng bǎ píjiǔ hē wán le."
+  },
+  {
+    "hanzi": "他不想把資料印出來。",
+    "pinyin": "tā bù xiǎng bǎ zīliào yìn chūlái."
+  },
+  {
+    "hanzi": "秘書剛剛把資料拿給我。",
+    "pinyin": "mìshū gānggāng bǎ zīliào ná gěi wǒ."
+  },
+  {
+    "hanzi": "我今天沒把資料帶回來。",
+    "pinyin": "wǒ jīntiān méi bǎ zīliào dài huílái."
+  },
+  {
+    "hanzi": "你沒把信寄給我。",
+    "pinyin": "nǐ méi bǎ xìn jì gěi wǒ."
+  },
+  {
+    "hanzi": "她上個月沒把頭髮剪短。",
+    "pinyin": "tā shàng ge yuè méi bǎ tóufa jiǎn duǎn."
+  },
+  {
+    "hanzi": "誰把燈打開了？",
+    "pinyin": "shéi bǎ dēng dǎkāi le?"
+  }
+]
