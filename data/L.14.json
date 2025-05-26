@@ -1,0 +1,137 @@
+[
+  {
+    "grammar": { "num": "❸", "text": "越來越", "pinyin": "yuèláiyuè" }
+  },
+  {
+    "hanzi": "我越來越不舒服。",
+    "pinyin": "wǒ yuèláiyuè bù shūfu."
+  },
+  {
+    "hanzi": "我感冒越來越嚴重。",
+    "pinyin": "wǒ gǎnmào yuèláiyuè yánzhòng."
+  },
+  {
+    "hanzi": "他越來越不喜歡吃甜的東西。",
+    "pinyin": "tā yuèláiyuè bù xǐhuān chī tián de dōngxi."
+  },
+  {
+    "hanzi": "你說中文說得越來越好。",
+    "pinyin": "nǐ shuō Zhōngwén shuō de yuèláiyuè hǎo."
+  },
+  {
+    "hanzi": "狗狗老了，走路走得越來越慢，他越來越不喜歡出門。",
+    "pinyin": "gǒugou lǎo le, zǒulù zǒu de yuèláiyuè màn, tā yuèláiyuè bù xǐhuān chūmén."
+  },
+
+  {
+    "grammar": { "num": "❹", "text": "應該", "pinyin": "yīnggāi" }
+  },
+  {
+    "hanzi": "你應該去看醫生。",
+    "pinyin": "nǐ yīnggāi qù kàn yīshēng."
+  },
+  {
+    "hanzi": "你應該多休息。",
+    "pinyin": "nǐ yīnggāi duō xiūxí."
+  },
+  {
+    "hanzi": "你不應該吃這麼辣。",
+    "pinyin": "nǐ bù yīnggāi chī zhème là."
+  },
+  {
+    "hanzi": "你應該早一點睡。",
+    "pinyin": "nǐ yīnggāi zǎo yìdiǎn shuì."
+  },
+  {
+    "hanzi": "他覺得我應該要早一點回家。",
+    "pinyin": "tā juéde wǒ yīnggāi yào zǎo yìdiǎn huíjiā."
+  },
+  {
+    "hanzi": "他應該要聽爸媽的話。",
+    "pinyin": "tā yīnggāi yào tīng bàmā de huà."
+  },
+  {
+    "hanzi": "你應該先做完你的工作。",
+    "pinyin": "nǐ yīnggāi xiān zuòwán nǐ de gōngzuò."
+  },
+  {
+    "hanzi": "他現在應該在家。",
+    "pinyin": "tā xiànzài yīnggāi zài jiā."
+  },
+  {
+    "hanzi": "今天是星期一，人應該不會太多。",
+    "pinyin": "jīntiān shì xīngqíyī, rén yīnggāi bù huì tài duō."
+  },
+
+  {
+    "grammar": { "num": "❺", "text": "過", "pinyin": "guò" }
+  },
+  {
+    "hanzi": "你來過這家診所嗎？",
+    "pinyin": "nǐ láiguò zhè jiā zhěnsuǒ ma?"
+  },
+  {
+    "hanzi": "我還沒來過。",
+    "pinyin": "wǒ hái méi láiguò."
+  },
+  {
+    "hanzi": "我早上喝過咖啡了，現在不想喝，謝謝。",
+    "pinyin": "wǒ zǎoshang hēguò kāfēi le, xiànzài bù xiǎng hē, xièxie."
+  },
+  {
+    "hanzi": "我們是不是來過這家餐廳？",
+    "pinyin": "wǒmen shì bù shì láiguò zhè jiā cāntīng?"
+  },
+  {
+    "hanzi": "我打過高爾夫球，但是我不太喜歡。",
+    "pinyin": "wǒ dǎguò gāoěrfūqiú, dànshì wǒ bù tài xǐhuān."
+  },
+  {
+    "hanzi": "我沒聽說過這件事。",
+    "pinyin": "wǒ méi tīngshuōguò zhè jiàn shì."
+  },
+
+  {
+    "grammar": { "num": "❻", "text": "以為", "pinyin": "yǐwéi" }
+  },
+  {
+    "hanzi": "我以為感冒會好一點，但是越來越嚴重。",
+    "pinyin": "wǒ yǐwéi gǎnmào huì hǎo yìdiǎn, dànshì yuèláiyuè yánzhòng."
+  },
+  {
+    "hanzi": "我也以為我們家旁邊的超市有法國起司。",
+    "pinyin": "wǒ yě yǐwéi wǒmen jiā pángbiān de chāoshì yǒu Fǎguó qǐsī."
+  },
+  {
+    "hanzi": "我以為他已經回家了，但他還在辦公室！",
+    "pinyin": "wǒ yǐwéi tā yǐjīng huíjiā le, dàn tā hái zài bàngōngshì!"
+  },
+  {
+    "hanzi": "我以為你喜歡吃辣，所以我訂四川餐廳。",
+    "pinyin": "wǒ yǐwéi nǐ xǐhuān chī là, suǒyǐ wǒ dìng Sìchuān cāntīng."
+  },
+  {
+    "hanzi": "我以為實習生今天會來幫忙，但其實他們不知道這個活動。",
+    "pinyin": "wǒ yǐwéi shíxíshēng jīntiān huì lái bāngmáng, dàn qíshí tāmen bù zhīdào zhège huódòng."
+  },
+
+  {
+    "grammar": { "num": "❼", "text": "多V／少V", "pinyin": "duō／shǎo" }
+  },
+  {
+    "hanzi": "多喝水",
+    "pinyin": "duō hē shuǐ"
+  },
+  {
+    "hanzi": "多休息",
+    "pinyin": "duō xiūxí"
+  },
+  {
+    "hanzi": "少吃辣",
+    "pinyin": "shǎo chī là"
+  },
+  {
+    "hanzi": "少吃冰",
+    "pinyin": "shǎo chī bīng"
+  }
+]
