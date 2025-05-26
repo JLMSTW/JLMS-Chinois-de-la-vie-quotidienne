@@ -1,0 +1,121 @@
+[
+  {
+    "grammar": { "num": "❷", "text": "先...再...", "pinyin": "xiān... zài..." }
+  },
+  {
+    "hanzi": "我會先去法國再去比利時。",
+    "pinyin": "wǒ huì xiān qù Fǎguó zài qù Bǐlìshí."
+  },
+  {
+    "hanzi": "我們昨天先去打網球再去游泳。",
+    "pinyin": "wǒmen zuótiān xiān qù dǎ wǎngqiú zài qù yóuyǒng."
+  },
+  {
+    "hanzi": "我今天下班以後，我先回家準備，再去餐廳找你們。",
+    "pinyin": "wǒ jīntiān xiàbān yǐhòu, wǒ xiān huí jiā zhǔnbèi, zài qù cāntīng zhǎo nǐmen."
+  },
+  {
+    "hanzi": "我爸爸媽媽打算先來台灣再去日本。",
+    "pinyin": "wǒ bàba māma dǎsuàn xiān lái Táiwān zài qù Rìběn."
+  },
+  {
+    "hanzi": "這家餐廳很有名，很難訂到位。你可以先訂位再約你朋友。",
+    "pinyin": "zhè jiā cāntīng hěn yǒumíng, hěn nán dìngdào wèi. nǐ kěyǐ xiān dìng wèi zài yuē nǐ péngyǒu."
+  },
+  {
+    "grammar": { "num": "❸", "text": "一方面...另一方面...", "pinyin": "yì fāngmiàn... lìng yì fāngmiàn..." }
+  },
+  {
+    "hanzi": "我這次去法國，一方面要開會，另一方面看看家人。",
+    "pinyin": "wǒ zhè cì qù Fǎguó, yì fāngmiàn yào kāihuì, lìng yì fāngmiàn kàn kàn jiārén."
+  },
+  {
+    "hanzi": "我們去高雄，一方面帶他們參觀高雄辦公室，另一方面帶他們去高雄走走。",
+    "pinyin": "wǒmen qù Gāoxióng, yì fāngmiàn dài tāmen cānguān Gāoxióng bàngōngshì, lìng yì fāngmiàn dài tāmen qù Gāoxióng zǒuzǒu."
+  },
+  {
+    "hanzi": "我明天去找他，一方面好久沒看到他，另一方面我有禮物要給他。",
+    "pinyin": "wǒ míngtiān qù zhǎo tā, yì fāngmiàn hǎojiǔ méi kàndào tā, lìng yì fāngmiàn wǒ yǒu lǐwù yào gěi tā."
+  },
+  {
+    "hanzi": "我明天想去百貨公司，一方面最近百貨公司有打折，另一方面我想買一雙新鞋子。",
+    "pinyin": "wǒ míngtiān xiǎng qù bǎihuò gōngsī, yì fāngmiàn zuìjìn bǎihuò gōngsī yǒu dǎzhé, lìng yì fāngmiàn wǒ xiǎng mǎi yì shuāng xīn xiézi."
+  },
+  {
+    "hanzi": "我打算明天去游泳，一方面最近天氣很好，另一方面我好久沒運動。",
+    "pinyin": "wǒ dǎsuàn míngtiān qù yóuyǒng, yì fāngmiàn zuìjìn tiānqì hěn hǎo, lìng yì fāngmiàn wǒ hǎojiǔ méi yùndòng."
+  },
+  {
+    "grammar": { "num": "❹", "text": "還好", "pinyin": "háihǎo" }
+  },
+  {
+    "hanzi": "我最近太忙了，還好有秘書幫我安排。",
+    "pinyin": "wǒ zuìjìn tài máng le, háihǎo yǒu mìshū bāng wǒ ānpái."
+  },
+  {
+    "hanzi": "還好附近有 7-11，我可以去買雨傘。",
+    "pinyin": "háihǎo fùjìn yǒu qī diǎn yī yī, wǒ kěyǐ qù mǎi yǔsǎn."
+  },
+  {
+    "hanzi": "我沒帶手機，但是還好我找到你了！",
+    "pinyin": "wǒ méi dài shǒujī, dànshì háihǎo wǒ zhǎodào nǐ le!"
+  },
+  {
+    "hanzi": "還好我買到了這個好吃的麵包！",
+    "pinyin": "háihǎo wǒ mǎidào le zhè ge hǎochī de miànbāo!"
+  },
+  {
+    "hanzi": "我很喜歡這件衣服，還好有我的大小而且現在有打折。",
+    "pinyin": "wǒ hěn xǐhuān zhè jiàn yīfu, háihǎo yǒu wǒ de dàxiǎo érqiě xiànzài yǒu dǎzhé."
+  },
+  {
+    "hanzi": "在這個活動沒有我認識的人，但是還好你在。",
+    "pinyin": "zài zhè ge huódòng méi yǒu wǒ rènshi de rén, dànshì háihǎo nǐ zài."
+  },
+  {
+    "grammar": { "num": "❺", "text": "不然", "pinyin": "bùrán" }
+  },
+  {
+    "hanzi": "還好有秘書幫我，不然我一定更忙。",
+    "pinyin": "háihǎo yǒu mìshū bāng wǒ, bùrán wǒ yídìng gèng máng."
+  },
+  {
+    "hanzi": "我們早一點出門，不然會遲到。",
+    "pinyin": "wǒmen zǎo yìdiǎn chūmén, bùrán huì chídào."
+  },
+  {
+    "hanzi": "還好現在高雄不太熱，不然他們一定不想出門走走。",
+    "pinyin": "háihǎo xiànzài Gāoxióng bú tài rè, bùrán tāmen yídìng bù xiǎng chūmén zǒuzǒu."
+  },
+  {
+    "hanzi": "你不喜歡這家餐廳嗎？不然我們去那家餐廳，他們的菜也很好吃。",
+    "pinyin": "nǐ bù xǐhuān zhè jiā cāntīng ma? bùrán wǒmen qù nà jiā cāntīng, tāmen de cài yě hěn hǎochī."
+  },
+  {
+    "hanzi": "我們先吃飯？不然我們也可以先看電影。",
+    "pinyin": "wǒmen xiān chī fàn? bùrán wǒmen yě kěyǐ xiān kàn diànyǐng."
+  },
+  {
+    "grammar": { "num": "❻", "text": "更", "pinyin": "gèng" }
+  },
+  {
+    "hanzi": "綠色、藍色我都喜歡。但是和綠色比起來，我更喜歡藍色。",
+    "pinyin": "lǜsè, lánsè wǒ dōu xǐhuān. dànshì hé lǜsè bǐqǐlái, wǒ gèng xǐhuān lánsè."
+  },
+  {
+    "hanzi": "我不太喜歡橘色，但我更不喜歡紫色。",
+    "pinyin": "wǒ bú tài xǐhuān júsè, dàn wǒ gèng bù xǐhuān zǐsè."
+  },
+  {
+    "hanzi": "這件衣服不錯，但是我覺得這件更好看。",
+    "pinyin": "zhè jiàn yīfu búcuò, dànshì wǒ juéde zhè jiàn gèng hǎokàn."
+  },
+  {
+    "hanzi": "昨天已經很熱了，今天比昨天更熱。",
+    "pinyin": "zuótiān yǐjīng hěn rè le, jīntiān bǐ zuótiān gèng rè."
+  },
+  {
+    "hanzi": "我聽說我們下個月會更忙。",
+    "pinyin": "wǒ tīngshuō wǒmen xià ge yuè huì gèng máng."
+  }
+]
