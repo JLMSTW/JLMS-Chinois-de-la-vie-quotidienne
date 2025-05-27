@@ -1,0 +1,39 @@
+[
+  {
+    "grammar": { "num": "❷", "text": "趁", "pinyin": "chèn" }
+  },
+  { "hanzi": "趁週末出去走走。", "pinyin": "chèn zhōumò chūqù zǒuzǒu." },
+  { "hanzi": "我趁有空的時候，去樓下買一杯咖啡。", "pinyin": "wǒ chèn yǒu kòng de shíhou, qù lóuxià mǎi yì bēi kāfēi." },
+  { "hanzi": "趁你還沒回家，我要跟你討論一下事情。", "pinyin": "chèn nǐ hái méi huíjiā, wǒ yào gēn nǐ tǎolùn yíxià shìqing." },
+  { "hanzi": "趁現在天氣好，我想出去走走。", "pinyin": "chèn xiànzài tiānqì hǎo, wǒ xiǎng chūqù zǒuzǒu." },
+  { "hanzi": "趁現在大打折，他買了很多新衣服。", "pinyin": "chèn xiànzài dà dǎzhé, tā mǎile hěn duō xīn yīfu." },
+
+  {
+    "grammar": { "num": "❸", "text": "V+了+duration", "pinyin": " V + le + shíjiān" }
+  },
+  { "hanzi": "下雨下了五天。", "pinyin": "xiàyǔ xià le wǔ tiān." },
+  { "hanzi": "我們昨天吃飯吃了三個小時。", "pinyin": "wǒmen zuótiān chīfàn chī le sān gè xiǎoshí." },
+  { "hanzi": "我們今天早上開會開了四個半小時。", "pinyin": "wǒmen jīntiān zǎoshang kāihuì kāi le sì gè bàn xiǎoshí." },
+  { "hanzi": "他今天開車開了五十分鐘才到這裡。", "pinyin": "tā jīntiān kāichē kāi le wǔshí fēnzhōng cái dào zhèlǐ." },
+  { "hanzi": "我們等餐廳才等了差不多五分鐘，很快！", "pinyin": "wǒmen děng cāntīng cái děng le chàbùduō wǔ fēnzhōng, hěn kuài!" },
+  { "hanzi": "雨下了五天。", "pinyin": "yǔ xià le wǔ tiān." },
+  { "hanzi": "他以前在台北住了七年。", "pinyin": "tā yǐqián zài Táiběi zhù le qī nián." },
+
+  {
+    "grammar": { "num": "❹", "text": "Double 了", "pinyin": "le...le" }
+  },
+  { "hanzi": "我們爬山爬了兩個小時了，怎麼還沒到？", "pinyin": "wǒmen páshān pá le liǎng gè xiǎoshí le, zěnme hái méi dào?" },
+  { "hanzi": "他去買東西買了快一個小時了，我打電話給他，問問他在哪裡！", "pinyin": "tā qù mǎi dōngxi mǎi le kuài yí gè xiǎoshí le, wǒ dǎ diànhuà gěi tā, wènwen tā zài nǎlǐ!" },
+  { "hanzi": "我做功課做了二十分鐘了，還沒寫完。", "pinyin": "wǒ zuò gōngkè zuò le èrshí fēnzhōng le, hái méi xiě wán." },
+  { "hanzi": "雨下了一個星期了。", "pinyin": "yǔ xià le yí gè xīngqī le." },
+  { "hanzi": "我們問題是不是討論了快一個小時了？", "pinyin": "wǒmen wèntí shì bù shì tǎolùn le kuài yí gè xiǎoshí le?" },
+
+  {
+    "grammar": { "num": "❺", "text": "一邊...一邊...", "pinyin": "yìbiān...yìbiān..." }
+  },
+  { "hanzi": "我們一邊散步一邊聊天。", "pinyin": "wǒmen yìbiān sànbù yìbiān liáotiān." },
+  { "hanzi": "他常常一邊洗澡一邊唱歌。", "pinyin": "tā chángcháng yìbiān xǐzǎo yìbiān chànggē." },
+  { "hanzi": "我不喜歡一邊吃飯一邊看手機。", "pinyin": "wǒ bù xǐhuān yìbiān chīfàn yìbiān kàn shǒujī." },
+  { "hanzi": "不要一邊開車一邊講電話。", "pinyin": "búyào yìbiān kāichē yìbiān jiǎng diànhuà." },
+  { "hanzi": "他們一邊開會一邊吃午餐嗎？", "pinyin": "tāmen yìbiān kāihuì yìbiān chī wǔcān ma?" }
+]
