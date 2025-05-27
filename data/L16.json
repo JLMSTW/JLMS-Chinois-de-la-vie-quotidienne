@@ -71,7 +71,7 @@
     "pinyin": "nǐ hěn xìngyùn."
   },
   {
-    "grammar": { "num": "❷", "text": "才", "pinyin": "cái" }
+    "grammar": { "num": "❷", "text": "才, S. + temps/quantité + 才 + V.", "pinyin": "cái" }
   },
   {
     "hanzi": "我今天早上九點半才到公司。",
@@ -95,7 +95,7 @@
   },
 
   {
-    "grammar": { "num": "❸", "text": "就", "pinyin": "jiù" }
+    "grammar": { "num": "❸", "text": "就, S. + temps + 就 + V. +了", "pinyin": "jiù" }
   },
   {
     "hanzi": "我今天早上八點四十就到公司了。",
@@ -139,7 +139,7 @@
   },
 
   {
-    "grammar": { "num": "❺", "text": "著", "pinyin": "zhe" }
+    "grammar": { "num": "❺", "text": "V.+著", "pinyin": "zhe" }
   },
   {
     "hanzi": "那個穿著藍色西裝的人是我爸爸。",
