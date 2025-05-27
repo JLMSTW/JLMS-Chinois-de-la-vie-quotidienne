@@ -1,0 +1,173 @@
+[
+  {
+    "grammar": { "num": "❷", "text": "一…就…", "pinyin": "yī... jiù..." }
+  },
+  {
+    "hanzi": "我一下班就跟你說。",
+    "pinyin": "wǒ yí xiàbān jiù gēn nǐ shuō."
+  },
+  {
+    "hanzi": "他一有空就去運動。",
+    "pinyin": "tā yì yǒukòng jiù qù yùndòng."
+  },
+  {
+    "hanzi": "一說到這件事，就讓我頭很痛。",
+    "pinyin": "yì shuō dào zhè jiàn shì, jiù ràng wǒ tóu hěn tòng."
+  },
+  {
+    "hanzi": "他一放假就忘記他學過的中文。",
+    "pinyin": "tā yí fàngjià jiù wàngjì tā xuéguò de zhōngwén."
+  },
+  {
+    "hanzi": "她每次一放假，就生病！",
+    "pinyin": "tā měi cì yí fàngjià, jiù shēngbìng!"
+  },
+  {
+    "hanzi": "很多台灣人一生病就去看醫生。",
+    "pinyin": "hěn duō Táiwān rén yì shēngbìng jiù qù kàn yīshēng."
+  },
+
+  {
+    "grammar": { "num": "❸", "text": "就 pour souligner sur des faits et renforcer le ton", "pinyin": "jiù" }
+  },
+  {
+    "hanzi": "那就好！",
+    "pinyin": "nà jiù hǎo!"
+  },
+  {
+    "hanzi": "我就不想吃！",
+    "pinyin": "wǒ jiù bù xiǎng chī!"
+  },
+  {
+    "hanzi": "我就不想去！",
+    "pinyin": "wǒ jiù bù xiǎng qù!"
+  },
+  {
+    "hanzi": "他就說他沒錯。",
+    "pinyin": "tā jiù shuō tā méi cuò."
+  },
+  {
+    "hanzi": "我就知道！",
+    "pinyin": "wǒ jiù zhīdào!"
+  },
+
+  {
+    "grammar": { "num": "❹", "text": "不得不", "pinyin": "bù dé bù" }
+  },
+  {
+    "hanzi": "我明天要開會，不得不取消明天早上的中文課。",
+    "pinyin": "wǒ míngtiān yào kāihuì, bù dé bù qǔxiāo míngtiān zǎoshang de zhōngwén kè."
+  },
+  {
+    "hanzi": "他的腳受傷了，不得不在家休息。",
+    "pinyin": "tā de jiǎo shòushāng le, bù dé bù zài jiā xiūxi."
+  },
+  {
+    "hanzi": "因為一些原因，裝潢不得不暫停。",
+    "pinyin": "yīnwèi yìxiē yuányīn, zhuānghuáng bù dé bù zàntíng."
+  },
+  {
+    "hanzi": "這個朋友對吃很講究，我們不得不找一家非常好吃的餐廳。",
+    "pinyin": "zhè ge péngyǒu duì chī hěn jiǎngjiù, wǒmen bù dé bù zhǎo yì jiā fēicháng hǎochī de cāntīng."
+  },
+  {
+    "hanzi": "我忘了帶錢包、手機，不得不回家拿。不然我今天不能買東西。",
+    "pinyin": "wǒ wàng le dài qiánbāo, shǒujī, bù dé bù huí jiā ná. bùrán wǒ jīntiān bù néng mǎi dōngxi."
+  },
+
+  {
+    "grammar": { "num": "❺", "text": "說到", "pinyin": "shuō dào" }
+  },
+  {
+    "hanzi": "一說到這件事，就讓我頭痛。",
+    "pinyin": "yì shuō dào zhè jiàn shì, jiù ràng wǒ tóutòng."
+  },
+  {
+    "hanzi": "說到Julien，我昨天才看到他。",
+    "pinyin": "shuō dào Julien, wǒ zuótiān cái kàndào tā."
+  },
+  {
+    "hanzi": "說到活動，我想跟你討論一下，你覺得這個活動在哪一天比較好，星期六還是星期天？",
+    "pinyin": "shuō dào huódòng, wǒ xiǎng gēn nǐ tǎolùn yíxià, nǐ juéde zhè ge huódòng zài nǎ yì tiān bǐjiào hǎo, xīngqíliù háishì xīngqítiān?"
+  },
+  {
+    "hanzi": "說到法國菜，在台北，你推薦我去哪一家餐廳？",
+    "pinyin": "shuō dào Fǎguó cài, zài Táiběi, nǐ tuījiàn wǒ qù nǎ yì jiā cāntīng?"
+  },
+
+  {
+    "grammar": { "num": "❻", "text": "快...了", "pinyin": "kuài... le" }
+  },
+  {
+    "hanzi": "看起來快下雨了。",
+    "pinyin": "kàn qǐlái kuài xiàyǔ le."
+  },
+  {
+    "hanzi": "我們快好了。",
+    "pinyin": "wǒmen kuài hǎo le."
+  },
+  {
+    "hanzi": "他們快到了。",
+    "pinyin": "tāmen kuài dào le."
+  },
+  {
+    "hanzi": "天快黑了。",
+    "pinyin": "tiān kuài hēi le."
+  },
+  {
+    "hanzi": "我快下班了。",
+    "pinyin": "wǒ kuài xiàbān le."
+  },
+
+  {
+    "grammar": { "num": "❼", "text": "再", "pinyin": "zài" }
+  },
+  {
+    "hanzi": "因為一些原因，裝潢要再延一個月。",
+    "pinyin": "yīnwèi yìxiē yuányīn, zhuānghuáng yào zài yán yí gè yuè."
+  },
+  {
+    "hanzi": "你說得太快，請你再說一次！",
+    "pinyin": "nǐ shuō de tài kuài, qǐng nǐ zài shuō yí cì!"
+  },
+  {
+    "hanzi": "這家餐廳很道地，我可以再去很多次。",
+    "pinyin": "zhè jiā cāntīng hěn dàodì, wǒ kěyǐ zài qù hěn duō cì."
+  },
+  {
+    "hanzi": "你們想要再喝一杯啤酒嗎？",
+    "pinyin": "nǐmen xiǎng yào zài hē yì bēi píjiǔ ma?"
+  },
+  {
+    "hanzi": "我已經說過很多次了，我不想再解釋了！",
+    "pinyin": "wǒ yǐjīng shuō guò hěn duō cì le, wǒ bù xiǎng zài jiěshì le!"
+  },
+  {
+    "hanzi": "他還沒好，我們要再等他五分鐘。",
+    "pinyin": "tā hái méi hǎo, wǒmen yào zài děng tā wǔ fēnzhōng."
+  },
+
+  {
+    "grammar": { "num": "❽", "text": "連…都…", "pinyin": "lián... dōu..." }
+  },
+  {
+    "hanzi": "連飯店、機票都要改期，很麻煩！",
+    "pinyin": "lián fàndiàn, jīpiào dōu yào gǎi qí, hěn máfán!"
+  },
+  {
+    "hanzi": "他很常遲到，連和客人開會都遲到。",
+    "pinyin": "tā hěn cháng chídào, lián hé kèrén kāihuì dōu chídào."
+  },
+  {
+    "hanzi": "連我都知道這件事，你怎麼不知道！",
+    "pinyin": "lián wǒ dōu zhīdào zhè jiàn shì, nǐ zěnme bù zhīdào!"
+  },
+  {
+    "hanzi": "這個數學很簡單，連Jenny都會。",
+    "pinyin": "zhè ge shùxué hěn jiǎndān, lián Jenny dōu huì."
+  },
+  {
+    "hanzi": "我今天太忙，連飯都沒有時間吃。",
+    "pinyin": "wǒ jīntiān tài máng, lián fàn dōu méiyǒu shíjiān chī."
+  }
+]
