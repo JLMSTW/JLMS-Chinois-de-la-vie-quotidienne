@@ -2,7 +2,7 @@
   {
     "grammar": {
       "num": "❶",
-      "text": "社交場合常用語",
+      "text": "Phrases chinoises usuelles en situation sociale",
       "pinyin": "shèjiāo chǎnghé chángyòng yǔ"
     }
   },
@@ -69,5 +69,201 @@
   {
     "hanzi": "你很幸運。",
     "pinyin": "nǐ hěn xìngyùn."
+  },
+  {
+    "grammar": { "num": "❷", "text": "才", "pinyin": "cái" }
+  },
+  {
+    "hanzi": "我今天早上九點半才到公司。",
+    "pinyin": "wǒ jīntiān zǎoshang jiǔ diǎn bàn cái dào gōngsī."
+  },
+  {
+    "hanzi": "我今天應該晚上八點才可以下班。",
+    "pinyin": "wǒ jīntiān yīnggāi wǎnshàng bā diǎn cái kěyǐ xiàbān."
+  },
+  {
+    "hanzi": "他今天很忙，下班以後才能來找我們。",
+    "pinyin": "tā jīntiān hěn máng, xiàbān yǐhòu cái néng lái zhǎo wǒmen."
+  },
+  {
+    "hanzi": "雖然他五十歲才開始學中文，但是他說得很好。",
+    "pinyin": "suīrán tā wǔshí suì cái kāishǐ xué zhōngwén, dànshì tā shuō de hěn hǎo."
+  },
+  {
+    "hanzi": "我以為你今天才到台灣。",
+    "pinyin": "wǒ yǐwéi nǐ jīntiān cái dào Táiwān."
+  },
+
+  {
+    "grammar": { "num": "❸", "text": "就", "pinyin": "jiù" }
+  },
+  {
+    "hanzi": "我今天早上八點四十就到公司了。",
+    "pinyin": "wǒ jīntiān zǎoshang bā diǎn sìshí jiù dào gōngsī le."
+  },
+  {
+    "hanzi": "我們應該中午就可以到了。",
+    "pinyin": "wǒmen yīnggāi zhōngwǔ jiù kěyǐ dào le."
+  },
+  {
+    "hanzi": "我今天六點就可以下班了，你要一起吃晚餐嗎？",
+    "pinyin": "wǒ jīntiān liù diǎn jiù kěyǐ xiàbān le, nǐ yào yìqǐ chī wǎncān ma?"
+  },
+  {
+    "hanzi": "我早就到了！",
+    "pinyin": "wǒ zǎo jiù dào le!"
+  },
+
+  {
+    "grammar": { "num": "❹", "text": "就是", "pinyin": "jiùshì" }
+  },
+  {
+    "hanzi": "她就是現在的瑞典駐台代表。",
+    "pinyin": "tā jiùshì xiànzài de Ruìdiǎn zhù Tái dàibiǎo."
+  },
+  {
+    "hanzi": "這就是我跟你說過的電影。",
+    "pinyin": "zhè jiùshì wǒ gēn nǐ shuō guò de diànyǐng."
+  },
+  {
+    "hanzi": "我覺得應該就是這家店！",
+    "pinyin": "wǒ juéde yīnggāi jiùshì zhè jiā diàn!"
+  },
+  {
+    "hanzi": "他以為我就是這家店的老闆，但我不是。",
+    "pinyin": "tā yǐwéi wǒ jiùshì zhè jiā diàn de lǎobǎn, dàn wǒ bú shì."
+  },
+  {
+    "hanzi": "他就是我最好的朋友。",
+    "pinyin": "tā jiùshì wǒ zuì hǎo de péngyǒu."
+  },
+
+  {
+    "grammar": { "num": "❺", "text": "著", "pinyin": "zhe" }
+  },
+  {
+    "hanzi": "那個穿著藍色西裝的人是我爸爸。",
+    "pinyin": "nàge chuānzhe lánsè xīzhuāng de rén shì wǒ bàba."
+  },
+  {
+    "hanzi": "她今天穿著一件很好看的洋裝。",
+    "pinyin": "tā jīntiān chuānzhe yí jiàn hěn hǎokàn de yángzhuāng."
+  },
+  {
+    "hanzi": "外面下著雨。",
+    "pinyin": "wàimiàn xiàzhe yǔ."
+  },
+  {
+    "hanzi": "今天很熱，他為什麼穿著厚外套？",
+    "pinyin": "jīntiān hěn rè, tā wèishéme chuānzhe hòu wàitào?"
+  },
+  {
+    "hanzi": "請你幫我拿著咖啡，我要去廁所。",
+    "pinyin": "qǐng nǐ bāng wǒ názhe kāfēi, wǒ yào qù cèsuǒ."
+  },
+
+  {
+    "grammar": { "num": "❻", "text": "想起來", "pinyin": "xiǎng qǐlái" }
+  },
+  {
+    "hanzi": "我想起來了，我們以前來過這裡。",
+    "pinyin": "wǒ xiǎngqǐlái le, wǒmen yǐqián lái guò zhè lǐ."
+  },
+  {
+    "hanzi": "啊對！我想起來了，你跟我說過這件事。",
+    "pinyin": "ā duì! wǒ xiǎngqǐlái le, nǐ gēn wǒ shuō guò zhè jiàn shì."
+  },
+  {
+    "hanzi": "我們都想不起來這個人的名字。",
+    "pinyin": "wǒmen dōu xiǎng bù qǐlái zhè ge rén de míngzi."
+  },
+  {
+    "hanzi": "我真的想不起來我在哪裡看過你。",
+    "pinyin": "wǒ zhēnde xiǎng bù qǐlái wǒ zài nǎlǐ kàn guò nǐ."
+  },
+  {
+    "hanzi": "我昨天沒有想起來她的名字。但是我剛剛突然想起來，她叫王珍妮。",
+    "pinyin": "wǒ zuótiān méiyǒu xiǎngqǐlái tā de míngzi. dànshì wǒ gānggāng tūrán xiǎngqǐlái, tā jiào Wáng Zhēnnī."
+  },
+  {
+    "hanzi": "你想起來我們在哪裡見過他嗎？",
+    "pinyin": "nǐ xiǎngqǐlái wǒmen zài nǎlǐ jiàn guò tā ma?"
+  },
+  {
+    "hanzi": "你想起來了嗎？",
+    "pinyin": "nǐ xiǎngqǐlái le ma?"
+  },
+  {
+    "hanzi": "你想起來他是誰了嗎？",
+    "pinyin": "nǐ xiǎngqǐlái tā shì shéi le ma?"
+  },
+
+  {
+    "grammar": { "num": "❼", "text": "讓", "pinyin": "ràng" }
+  },
+  {
+    "hanzi": "他安排了很多活動，讓歐洲學校的學生有更多元的活動。",
+    "pinyin": "tā ānpái le hěn duō huódòng, ràng Ōuzhōu xuéxiào de xuéshēng yǒu gèng duōyuán de huódòng."
+  },
+  {
+    "hanzi": "這件事讓我頭很痛。",
+    "pinyin": "zhè jiàn shì ràng wǒ tóu hěn tòng."
+  },
+  {
+    "hanzi": "什麼事讓你這麼擔心？",
+    "pinyin": "shénme shì ràng nǐ zhème dānxīn?"
+  },
+  {
+    "hanzi": "這次旅行，讓我的爸媽更了解台灣了。",
+    "pinyin": "zhè cì lǚxíng, ràng wǒ de bàmā gèng liǎojiě Táiwān le."
+  },
+  {
+    "hanzi": "吃了法國麵包、起司以後讓我很開心。",
+    "pinyin": "chī le Fǎguó miànbāo, qǐsī yǐhòu ràng wǒ hěn kāixīn."
+  },
+  {
+    "hanzi": "讓我看看菜單，我想點菜。",
+    "pinyin": "ràng wǒ kànkan càidān, wǒ xiǎng diǎn cài."
+  },
+  {
+    "hanzi": "這是一個好問題，讓我想想怎麼辦。",
+    "pinyin": "zhè shì yí gè hǎo wèntí, ràng wǒ xiǎngxiǎng zěnme bàn."
+  },
+  {
+    "hanzi": "我都吃，讓你選要吃什麼。",
+    "pinyin": "wǒ dōu chī, ràng nǐ xuǎn yào chī shénme."
+  },
+
+  {
+    "grammar": { "num": "❽", "text": "為了", "pinyin": "wèile" }
+  },
+  {
+    "hanzi": "為了這個會議，她忙了半年。",
+    "pinyin": "wèile zhè gè huìyì, tā máng le bàn nián."
+  },
+  {
+    "hanzi": "為了快一點康復，他應該多休息。",
+    "pinyin": "wèile kuài yìdiǎn kāngfù, tā yīnggāi duō xiūxí."
+  },
+  {
+    "hanzi": "為了不要遲到，他很早就出門了。",
+    "pinyin": "wèile bú yào chídào, tā hěn zǎo jiù chūmén le."
+  },
+  {
+    "hanzi": "為了讓歐洲學校的學生有更多元的活動，他辦了很多活動。",
+    "pinyin": "wèile ràng Ōuzhōu xuéxiào de xuéshēng yǒu gèng duōyuán de huódòng, tā bàn le hěn duō huódòng."
+  },
+  {
+    "hanzi": "他為了這個旅行，花了很多時間安排。",
+    "pinyin": "tā wèile zhè gè lǚxíng, huā le hěn duō shíjiān ānpái."
+  },
+  {
+    "hanzi": "我為了不要感冒，穿了很多衣服。",
+    "pinyin": "wǒ wèile bú yào gǎnmào, chuān le hěn duō yīfú."
+  },
+  {
+    "hanzi": "他為了什麼事情這麼生氣？",
+    "pinyin": "tā wèile shénme shìqíng zhème shēngqì?"
   }
 ]
+
