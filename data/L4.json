@@ -1,0 +1,77 @@
+[
+  {
+    "grammar": { "num": "❹", "text": "Proposer un rendez-vous" }
+  },
+  {
+    "hanzi": "你明天有空嗎？",
+    "pinyin": "nǐ míngtiān yǒu kòng ma?"
+  },
+  {
+    "hanzi": "你今天打算做什麼？",
+    "pinyin": "nǐ jīntiān dǎsuàn zuò shénme?"
+  },
+  {
+    "hanzi": "我們一起去吃午餐吧！",
+    "pinyin": "wǒmen yìqǐ qù chī wǔcān ba!"
+  },
+  {
+    "hanzi": "我們去喝咖啡吧！",
+    "pinyin": "wǒmen qù hē kāfēi ba!"
+  },
+  {
+    "hanzi": "我明天中午沒空。明天晚上呢？",
+    "pinyin": "wǒ míngtiān zhōngwǔ méi kòng. míngtiān wǎnshàng ne?"
+  },
+  {
+    "hanzi": "我今天很忙，明天下午呢？你有空嗎？",
+    "pinyin": "wǒ jīntiān hěn máng, míngtiān xiàwǔ ne? nǐ yǒu kòng ma?"
+  },
+
+  {
+    "grammar": { "num": "❺", "text": "呢", "pinyin": "ne" }
+  },
+  {
+    "hanzi": "我是法國人，你呢？",
+    "pinyin": "wǒ shì Fǎguó rén, nǐ ne?"
+  },
+  {
+    "hanzi": "我叫David，你呢？",
+    "pinyin": "wǒ jiào David, nǐ ne?"
+  },
+  {
+    "hanzi": "我在台北工作，你們呢？",
+    "pinyin": "wǒ zài Táiběi gōngzuò, nǐmen ne?"
+  },
+  {
+    "hanzi": "你明天中午沒空。明天晚上呢？",
+    "pinyin": "nǐ míngtiān zhōngwǔ méi kòng. míngtiān wǎnshàng ne?"
+  },
+  {
+    "hanzi": "我今天很忙，明天下午呢？你有空嗎？",
+    "pinyin": "wǒ jīntiān hěn máng, míngtiān xiàwǔ ne? nǐ yǒu kòng ma?"
+  },
+
+  {
+    "grammar": { "num": "❻", "text": "從...到...", "pinyin": "cóng... dào..." }
+  },
+  {
+    "hanzi": "你們明天從幾點到幾點有空？",
+    "pinyin": "nǐmen míngtiān cóng jǐ diǎn dào jǐ diǎn yǒu kòng?"
+  },
+  {
+    "hanzi": "我明天從早上十點到下午兩點有空。",
+    "pinyin": "wǒ míngtiān cóng zǎoshang shí diǎn dào xiàwǔ liǎng diǎn yǒu kòng."
+  },
+  {
+    "hanzi": "我從早上九點半到十一點要開會。",
+    "pinyin": "wǒ cóng zǎoshang jiǔ diǎn bàn dào shíyī diǎn yào kāihuì."
+  },
+  {
+    "hanzi": "他們星期一從晚上八點到九點要運動。",
+    "pinyin": "tāmen xīngqí yī cóng wǎnshàng bā diǎn dào jiǔ diǎn yào yùndòng."
+  },
+  {
+    "hanzi": "他從星期一到星期四沒空，但是星期五從早上到中午有空。",
+    "pinyin": "tā cóng xīngqí yī dào xīngqí sì méi kòng, dànshì xīngqí wǔ cóng zǎoshang dào zhōngwǔ yǒu kòng."
+  }
+]
