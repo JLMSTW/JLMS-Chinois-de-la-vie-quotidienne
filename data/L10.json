@@ -1,0 +1,87 @@
+[
+  {
+    "grammar": { "num": "❷", "text": "V+了", "pinyin": "le" }
+  },
+  {
+    "hanzi": "你們最近做了什麼有趣的事？",
+    "pinyin": "nǐmen zuìjìn zuò le shénme yǒuqù de shì?"
+  },
+  {
+    "hanzi": "我上個週末在他家做了一個蛋糕。",
+    "pinyin": "wǒ shàng ge zhōumò zài tā jiā zuò le yí ge dàngāo."
+  },
+  {
+    "hanzi": "他上個星期去百貨公司買了一雙鞋子。",
+    "pinyin": "tā shàng ge xīngqí qù bǎihuò gōngsī mǎi le yì shuāng xiézi."
+  },
+  {
+    "hanzi": "你剛剛去超市買了什麼？",
+    "pinyin": "nǐ gānggāng qù chāoshì mǎi le shénme?"
+  },
+  {
+    "hanzi": "你剛剛去了哪裡？",
+    "pinyin": "nǐ gānggāng qù le nǎlǐ?"
+  },
+  {
+    "hanzi": "我們最近參加了一個活動。",
+    "pinyin": "wǒmen zuìjìn cānjiā le yí ge huódòng."
+  },
+  {
+    "grammar": { "num": "❸", "text": "以後", "pinyin": "yǐhòu" }
+  },
+  {
+    "hanzi": "我以後要去台灣學中文。",
+    "pinyin": "wǒ yǐhòu yào qù Táiwān xué Zhōngwén."
+  },
+  {
+    "hanzi": "他以後想去法國讀書。",
+    "pinyin": "tā yǐhòu xiǎng qù Fǎguó dúshū."
+  },
+  {
+    "hanzi": "要是有錢，他以後想在巴黎買房子。",
+    "pinyin": "yàoshì yǒu qián, tā yǐhòu xiǎng zài Bālí mǎi fángzi."
+  },
+  {
+    "hanzi": "昨天下班以後，你去了哪裡？",
+    "pinyin": "zuótiān xiàbān yǐhòu, nǐ qù le nǎlǐ?"
+  },
+  {
+    "hanzi": "明天下班以後，你要去哪裡？",
+    "pinyin": "míngtiān xiàbān yǐhòu, nǐ yào qù nǎlǐ?"
+  },
+  {
+    "hanzi": "每天下班以後，我去超市買東西。",
+    "pinyin": "měitiān xiàbān yǐhòu, wǒ qù chāoshì mǎi dōngxī."
+  },
+  {
+    "grammar": { "num": "❹", "text": "V+完", "pinyin": "wán" }
+  },
+  {
+    "hanzi": "我吃完飯了。",
+    "pinyin": "wǒ chī wán fàn le."
+  },
+  {
+    "hanzi": "我開完會了。",
+    "pinyin": "wǒ kāi wán huì le."
+  },
+  {
+    "hanzi": "早上開完會以後，你去了哪裡？",
+    "pinyin": "zǎoshàng kāi wán huì yǐhòu, nǐ qù le nǎlǐ?"
+  },
+  {
+    "hanzi": "做完蛋糕以後，你們要做什麼？",
+    "pinyin": "zuò wán dàngāo yǐhòu, nǐmen yào zuò shénme?"
+  },
+  {
+    "hanzi": "打完球以後，我們去吃午飯。",
+    "pinyin": "dǎ wán qiú yǐhòu, wǒmen qù chī wǔfàn."
+  },
+  {
+    "hanzi": "參加完活動，我要回家。",
+    "pinyin": "cānjiā wán huódòng, wǒ yào huí jiā."
+  },
+  {
+    "hanzi": "休息完，我要開始工作。",
+    "pinyin": "xiūxi wán, wǒ yào kāishǐ gōngzuò."
+  }
+]
