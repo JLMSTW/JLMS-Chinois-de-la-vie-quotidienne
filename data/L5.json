@@ -1,0 +1,181 @@
+[
+  {
+    "grammar": {
+      "num": "❶",
+      "text": "Vocabulaire courant lors de la commande au restaurant",
+      "pinyin": "cāntīng chángyòng cíhuì"
+    }
+  },
+  {
+    "hanzi": "我要點餐。",
+    "pinyin": "wǒ yào diǎncān."
+  },
+  {
+    "hanzi": "單點",
+    "pinyin": "dāndiǎn"
+  },
+  {
+    "hanzi": "套餐",
+    "pinyin": "tàocān"
+  },
+  {
+    "hanzi": "內用",
+    "pinyin": "nèiyòng"
+  },
+  {
+    "hanzi": "外帶",
+    "pinyin": "wàidài"
+  },
+  {
+    "hanzi": "先這樣。",
+    "pinyin": "xiān zhèyàng."
+  },
+
+  {
+    "grammar": {
+      "num": "❷",
+      "text": "Phrases utiles dans un restaurant",
+      "pinyin": "cāntīng chángyòng yǔjù"
+    }
+  },
+  {
+    "hanzi": "你推薦什麼？",
+    "pinyin": "nǐ tuījiàn shénme?"
+  },
+  {
+    "hanzi": "這家餐廳什麼菜好吃？",
+    "pinyin": "zhè jiā cāntīng shénme cài hǎochī?"
+  },
+  {
+    "hanzi": "總共_________。",
+    "pinyin": "zǒnggòng ________."
+  },
+  {
+    "hanzi": "刷卡還是付現？",
+    "pinyin": "shuākǎ háishì fùxiàn?"
+  },
+  {
+    "hanzi": "有統編、載具嗎？",
+    "pinyin": "yǒu tǒngbiān, zàijù ma?"
+  },
+  {
+    "hanzi": "吃完再買單。",
+    "pinyin": "chī wán zài mǎidān."
+  },
+  {
+    "hanzi": "先買單。",
+    "pinyin": "xiān mǎidān."
+  },
+  {
+    "hanzi": "我們一起分享。",
+    "pinyin": "wǒmen yìqǐ fēnxiǎng."
+  },
+  {
+    "hanzi": "很有名。",
+    "pinyin": "hěn yǒumíng."
+  },
+  {
+    "hanzi": "不錯。",
+    "pinyin": "búcuò."
+  },
+
+  {
+    "grammar": {
+      "num": "❸",
+      "text": "要",
+      "pinyin": "yào"
+    }
+  },
+  {
+    "hanzi": "你要什麼？",
+    "pinyin": "nǐ yào shénme?"
+  },
+  {
+    "hanzi": "你要一碗牛肉麵。",
+    "pinyin": "nǐ yào yì wǎn niúròu miàn."
+  },
+  {
+    "hanzi": "我要兩杯珍珠奶茶。",
+    "pinyin": "wǒ yào liǎng bēi zhēnzhū nǎichá."
+  },
+  {
+    "hanzi": "我要一杯冰拿鐵，要去冰。",
+    "pinyin": "wǒ yào yì bēi bīng nátiě, yào qù bīng."
+  },
+  {
+    "hanzi": "我不要套餐。",
+    "pinyin": "wǒ bú yào tàocān."
+  },
+  {
+    "hanzi": "我不要熱咖啡，我要冰咖啡。",
+    "pinyin": "wǒ bú yào rè kāfēi, wǒ yào bīng kāfēi."
+  },
+
+  {
+    "grammar": {
+      "num": "❹",
+      "text": "不 / 沒",
+      "pinyin": "bù / méi"
+    }
+  },
+  {
+    "hanzi": "我週末不上班。",
+    "pinyin": "wǒ zhōumò bù shàngbān."
+  },
+  {
+    "hanzi": "我不是台灣人。",
+    "pinyin": "wǒ bú shì Táiwān rén."
+  },
+  {
+    "hanzi": "在法國，七月十四號不上班。",
+    "pinyin": "zài Fǎguó, qī yuè shísì hào bú shàngbān."
+  },
+  {
+    "hanzi": "他常常不吃早餐。",
+    "pinyin": "tā chángcháng bù chī zǎocān."
+  },
+  {
+    "hanzi": "我今天不上班。",
+    "pinyin": "wǒ jīntiān bù shàngbān."
+  },
+  {
+    "hanzi": "我今天不喝酒。",
+    "pinyin": "wǒ jīntiān bù hējiǔ."
+  },
+  {
+    "hanzi": "我昨天沒上班。",
+    "pinyin": "wǒ zuótiān méi shàngbān."
+  },
+  {
+    "hanzi": "我們今天中午沒吃飯。",
+    "pinyin": "wǒmen jīntiān zhōngwǔ méi chīfàn."
+  },
+  {
+    "hanzi": "我昨天工作很忙，所以沒運動。",
+    "pinyin": "wǒ zuótiān gōngzuò hěn máng, suǒyǐ méi yùndòng."
+  },
+  {
+    "hanzi": "我沒有空。",
+    "pinyin": "wǒ méiyǒu kòng."
+  },
+  {
+    "hanzi": "這家餐廳沒有珍珠奶茶。",
+    "pinyin": "zhè jiā cāntīng méiyǒu zhēnzhū nǎichá."
+  },
+  {
+    "hanzi": "他不喜歡牛肉麵。",
+    "pinyin": "tā bù xǐhuān niúròu miàn."
+  },
+  {
+    "hanzi": "他不喜歡參加活動。",
+    "pinyin": "tā bù xǐhuān cānjiā huódòng."
+  },
+  {
+    "hanzi": "他昨天不高興。",
+    "pinyin": "tā zuótiān bù gāoxìng."
+  },
+  {
+    "hanzi": "我今天不忙。",
+    "pinyin": "wǒ jīntiān bù máng."
+  }
+]
