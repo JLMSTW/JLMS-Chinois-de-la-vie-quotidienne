@@ -1,0 +1,40 @@
+[
+  {
+    "grammar": { "num": "❹", "text": "V 的時候", "pinyin": "de shíhou" }
+  },
+  {
+    "hanzi": "你有空的時候，我們去喝咖啡吧！",
+    "pinyin": "nǐ yǒu kòng de shíhou, wǒmen qù hē kāfēi ba!"
+  },
+  {
+    "hanzi": "我在法國的時候，我見很多朋友。",
+    "pinyin": "wǒ zài Fǎguó de shíhou, wǒ jiàn hěn duō péngyǒu."
+  },
+  {
+    "hanzi": "我到的時候，跟你說。",
+    "pinyin": "wǒ dào de shíhou, gēn nǐ shuō."
+  },
+  {
+    "hanzi": "你有空的時候，跟我說。",
+    "pinyin": "nǐ yǒu kòng de shíhou, gēn wǒ shuō."
+  },
+  {
+    "hanzi": "你到家的時候，跟我說。",
+    "pinyin": "nǐ dào jiā de shíhou, gēn wǒ shuō."
+  },
+  {
+    "grammar": { "num": "❺", "text": "吧", "pinyin": "ba" }
+  },
+  {
+    "hanzi": "我們去喝咖啡吧！",
+    "pinyin": "wǒmen qù hē kāfēi ba!"
+  },
+  {
+    "hanzi": "我今天沒空，我們明天見吧！",
+    "pinyin": "wǒ jīntiān méi kòng, wǒmen míngtiān jiàn ba!"
+  },
+  {
+    "hanzi": "我們去吃飯吧！",
+    "pinyin": "wǒmen qù chīfàn ba!"
+  }
+]
