@@ -1,0 +1,115 @@
+[
+  {
+    "grammar": { "num": "❷", "text": "會", "pinyin": "huì" }
+  },
+  {
+    "hanzi": "我們會游泳，你們呢？",
+    "pinyin": "wǒmen huì yóuyǒng, nǐmen ne?"
+  },
+  {
+    "hanzi": "我們也會游泳。",
+    "pinyin": "wǒmen yě huì yóuyǒng."
+  },
+  {
+    "hanzi": "我會說英文、法文和中文。",
+    "pinyin": "wǒ huì shuō yīngwén, fǎwén hé zhōngwén."
+  },
+  {
+    "hanzi": "我會游泳，但是不會衝浪。",
+    "pinyin": "wǒ huì yóuyǒng, dànshì bú huì chōnglàng."
+  },
+  {
+    "hanzi": "我不會踢足球。",
+    "pinyin": "wǒ bú huì tī zúqiú."
+  },
+  {
+    "hanzi": "你會滑雪嗎？",
+    "pinyin": "nǐ huì huáxuě ma?"
+  },
+  {
+    "hanzi": "我不太會滑雪。",
+    "pinyin": "wǒ bú tài huì huáxuě."
+  },
+  {
+    "grammar": { "num": "❹", "text": "得", "pinyin": "de" }
+  },
+  {
+    "hanzi": "他游泳游得很好。",
+    "pinyin": "tā yóuyǒng yóu de hěn hǎo."
+  },
+  {
+    "hanzi": "他游泳游得不好。",
+    "pinyin": "tā yóuyǒng yóu de bù hǎo."
+  },
+  {
+    "hanzi": "我吃飯吃得很快。",
+    "pinyin": "wǒ chīfàn chī de hěn kuài."
+  },
+  {
+    "hanzi": "他們吃飯吃得很慢。",
+    "pinyin": "tāmen chīfàn chī de hěn màn."
+  },
+  {
+    "hanzi": "他做飯做得很好吃。",
+    "pinyin": "tā zuòfàn zuò de hěn hǎochī."
+  },
+  {
+    "hanzi": "歌，他唱得很好。",
+    "pinyin": "gē, tā chàng de hěn hǎo."
+  },
+  {
+    "hanzi": "舞，他跳得不好。",
+    "pinyin": "wǔ, tā tiào de bù hǎo."
+  },
+  {
+    "hanzi": "飯，我吃得很快。",
+    "pinyin": "fàn, wǒ chī de hěn kuài."
+  },
+  {
+    "hanzi": "飯，他們吃得很慢。",
+    "pinyin": "fàn, tāmen chī de hěn màn."
+  },
+  {
+    "hanzi": "飯，他做得很好吃。",
+    "pinyin": "fàn, tā zuò de hěn hǎochī."
+  },
+  {
+    "hanzi": "他游泳游得怎麼樣？",
+    "pinyin": "tā yóuyǒng yóu de zěnmeyàng?"
+  },
+  {
+    "hanzi": "他說中文說得怎麼樣？",
+    "pinyin": "tā shuō zhōngwén shuō de zěnmeyàng?"
+  },
+  {
+    "hanzi": "飯，他做得怎麼樣？",
+    "pinyin": "fàn, tā zuò de zěnmeyàng?"
+  },
+  {
+    "hanzi": "網球，他打得怎麼樣？",
+    "pinyin": "wǎngqiú, tā dǎ de zěnmeyàng?"
+  },
+  {
+    "grammar": { "num": "❺", "text": "都", "pinyin": "dōu" }
+  },
+  {
+    "hanzi": "你是法國人、我也是法國人，我們都是法國人。",
+    "pinyin": "nǐ shì fǎguó rén, wǒ yě shì fǎguó rén, wǒmen dōu shì fǎguó rén."
+  },
+  {
+    "hanzi": "游泳、衝浪我都會。",
+    "pinyin": "yóuyǒng, chōnglàng wǒ dōu huì."
+  },
+  {
+    "hanzi": "星期三、星期五我都有空。",
+    "pinyin": "xīngqīsān, xīngqīwǔ wǒ dōu yǒu kòng."
+  },
+  {
+    "hanzi": "咖啡和茶，我都不喝。",
+    "pinyin": "kāfēi hé chá, wǒ dōu bù hē."
+  },
+  {
+    "hanzi": "他沒有弟弟，我也沒有弟弟，我們都沒有弟弟。",
+    "pinyin": "tā méiyǒu dìdi, wǒ yě méiyǒu dìdi, wǒmen dōu méiyǒu dìdi."
+  }
+]
