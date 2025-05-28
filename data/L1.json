@@ -1,0 +1,59 @@
+[
+  {
+    "grammar": {
+      "num": "❸",
+      "text": "三種常見的問人名字方式",
+      "pinyin": "sān zhǒng chángjiàn de wèn rén míngzì fāngshì"
+    }
+  },
+  {
+    "hanzi": "請問您怎麼稱呼？",
+    "pinyin": "qǐngwèn nín zěnme chēnghu?"
+  },
+  {
+    "hanzi": "請問你叫什麼？",
+    "pinyin": "qǐngwèn nǐ jiào shénme?"
+  },
+  {
+    "hanzi": "請問你的名字是什麼？",
+    "pinyin": "qǐngwèn nǐ de míngzì shì shénme?"
+  },
+  {
+    "grammar": {
+      "num": "❺",
+      "text": "怎麼 + V",
+      "pinyin": "zěnme + V"
+    }
+  },
+  {
+    "hanzi": "請問你怎麼稱呼？",
+    "pinyin": "qǐngwèn nǐ zěnme chēnghu?"
+  },
+  {
+    "hanzi": "請問 “Bonjour” 中文怎麼說？",
+    "pinyin": "qǐngwèn 'Bonjour' Zhōngwén zěnme shuō?"
+  },
+  {
+    "hanzi": "不好意思，請問我怎麼去台北101？",
+    "pinyin": "bù hǎoyìsi, qǐngwèn wǒ zěnme qù Táiběi yī líng yī?"
+  },
+  {
+    "grammar": {
+      "num": "❻",
+      "text": "什麼",
+      "pinyin": "shénme"
+    }
+  },
+  {
+    "hanzi": "你叫什麼名字？",
+    "pinyin": "nǐ jiào shénme míngzì?"
+  },
+  {
+    "hanzi": "不好意思，你的名字是什麼？",
+    "pinyin": "bù hǎoyìsi, nǐ de míngzì shì shénme?"
+  },
+  {
+    "hanzi": "這是什麼？",
+    "pinyin": "zhè shì shénme?"
+  }
+]
