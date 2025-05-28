@@ -1,0 +1,68 @@
+[
+  {
+    "grammar": { "num": "❷", "text": "又", "pinyin": "yòu" }
+  },
+  {
+    "hanzi": "他昨天又遲到了！",
+    "pinyin": "tā zuótiān yòu chídào le!"
+  },
+  {
+    "hanzi": "今天早上又下雨了。",
+    "pinyin": "jīntiān zǎoshang yòu xiàyǔ le."
+  },
+  {
+    "hanzi": "我父母上個月又來台灣了。",
+    "pinyin": "wǒ fùmǔ shàng ge yuè yòu lái Táiwān le."
+  },
+  {
+    "hanzi": "怎麼又下雨了?",
+    "pinyin": "zěnme yòu xiàyǔ le?"
+  },
+  {
+    "hanzi": "怎麼又有颱風！",
+    "pinyin": "zěnme yòu yǒu táifēng!"
+  },
+  {
+    "hanzi": "你怎麼又遲到了?",
+    "pinyin": "nǐ zěnme yòu chídào le?"
+  },
+  {
+    "hanzi": "你怎麼又忘了！",
+    "pinyin": "nǐ zěnme yòu wàng le!"
+  },
+  {
+    "hanzi": "這首歌我聽了又聽，太好聽了，我要再聽。",
+    "pinyin": "zhè shǒu gē wǒ tīng le yòu tīng, tài hǎotīng le, wǒ yào zài tīng."
+  },
+  {
+    "hanzi": "這個地方我去過了，我不想再去了。",
+    "pinyin": "zhè ge dìfāng wǒ qùguò le, wǒ bù xiǎng zài qù le."
+  },
+  {
+    "hanzi": "這個地方我去過了，但是我們週末又去了一次。",
+    "pinyin": "zhè ge dìfāng wǒ qùguò le, dànshì wǒmen zhōumò yòu qù le yí cì."
+  },
+  {
+    "grammar": { "num": "❸", "text": "到時候", "pinyin": "dàoshíhòu" }
+  },
+  {
+    "hanzi": "我們到時候巴黎見。",
+    "pinyin": "wǒmen dàoshíhòu Bālí jiàn."
+  },
+  {
+    "hanzi": "我到時候跟你說活動在哪裡。",
+    "pinyin": "wǒ dàoshíhòu gēn nǐ shuō huódòng zài nǎlǐ."
+  },
+  {
+    "hanzi": "我們到時候會透過社群貼文告訴大家最新情況。",
+    "pinyin": "wǒmen dàoshíhòu huì tòuguò shèqún tiēwén gàosù dàjiā zuìxīn qíngkuàng."
+  },
+  {
+    "hanzi": "你應該早一點出門，不然到時候遲到。",
+    "pinyin": "nǐ yīnggāi zǎo yìdiǎn chūmén, bùrán dàoshíhòu chídào."
+  },
+  {
+    "hanzi": "我爸爸媽媽下星期到台灣，到時候我會去機場接機。",
+    "pinyin": "wǒ bàba māma xià xīngqí dào Táiwān, dàoshíhòu wǒ huì qù jīchǎng jiējī."
+  }
+]
