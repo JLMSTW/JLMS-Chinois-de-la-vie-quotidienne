@@ -1,0 +1,130 @@
+[
+  {
+    "grammar": { "num": "❷", "text": "會", "pinyin": "huì" }
+  },
+  {
+    "hanzi": "我明天會去你的派對，他也會去。",
+    "pinyin": "wǒ míngtiān huì qù nǐ de pàiduì, tā yě huì qù."
+  },
+  {
+    "hanzi": "我們明天都會去你的派對。",
+    "pinyin": "wǒmen míngtiān dōu huì qù nǐ de pàiduì."
+  },
+  {
+    "hanzi": "下個星期我會回去法國。",
+    "pinyin": "xià ge xīngqí wǒ huì huíqù fǎguó."
+  },
+  {
+    "hanzi": "這個週末我會去打網球。",
+    "pinyin": "zhège zhōumò wǒ huì qù dǎ wǎngqiú."
+  },
+  {
+    "hanzi": "我到捷運站的時候，我會跟你說。",
+    "pinyin": "wǒ dào jiéyùn zhàn de shíhòu, wǒ huì gēn nǐ shuō."
+  },
+  {
+    "hanzi": "你會先看到一家銀行，銀行旁邊有超市。",
+    "pinyin": "nǐ huì xiān kàndào yì jiā yínháng, yínháng pángbiān yǒu chāoshì."
+  },
+  {
+    "grammar": { "num": "❸", "text": "到（補語）", "pinyin": "dào" }
+  },
+  {
+    "hanzi": "我昨天在公園看到你。",
+    "pinyin": "wǒ zuótiān zài gōngyuán kàndào nǐ."
+  },
+  {
+    "hanzi": "她找到一個新工作。",
+    "pinyin": "tā zhǎodào yí ge xīn gōngzuò."
+  },
+  {
+    "hanzi": "你看到我手機嗎？",
+    "pinyin": "nǐ kàndào wǒ shǒujī ma?"
+  },
+  {
+    "hanzi": "你聽到我說話嗎？",
+    "pinyin": "nǐ tīngdào wǒ shuōhuà ma?"
+  },
+  {
+    "hanzi": "我晚上去買好吃的麵包，但是沒買到。",
+    "pinyin": "wǒ wǎnshàng qù mǎi hǎochī de miànbāo, dànshì méi mǎidào."
+  },
+  {
+    "hanzi": "你家在哪裡？我找不到。",
+    "pinyin": "nǐ jiā zài nǎlǐ? wǒ zhǎo bú dào."
+  },
+  {
+    "hanzi": "我找不到我的手機。",
+    "pinyin": "wǒ zhǎo bú dào wǒ de shǒujī."
+  },
+  {
+    "hanzi": "我沒找到我的手機。",
+    "pinyin": "wǒ méi zhǎodào wǒ de shǒujī."
+  },
+  {
+    "hanzi": "我聽不到。",
+    "pinyin": "wǒ tīng bú dào."
+  },
+  {
+    "hanzi": "我沒聽到。",
+    "pinyin": "wǒ méi tīngdào."
+  },
+  {
+    "grammar": { "num": "❹", "text": "可以", "pinyin": "kěyǐ" }
+  },
+  {
+    "hanzi": "你明天可以來嗎？",
+    "pinyin": "nǐ míngtiān kěyǐ lái ma?"
+  },
+  {
+    "hanzi": "我們在學校裡面不可以喝酒。",
+    "pinyin": "wǒmen zài xuéxiào lǐmiàn bù kěyǐ hējiǔ."
+  },
+  {
+    "hanzi": "你們明天可以來我家吃晚餐。",
+    "pinyin": "nǐmen míngtiān kěyǐ lái wǒ jiā chī wǎncān."
+  },
+  {
+    "hanzi": "我明天下午有空，可以開會。",
+    "pinyin": "wǒ míngtiān xiàwǔ yǒu kòng, kěyǐ kāihuì."
+  },
+  {
+    "hanzi": "我可以請你買一瓶牛奶嗎？謝謝。",
+    "pinyin": "wǒ kěyǐ qǐng nǐ mǎi yì píng niúnǎi ma? xièxiè."
+  },
+  {
+    "hanzi": "你可以推薦我們哪一個好吃嗎？",
+    "pinyin": "nǐ kěyǐ tuījiàn wǒmen nǎ yí ge hǎochī ma?"
+  },
+  {
+    "hanzi": "我們明天很忙，不可以去參加這個活動。",
+    "pinyin": "wǒmen míngtiān hěn máng, bù kěyǐ qù cānjiā zhège huódòng."
+  },
+  {
+    "grammar": { "num": "❺", "text": "要是", "pinyin": "yàoshì" }
+  },
+  {
+    "hanzi": "要是我明天有空，我會跟你說。",
+    "pinyin": "yàoshì wǒ míngtiān yǒu kòng, wǒ huì gēn nǐ shuō."
+  },
+  {
+    "hanzi": "要是沒有白酒，請你買紅酒。",
+    "pinyin": "yàoshì méiyǒu báijiǔ, qǐng nǐ mǎi hóngjiǔ."
+  },
+  {
+    "hanzi": "要是你不喜歡這一個，我買那一個。",
+    "pinyin": "yàoshì nǐ bù xǐhuān zhè yí ge, wǒ mǎi nà yí ge."
+  },
+  {
+    "hanzi": "要是我的生日在週末，我們一起去派對。",
+    "pinyin": "yàoshì wǒ de shēngrì zài zhōumò, wǒmen yìqǐ qù pàiduì."
+  },
+  {
+    "hanzi": "要是我找不到超市，我跟你說。",
+    "pinyin": "yàoshì wǒ zhǎo bú dào chāoshì, wǒ gēn nǐ shuō."
+  },
+  {
+    "hanzi": "要是你不忙，我們週末一起去打網球。",
+    "pinyin": "yàoshì nǐ bù máng, wǒmen zhōumò yìqǐ qù dǎ wǎngqiú."
+  }
+]
