@@ -1,0 +1,44 @@
+[
+  {
+    "grammar": {
+      "num": "❹",
+      "text": "三種問工作的方法",
+      "pinyin": "sān zhǒng wèn gōngzuò de fāngfǎ"
+    }
+  },
+  {
+    "hanzi": "你做什麼？",
+    "pinyin": "nǐ zuò shénme?"
+  },
+  {
+    "hanzi": "請問你的工作是什麼？",
+    "pinyin": "qǐngwèn nǐ de gōngzuò shì shénme?"
+  },
+  {
+    "hanzi": "你在什麼領域工作？",
+    "pinyin": "nǐ zài shénme lǐngyù gōngzuò?"
+  },
+  {
+    "grammar": {
+      "num": "❻",
+      "text": "嗎？",
+      "pinyin": "ma?"
+    }
+  },
+  {
+    "hanzi": "你們是法國人嗎？",
+    "pinyin": "nǐmen shì Fǎguó rén ma?"
+  },
+  {
+    "hanzi": "你是Julien嗎？",
+    "pinyin": "nǐ shì Julien ma?"
+  },
+  {
+    "hanzi": "他是老師嗎？",
+    "pinyin": "tā shì lǎoshī ma?"
+  },
+  {
+    "hanzi": "她叫Chloé嗎？",
+    "pinyin": "tā jiào Chloé ma?"
+  }
+]
