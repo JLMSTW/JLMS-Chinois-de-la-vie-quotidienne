@@ -1,4 +1,4 @@
-/* login.css — 登入頁專用樣式 */
+/* login.css — 登入頁樣式 */
 body.login-page {
   display: flex;
   justify-content: center;
@@ -6,7 +6,7 @@ body.login-page {
   height: 100vh;
   background: #000;
   color: #fff;
-  font-family: "Noto Sans", "Helvetica Neue", "PingFang TC", sans-serif;
+  font-family: "Noto Sans", "PingFang TC", sans-serif;
   margin: 0;
 }
 
@@ -18,8 +18,8 @@ body.login-page {
 
 .login-container h1 {
   font-size: 1.8rem;
-  margin-bottom: 2rem;
-  line-height: 1.5;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
 }
 
 input[type="email"],
@@ -42,6 +42,7 @@ button#loginBtn {
   cursor: pointer;
   width: 100%;
   font-size: 1rem;
+  margin-top: 10px;
 }
 
 button#loginBtn:hover {
