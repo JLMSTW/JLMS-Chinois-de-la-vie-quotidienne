@@ -82,6 +82,49 @@ select, .toolbar label{
   background:#0077dd;
 }
 
+.download-link {
+  color: #1e90ff;
+  font-size: 0.85rem;
+  text-decoration: none;
+  margin-left: 12px;
+}
+
+.download-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== 語法標題區塊 ===== */
+.grammar-point { 
+  font-size: 1.4rem;
+  margin: 24px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.grammar-number {
+  background-color: #ff69b4;    /* HotPink */
+  color: black;
+  border-radius: 50%;
+  width: 36px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.grammar-text {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.grammar-pinyin {
+  color: #eee;
+  font-size: 0.95rem;
+}
+
 /* ===== RWD ===== */
 @media (max-width:480px){
   h1{ font-size:1.6rem; }
@@ -89,7 +132,8 @@ select, .toolbar label{
   .pinyin-text{ font-size:0.85rem; }
   .audio-button, .browser-button{ width:100%; }
 }
-/* ===== 手機版 Toolbar 響應式樣式 ===== */
+
+/* ===== 手機版 Toolbar 響應式 ===== */
 @media (max-width: 480px) {
   .toolbar {
     flex-direction: column;
@@ -111,43 +155,32 @@ select, .toolbar label{
     margin-left: 8px;
   }
 }
-.download-link {
-  color: #1e90ff;
-  font-size: 0.85rem;
-  text-decoration: none;
-  margin-left: 12px;
+
+/* ========================================================= */
+/* === 動態書冊清單 (bookList) 樣式 — 新增  ================== */
+/* ========================================================= */
+#bookList{
+  display:flex;
+  gap:1rem;
+  list-style:none;
+  padding:0;
+  margin:0 0 1rem 0;
 }
 
-.download-link:hover {
-  text-decoration: underline;
-}
-.grammar-point { 
-  font-size: 1.4rem; /* 整段大一點 */
-  margin: 24px 0 16px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
+#bookList li{
+  padding:.4rem 1rem;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
 }
 
-.grammar-number {
-  background-color: #ff69b4; /* 原本是 #1e90ff 藍色 → 改為HotPink */
-  color: black;
-  border-radius: 50%;
-  width: 36px;  /* 原本 28px → 字體加大需要更寬 */
-  height: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  font-size: 1.2rem;               /* 增加字體大小 */
+#bookList li.unlocked{
+  background:#00897b;
+  color:#fff;
 }
 
-.grammar-text {
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.grammar-pinyin {
-  color: #eee;
-  font-size: 0.95rem;
+#bookList li.locked{
+  background:#ccc;
+  color:#666;
+  cursor:default;
 }
