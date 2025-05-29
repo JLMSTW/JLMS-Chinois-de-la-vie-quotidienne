@@ -12,43 +12,44 @@ body.login-page {
 }
 
 .login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
-  width: 100%;
   max-width: 400px;
-  box-sizing: border-box;
+  width: 90%;
+  margin: 0 auto;
 }
 
-.login-container h1 {
+.title-group {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.title-group h1 {
   font-size: 1.8rem;
   line-height: 1.5;
   margin: 0.5rem 0;
 }
 
-.login-container h1:first-child {
-  margin-bottom: 1rem;
-}
-
 input[type="email"],
-input[type="password"],
-button#loginBtn {
+input[type="password"] {
+  display: block;
   width: 100%;
-  max-width: 320px;
   padding: 12px;
   margin: 10px 0;
   border: none;
   border-radius: 6px;
   font-size: 1rem;
-  box-sizing: border-box;
 }
 
 button#loginBtn {
   background-color: #1e90ff;
   color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
+  width: 100%;
+  font-size: 1rem;
+  margin-top: 10px;
 }
 
 button#loginBtn:hover {
@@ -58,7 +59,6 @@ button#loginBtn:hover {
 #errorMsg {
   margin-top: 1rem;
   color: #ff6b6b;
-  font-size: 0.95rem;
 }
 
 #errorMsg {
