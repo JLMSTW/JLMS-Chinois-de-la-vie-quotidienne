@@ -18,8 +18,13 @@ body.login-page {
 
 .login-container h1 {
   font-size: 1.8rem;
-  margin-bottom: 0.8rem;
-  line-height: 1.4;
+  line-height: 1.5;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.login-container h1:first-child {
+  margin-bottom: 1rem;
 }
 
 input[type="email"],
