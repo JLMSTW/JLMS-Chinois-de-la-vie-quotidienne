@@ -7,12 +7,19 @@
   <link rel="stylesheet" href="style/main.css" />
 </head>
 <body>
+
+  <!-- 🔓 書冊清單：依 accessLevel 動態產生 -->
+  <h2>📚 我的課本</h2>
+  <ul id="bookList"></ul>
+  <hr>
+
   <div class="main-container">
     <h1>
       <img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f4d8.svg" alt="book">
       Répétition des phrases – Chinois de la vie quotidienne
     </h1>
 
+    <!-- 原本的 toolbar -->
     <div class="toolbar">
       <label>Book:
         <select id="bookSelect"></select>
@@ -36,6 +43,7 @@
     <div id="sentenceList"></div>
   </div>
 
+  <!-- ===== 你原本的 JS 完整保留 ===== -->
   <script>
     const bookSelect    = document.getElementById("bookSelect");
     const lessonSelect  = document.getElementById("lessonSelect");
@@ -91,7 +99,7 @@
       const showPinyin = togglePinyin.checked;
 
       sentences.forEach(item => {
-        // ➤ 顯示語法標題區塊
+        /* --- 語法區塊 --- */
         if (item.grammar && typeof item.grammar === 'object') {
           const grammar = document.createElement("div");
           grammar.className = "grammar-point";
@@ -113,7 +121,7 @@
           return;
         }
 
-        // ➤ 顯示句子卡片區塊
+        /* --- 句子卡片 --- */
         const card = document.createElement("div");
         card.className = "sentence-card";
 
@@ -184,6 +192,15 @@
       el.classList.add("playing");
       speechSynthesis.speak(msg);
     }
+
+    /* --- 供 home.js 呼叫：切換書冊 → 觸發刷新 --- */
+    function openBook(vol){
+      document.getElementById("bookSelect").value = vol;
+      updateLessonOptions();
+    }
   </script>
+
+  <!-- 新增：動態解鎖書冊邏輯 -->
+  <script type="module" src="js/home.js"></script>
 </body>
 </html>
