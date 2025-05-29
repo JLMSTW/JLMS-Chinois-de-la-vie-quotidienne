@@ -4,71 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login | JLMS Chinois de la vie quotidienne</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style/main.css" />
-  <style>
-    body {
-      background: #000;
-      color: #fff;
-      font-family: 'Noto Sans', 'PingFang TC', sans-serif;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .login-container {
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-    }
-
-    .login-container h1 {
-      font-size: 1.8rem;
-      margin-bottom: 2rem;
-      line-height: 1.5;
-    }
-
-    .login-container h1 span {
-      color: #1e90ff;
-      font-weight: bold;
-      font-size: 2rem;
-    }
-
-    input[type="email"],
-    input[type="password"] {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    button#loginBtn {
-      background-color: #1e90ff;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 1rem;
-    }
-
-    button#loginBtn:hover {
-      background-color: #0077cc;
-    }
-
-    #errorMsg {
-      margin-top: 1rem;
-      color: #ff6b6b;
-    }
-  </style>
+  <link rel="stylesheet" href="style/login.css" /> <!-- 👈 新增這一行 -->
 </head>
-<body>
+<body class="login-page"> <!-- 👈 加上 class -->
   <div class="login-container">
     <h1>
       Bienvenue chez JLMS / Welcome to JLMS<br>
