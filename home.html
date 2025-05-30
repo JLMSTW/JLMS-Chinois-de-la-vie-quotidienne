@@ -19,23 +19,27 @@
       Répétition des phrases – Chinois de la vie quotidienne
     </h1>
 
-    <!-- 原本的 toolbar -->
+    <!-- ✅ 已整合：隱藏書本選單，只保留課次 -->
     <div class="toolbar">
-      <label>Book:
-        <select id="bookSelect"></select>
+      <!-- 書本選單隱藏但保留邏輯 -->
+      <label for="bookSelect" style="display: none;">
+        Book:
+        <select id="bookSelect" style="display: none;"></select>
       </label>
 
-      <label>Lesson:
+      <label for="lessonSelect">
+        Lesson:
         <select id="lessonSelect"></select>
       </label>
 
       <label>
-        <input type="checkbox" id="togglePinyin" checked>
+        <input type="checkbox" id="togglePinyin" checked />
         Show pinyin
       </label>
 
-      <label>Speed:
-        <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.1" value="1.0">
+      <label>
+        Speed:
+        <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.1" value="1.0" />
         <span id="rateValue">1.0</span>
       </label>
     </div>
@@ -43,7 +47,7 @@
     <div id="sentenceList"></div>
   </div>
 
-  <!-- ===== 你原本的 JS 完整保留 ===== -->
+  <!-- 🔧 JS 程式邏輯 -->
   <script>
     const bookSelect    = document.getElementById("bookSelect");
     const lessonSelect  = document.getElementById("lessonSelect");
@@ -99,7 +103,6 @@
       const showPinyin = togglePinyin.checked;
 
       sentences.forEach(item => {
-        /* --- 語法區塊 --- */
         if (item.grammar && typeof item.grammar === 'object') {
           const grammar = document.createElement("div");
           grammar.className = "grammar-point";
@@ -121,7 +124,6 @@
           return;
         }
 
-        /* --- 句子卡片 --- */
         const card = document.createElement("div");
         card.className = "sentence-card";
 
@@ -193,14 +195,14 @@
       speechSynthesis.speak(msg);
     }
 
-    /* --- 供 home.js 呼叫：切換書冊 → 觸發刷新 --- */
     function openBook(vol){
       document.getElementById("bookSelect").value = vol;
       updateLessonOptions();
     }
   </script>
 
-  <!-- 新增：動態解鎖書冊邏輯 -->
+  <!-- 🧠 根據 accessLevel 控制可用書冊 -->
   <script type="module" src="js/home.js"></script>
+
 </body>
 </html>
