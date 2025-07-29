@@ -11,6 +11,13 @@
   <!-- 🔓 書冊清單：依 accessLevel 動態產生 -->
   <h2>📚 我的課本</h2>
   <ul id="bookList"></ul>
+
+  <!-- ✅ 新增 Speaking 練習按鈕 -->
+  <div class="extra-links" style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 1rem;">
+    <a href="speaking.html" class="book-button">Speaking Practice</a>
+    <a href="situational-speaking.html" class="book-button">Situational Speaking Practice</a>
+  </div>
+
   <hr>
 
   <div class="main-container">
@@ -19,9 +26,7 @@
       Répétition des phrases – Chinois de la vie quotidienne
     </h1>
 
-    <!-- ✅ 已整合：隱藏書本選單，只保留課次 -->
     <div class="toolbar">
-      <!-- 書本選單隱藏但保留邏輯 -->
       <label for="bookSelect" style="display: none;">
         Book:
         <select id="bookSelect" style="display: none;"></select>
@@ -47,7 +52,6 @@
     <div id="sentenceList"></div>
   </div>
 
-  <!-- 🔧 JS 程式邏輯 -->
   <script>
     const bookSelect    = document.getElementById("bookSelect");
     const lessonSelect  = document.getElementById("lessonSelect");
