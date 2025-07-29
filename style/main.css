@@ -103,7 +103,7 @@ select, .toolbar label{
 }
 
 .grammar-number {
-  background-color: #ff69b4;    /* HotPink */
+  background-color: #ff69b4;
   color: black;
   border-radius: 50%;
   width: 36px;
@@ -183,4 +183,40 @@ select, .toolbar label{
   background:#ccc;
   color:#666;
   cursor:default;
+}
+
+/* ========================================================= */
+/* === Speaking 練習按鈕樣式 — 新增  ========================= */
+/* ========================================================= */
+.extra-links {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.book-button {
+  background-color: #00897b;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+  transition: background 0.2s ease-in-out;
+}
+
+.book-button:hover {
+  background-color: #00796b;
+}
+
+@media (max-width: 480px) {
+  .extra-links {
+    flex-direction: column;
+  }
+
+  .book-button {
+    width: 100%;
+  }
 }
