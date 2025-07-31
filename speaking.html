@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speaking Practice</title>
+  <link rel="stylesheet" href="style/main.css" />
+</head>
+<body class="bg-white text-gray-800 p-6">
+  <div class="max-w-2xl mx-auto space-y-6">
+
+    <h1 class="text-2xl font-bold text-center mb-4">🎤 Speaking Practice</h1>
+
+    <!-- Book Selection -->
+    <div>
+      <label for="bookSelect" class="block font-semibold mb-2">Select Book</label>
+      <select id="bookSelect" class="w-full border rounded px-4 py-2">
+        <option value="" disabled selected>-- Choose a book --</option>
+        <option value="Book1">Book 1</option>
+        <option value="Book2">Book 2</option>
+        <option value="Book3">Book 3</option>
+        <option value="Book4">Book 4</option>
+      </select>
+    </div>
+
+    <!-- Lesson Selection -->
+    <div>
+      <label for="lessonSelect" class="block font-semibold mb-2">Select Lesson</label>
+      <select id="lessonSelect" class="w-full border rounded px-4 py-2">
+        <option value="" disabled selected>-- Choose a lesson --</option>
+        <!-- 將來可依 Book 動態改變 -->
+        <option value="L1">Lesson 1</option>
+        <option value="L2">Lesson 2</option>
+        <option value="L3">Lesson 3</option>
+      </select>
+    </div>
+
+    <!-- Mode Selection -->
+    <div>
+      <label class="block font-semibold mb-2">Select Mode</label>
+      <div class="space-y-2">
+        <label class="flex items-center">
+          <input type="radio" name="mode" value="focused" class="mr-2" />
+          Focused Mode (Practice this lesson only)
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="mode" value="review" class="mr-2" />
+          Review Mode (Practice all previous lessons)
+        </label>
+      </div>
+    </div>
+
+    <!-- Confirm Button -->
+    <div class="text-center mt-6">
+      <button id="confirmButton" class="bg-teal-600 text-white font-semibold px-6 py-2 rounded hover:bg-teal-700">
+        Start Speaking Practice
+      </button>
+    </div>
+
+    <!-- Placeholder for future interaction -->
+    <div id="chatContainer" class="mt-10 hidden">
+      <!-- 未來加載 GPT 對話的容器 -->
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("confirmButton").addEventListener("click", () => {
+      const book = document.getElementById("bookSelect").value;
+      const lesson = document.getElementById("lessonSelect").value;
+      const mode = document.querySelector('input[name="mode"]:checked')?.value;
+
+      if (!book || !lesson || !mode) {
+        alert("Please select book, lesson, and mode.");
+        return;
+      }
+
+      // 這裡將來會觸發 fetch 到 proxy server / Google Sheet 的動作
+      console.log("Book:", book, "Lesson:", lesson, "Mode:", mode);
+
+      // 將來這裡可以開始載入 GPT 對話功能
+      document.getElementById("chatContainer").classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>
