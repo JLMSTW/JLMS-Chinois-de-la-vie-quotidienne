@@ -3,129 +3,154 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JLMS | Speaking Practice</title>
+  <title>Speaking Practice</title>
   <link rel="stylesheet" href="style/main.css" />
   <style>
     body {
       background-color: #000;
       color: white;
       font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
+      margin: 0;
+      padding: 2rem 1rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
     }
 
+    h1 {
+      display: flex;
+      align-items: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
     h1 img {
-      width: 36px;
-      margin-right: 10px;
+      width: 1.5em;
+      margin-right: 0.5em;
     }
 
-    label, select, input[type="radio"] {
-      font-size: 1rem;
-      margin: 10px 0;
-      display: inline-block;
+    .practice-panel {
+      background-color: #4a61a0;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
     }
 
-    .mode-label {
-      margin-right: 15px;
+    .option-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select, input[type="radio"] {
+      font-size: 1.1rem;
+      padding: 0.4rem;
+      border-radius: 0.5rem;
+      border: none;
     }
 
     .start-btn {
       background-color: white;
       color: black;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
       font-weight: bold;
+      padding: 0.8rem 1.2rem;
+      border-radius: 0.5rem;
+      border: none;
       cursor: pointer;
-      margin-top: 20px;
+      transition: background-color 0.2s ease;
     }
 
     .start-btn:hover {
-      background-color: #e0e0e0;
+      background-color: #f0f0f0;
     }
 
-    .selector-wrapper {
-      background-color: #5066af;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 600px;
+    @media (max-width: 600px) {
+      .practice-panel {
+        padding: 1.5rem;
+        gap: 1.5rem;
+      }
+
+      .start-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
+  <h1>🎶🎤 Speaking Practice</h1>
 
-  <h1><img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f3a4.svg" alt="mic">Speaking Practice</h1>
+  <div class="practice-panel">
+    <div class="option-group">
+      <label for="bookSelect">Select Book</label>
+      <select id="bookSelect">
+        <option value="1">Book 1</option>
+        <option value="2">Book 2</option>
+        <option value="3">Book 3</option>
+        <option value="4">Book 4</option>
+      </select>
+    </div>
 
-  <div class="selector-wrapper">
-    <label for="bookSelect">Select Book</label><br>
-    <select id="bookSelect"></select><br><br>
+    <div class="option-group">
+      <label for="lessonSelect">Select Lesson</label>
+      <select id="lessonSelect"></select>
+    </div>
 
-    <label for="lessonSelect">Select Lesson</label><br>
-    <select id="lessonSelect"></select><br><br>
+    <div class="option-group">
+      <label>Select Mode</label>
+      <label>
+        <input type="radio" name="mode" value="focused" checked />
+        Focused Mode (Practice this lesson only)
+      </label>
+      <label>
+        <input type="radio" name="mode" value="review" />
+        Review Mode (Practice all previous lessons)
+      </label>
+    </div>
 
-    <label>Select Mode</label><br>
-    <label class="mode-label">
-      <input type="radio" name="mode" value="focused" checked />
-      Focused Mode (Practice this lesson only)
-    </label>
-    <label class="mode-label">
-      <input type="radio" name="mode" value="review" />
-      Review Mode (Practice all previous lessons)
-    </label><br>
-
-    <button class="start-btn" onclick="startSpeakingPractice()">Start Speaking Practice</button>
+    <button id="startPractice" class="start-btn">Start Speaking Practice</button>
   </div>
 
   <script>
     const bookSelect = document.getElementById("bookSelect");
     const lessonSelect = document.getElementById("lessonSelect");
+    const startBtn = document.getElementById("startPractice");
 
     const lessonMap = {
       1: [1, 5],
       2: [6, 10],
       3: [11, 15],
-      4: [16, 20]
+      4: [16, 20],
     };
-
-    // 初始化 Book 下拉選單
-    for (let i = 1; i <= 4; i++) {
-      const opt = document.createElement("option");
-      opt.value = i;
-      opt.textContent = "Book " + i;
-      bookSelect.appendChild(opt);
-    }
-
-    bookSelect.addEventListener("change", updateLessonOptions);
 
     function updateLessonOptions() {
       const [start, end] = lessonMap[bookSelect.value];
       lessonSelect.innerHTML = "";
       for (let i = start; i <= end; i++) {
         const opt = document.createElement("option");
-        opt.value = "L" + i;
-        opt.textContent = "Lesson " + i;
+        opt.value = `L${i}`;
+        opt.textContent = `Lesson ${i}`;
         lessonSelect.appendChild(opt);
       }
     }
 
-    function startSpeakingPractice() {
+    bookSelect.addEventListener("change", updateLessonOptions);
+    updateLessonOptions(); // 初始載入
+
+    startBtn.addEventListener("click", () => {
       const book = bookSelect.value;
       const lesson = lessonSelect.value;
       const mode = document.querySelector('input[name="mode"]:checked').value;
-
-      alert(`📚 Book ${book}, 📖 ${lesson}, Mode: ${mode}`);
-      // 👉 下一步：將這些參數帶入 OpenAI prompt 並串接 API
-    }
-
-    // 預設啟動時自動設定 lesson 選單
-    updateLessonOptions();
+      const url = `speaking-practice.html?book=${book}&lesson=${lesson}&mode=${mode}`;
+      window.location.href = url;
+    });
   </script>
-
 </body>
 </html>
