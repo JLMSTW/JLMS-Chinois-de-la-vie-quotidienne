@@ -72,6 +72,16 @@
       background-color: #f0f0f0;
     }
 
+    .response-box {
+      margin-top: 2rem;
+      background-color: #333;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      max-width: 600px;
+      width: 100%;
+      min-height: 80px;
+    }
+
     @media (max-width: 600px) {
       .practice-panel {
         padding: 1.5rem;
@@ -118,6 +128,8 @@
     <button id="startPractice" class="start-btn">Start Speaking Practice</button>
   </div>
 
+  <div id="chatResponse" class="response-box"></div>
+
   <script>
     const bookSelect = document.getElementById("bookSelect");
     const lessonSelect = document.getElementById("lessonSelect");
@@ -148,9 +160,41 @@
       const book = bookSelect.value;
       const lesson = lessonSelect.value;
       const mode = document.querySelector('input[name="mode"]:checked').value;
-      const url = `speaking-practice.html?book=${book}&lesson=${lesson}&mode=${mode}`;
-      window.location.href = url;
+      startSpeakingPractice(book, lesson, mode);
     });
+
+    async function startSpeakingPractice(book, lesson, mode) {
+      const responseEl = document.getElementById("chatResponse");
+      const prompt = `你是一位親切、有耐心又活潑的華語口說練習助教。你的任務是根據學生所選的書本與課別（例如 Book ${book} Lesson ${lesson}）中的句子內容，設計出生活化的對話問題，讓學生可以一一練習用中文回答。請用鼓勵與正向的方式引導學生說出口。
+開始前，請你先說：「太好了！我們一起練習 Book ${book} Lesson ${lesson} 的內容。好嗎？」`;
+
+      responseEl.innerHTML = "⏳ 請稍候...";
+
+      try {
+        const res = await fetch("https://jlms-chinois-de-la-vie-quotidienne.vercel.app/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [
+              { role: "system", content: prompt },
+              { role: "user", content: "你好" }
+            ]
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          responseEl.innerHTML = "⚠️ 發生錯誤：" + err;
+          return;
+        }
+
+        const data = await res.json();
+        responseEl.innerHTML = `<p><strong>GPT：</strong> ${data.reply}</p>`;
+      } catch (err) {
+        console.error(err);
+        responseEl.innerHTML = "⚠️ 發生網路錯誤";
+      }
+    }
   </script>
 </body>
 </html>
