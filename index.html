@@ -14,12 +14,31 @@
       <h1>Bienvenue chez JLMS</h1>
       <h1>Welcome to JLMS</h1>
     </div>
+
     <input type="email" id="email" placeholder="Enter your email" />
     <input type="password" id="password" placeholder="Enter your password" />
     <button id="loginBtn">Login</button>
+
+    <!-- 新增：訪客模式與不登入也可玩 -->
+    <button id="guestBtn" style="margin-top:10px">Continue as guest</button>
+    <p style="text-align:center;margin-top:10px">
+      or <a href="games/">🎮 Play without login</a>
+    </p>
+
     <p id="errorMsg"></p>
   </div>
 
+  <!-- 既有登入邏輯 -->
   <script type="module" src="js/auth.js"></script>
+
+  <!-- 新增：訪客模式導向 -->
+  <script>
+    document.getElementById('guestBtn')?.addEventListener('click', () => {
+      // 標記訪客模式，讓 home.html 依此降級功能
+      localStorage.setItem('guest', '1');
+      // 直接帶到主頁（若你主頁不是 home.html，改這裡即可）
+      location.href = 'home.html';
+    });
+  </script>
 </body>
 </html>
