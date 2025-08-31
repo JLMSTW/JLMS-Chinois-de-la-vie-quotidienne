@@ -62,4 +62,44 @@ button#loginBtn:hover {
   margin-top: 1rem;
   color: #ff6b6b;
 }
+/* --- Guest / No-login actions (below Login button) --- */
+#guestBtn{
+  font-family: inherit;       /* 跟整頁一致 */
+  font-size: .95rem;          /* 比主按鈕小一點 */
+  color: #fff;                /* 白字 */
+  background: transparent;    /* 透明底，當次要行動 */
+  border: 1.5px solid rgba(255,255,255,.65);
+  border-radius: 6px;         /* 和 #loginBtn 一致的圓角 */
+  padding: 8px 14px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+#guestBtn:hover{
+  border-color: #fff;
+  background: rgba(255,255,255,.08);
+}
+#guestBtn:focus-visible{
+  outline: 2px solid #1e90ff; /* 無障礙焦點 */
+  outline-offset: 2px;
+}
+
+/* 文字與連結（排除錯誤訊息） */
+.login-container p:not(#errorMsg){
+  color: #fff;
+  opacity: .9;
+  font-family: inherit;
+  font-size: .95rem;
+  text-align: center;
+  margin-top: 10px;
+}
+.login-container p:not(#errorMsg) a:link,
+.login-container p:not(#errorMsg) a:visited{
+  color: #fff;                /* 移除預設紫色 */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.login-container p:not(#errorMsg) a:hover{
+  opacity: 1;
+}
+
 
