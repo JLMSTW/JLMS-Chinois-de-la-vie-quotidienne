@@ -1,0 +1,24 @@
+<!-- 放在 body 底部即可 -->
+<script type="module">
+    import { GAS_ENDPOINT, SHEETS } from "../../js/config.js";
+  
+    // 讀 URL 參數（可用 ?set=B4_L16）
+    const params = new URLSearchParams(location.search);
+    const set = params.get("set") || "";    // 比如 B4_L16
+    const active = "true";                  // 只取啟用
+  
+    const url = new URL(GAS_ENDPOINT);
+    url.searchParams.set("sheet", SHEETS.memory);
+    if (set) url.searchParams.set("set", set);
+    url.searchParams.set("active", active);
+  
+    try {
+      const res = await fetch(url.toString(), { credentials: "omit" });
+      const data = await res.json();
+      console.log("Fetched", data.items?.length || 0, "items", data);
+      // 👉 明天把 data.items 餵進你的配對卡 UI
+    } catch (err) {
+      console.error("Fetch failed:", err);
+    }
+  </script>
+  
