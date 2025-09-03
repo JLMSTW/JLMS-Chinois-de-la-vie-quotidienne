@@ -1,296 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mandarin Memory Match Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Mandarin Memory Match</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 
   <style>
+    :root{
+      --glass: rgba(255,255,255,.2);
+      --glass-bd: rgba(255,255,255,.35);
+      --shadow: 0 8px 24px rgba(0,0,0,.15);
+      --radius: 18px;
+    }
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
-    .game-container{max-width:1200px;margin:0 auto}
-    .header{text-align:center;margin-bottom:20px;color:#fff}
-    .header h1{font-size:2.3rem;font-weight:700;margin-bottom:8px;text-shadow:2px 2px 4px rgba(0,0,0,.3)}
-    .header p{font-size:1.05rem;opacity:.9}
+    body{
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 10%, #8aa6ff 0%, #7b89ff 20%, #6d6fd6 35%, #5e5fb6 55%, #4f4f96 75%, #3e3e6e 100%);
+      min-height:100vh;
+      color:#fff;
+      padding:22px;
+    }
+    .container{max-width:1200px;margin:0 auto}
 
-    .toolbar{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin:16px 0 8px}
-    .select, .btn{appearance:none;border:none;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
-    .select{background:#fff}
-    .btn{background:linear-gradient(135deg,#ff9a9e,#fecfef);color:#2c3e50;box-shadow:0 4px 12px rgba(0,0,0,.18);transition:transform .2s, box-shadow .2s}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.24)}
-    .muted{opacity:.6;pointer-events:none}
+    /* Header */
+    .header{ text-align:center; margin:8px 0 10px }
+    .title{
+      font-size:2.3rem; font-weight:800; letter-spacing:.2px;
+      text-shadow: 2px 2px 6px rgba(0,0,0,.35);
+    }
+    .subtitle{ opacity:.92; margin-top:6px }
 
-    .game-stats{display:flex;justify-content:center;gap:22px;margin:10px 0 20px;flex-wrap:wrap}
-    .stat-item{background:rgba(255,255,255,.2);padding:12px 18px;border-radius:14px;color:#fff;text-align:center;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3)}
-    .stat-number{font-size:1.4rem;font-weight:700;display:block}
-    .stat-label{font-size:.85rem;opacity:.85}
+    /* Toolbar */
+    .toolbar{
+      display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap;
+      margin:18px 0 8px;
+    }
+    .chip-label{font-weight:700; opacity:.9}
+    .select, .btn{
+      appearance:none; border:none; border-radius:12px; padding:10px 14px; font-weight:600; cursor:pointer;
+    }
+    .select{ background:#fff; color:#2c3e50 }
+    .btn{
+      background:linear-gradient(135deg,#ff9a9e,#fecfef); color:#2c3e50; box-shadow:0 4px 12px rgba(0,0,0,.18);
+      transition:transform .2s, box-shadow .2s;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,.24) }
 
-    .game-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:24px}
-    .empty{color:#fff;text-align:center;opacity:.9}
+    .filters{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px;
+    }
 
-    .card{aspect-ratio:3/4;perspective:1000px;cursor:pointer}
-    .card-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform .6s;transform-style:preserve-3d}
-    .card.flipped .card-inner{transform:rotateY(180deg)}
-    .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:3px solid rgba(255,255,255,.2)}
-    .card-front{background:linear-gradient(135deg,#ff6b6b,#ee5a24);color:#fff}
-    .card-back{background:linear-gradient(135deg,#4ecdc4,#44a08d);color:#fff;transform:rotateY(180deg)}
-    .card-back.french{background:linear-gradient(135deg,#a8edea,#fed6e3);color:#2c3e50}
-    .chinese-char{font-family:'Noto Sans SC',sans-serif;font-size:2.2rem;font-weight:700;margin-bottom:8px;text-shadow:2px 2px 4px rgba(0,0,0,.3)}
-    .pinyin{font-size:1.1rem;font-weight:500;opacity:.95;font-style:italic}
-    .french-meaning{font-size:1.12rem;font-weight:700;text-align:center;line-height:1.35}
-    .card.matched{opacity:.7;transform:scale(.97);pointer-events:none}
-    .card.matched .card-inner{transform:rotateY(180deg)}
+    /* Stats */
+    .stats{
+      display:flex; justify-content:center; gap:22px; flex-wrap:wrap; margin:12px 0 20px;
+    }
+    .stat{
+      background:var(--glass); padding:12px 18px; border-radius:14px; text-align:center;
+      backdrop-filter: blur(10px); border:1px solid var(--glass-bd);
+    }
+    .stat .num{ font-size:1.4rem; font-weight:800; display:block }
+    .stat .lbl{ font-size:.85rem; opacity:.85 }
 
-    .victory-message{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:34px;border-radius:18px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.3);z-index:1000;display:none}
-    .victory-message h2{font-size:1.8rem;margin-bottom:10px}
-    .victory-message p{font-size:1rem;margin-bottom:16px}
+    /* Board */
+    .board{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      gap:18px; margin: 8px 0 28px;
+    }
+    .card{ aspect-ratio:3/4; perspective:1000px; cursor:pointer }
+    .card.disabled{ pointer-events:none }
+    .card-inner{
+      position:relative; width:100%; height:100%; text-align:center;
+      transition: transform .6s; transform-style:preserve-3d;
+    }
+    .card.flipped .card-inner{ transform:rotateY(180deg) }
+
+    .face{
+      position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--radius);
+      display:flex; flex-direction:column; justify-content:center; align-items:center; padding:18px;
+      box-shadow: var(--shadow); border:3px solid var(--glass-bd);
+    }
+    .front{ background: linear-gradient(135deg,#ff6b6b,#ee5a24) }
+    .back{  background: linear-gradient(135deg,#4ecdc4,#44a08d); transform: rotateY(180deg) }
+    .back.french{ background: linear-gradient(135deg,#a8edea,#fed6e3); color:#2c3e50 }
+
+    .hanzi{ font-family:'Noto Sans SC', sans-serif; font-size:2.2rem; font-weight:800; margin-bottom:8px; text-shadow: 2px 2px 4px rgba(0,0,0,.3) }
+    .pinyin{ font-size:1.08rem; font-weight:600; opacity:.95; font-style:italic }
+    .meaning{ font-size:1.12rem; font-weight:800; text-align:center; line-height:1.33 }
+
+    .card.matched{ opacity:.7; transform: scale(.98) }
+    .card.matched .card-inner{ transform: rotateY(180deg) }
+
+    /* Victory */
+    .victory{
+      position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.35);
+      z-index:1000;
+    }
+    .victory .panel{
+      background:linear-gradient(135deg,#667eea,#764ba2); padding:30px 34px; border-radius:18px;
+      text-align:center; box-shadow: 0 20px 40px rgba(0,0,0,.3);
+      min-width: 280px;
+    }
+    .victory h2{ font-size:1.7rem; margin-bottom:8px }
+    .victory p{ margin-bottom:14px }
+
+    .note{ text-align:center; opacity:.9; margin-top:6px }
 
     @media (max-width:768px){
-      .game-board{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
-      .chinese-char{font-size:1.9rem}
-      .french-meaning{font-size:1rem}
-      .header h1{font-size:1.9rem}
+      .board{ grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px }
+      .hanzi{ font-size:1.9rem }
+      .meaning{ font-size:1rem }
+      .title{ font-size:1.9rem }
     }
   </style>
 </head>
 <body>
-  <div class="game-container">
-    <div class="header">
-      <h1>🧠 Mandarin Memory Match</h1>
-      <p>Match Chinese characters with their French meanings!</p>
-    </div>
+  <div class="container">
+    <header class="header">
+      <h1 class="title">🧠 Mandarin Memory Match</h1>
+      <p class="subtitle">Match Chinese characters with their French meanings!</p>
+    </header>
 
-    <!-- 控制列：沿用你的設計 -->
+    <!-- Top controls -->
     <div class="toolbar">
-      <label style="color:#fff;font-weight:600">Difficulty</label>
+      <span class="chip-label">Difficulty</span>
       <select id="difficulty" class="select" title="Difficulty">
-        <option value="easy">Easy（6 字）</option>
+        <option value="easy" selected>Easy（6 字）</option>
         <option value="advanced">Advanced（11 字）</option>
       </select>
-      <button class="btn" id="newGameBtn">🔄 New Game</button>
+
+      <button id="newGameBtn" class="btn">🔄 New Game</button>
     </div>
 
-    <!-- 統計 -->
-    <div class="game-stats">
-      <div class="stat-item"><span class="stat-number" id="moves">0</span><span class="stat-label">Moves</span></div>
-      <div class="stat-item"><span class="stat-number" id="matches">0</span><span class="stat-label">Matches</span></div>
-      <div class="stat-item"><span class="stat-number" id="timer">00:00</span><span class="stat-label">Time</span></div>
-      <div class="stat-item"><span class="stat-number" id="levelTag">–</span><span class="stat-label">Level</span></div>
+    <!-- Filters -->
+    <div class="filters">
+      <select id="filterBook" class="select" title="Book"></select>
+      <select id="filterLesson" class="select" title="Lesson"></select>
+      <select id="filterLevel" class="select" title="TOCFL Level"></select>
+      <select id="filterPos" class="select" title="POS"></select>
     </div>
 
-    <!-- 遊戲區 -->
-    <div class="game-board" id="gameBoard">
-      <p class="empty">Loading…</p>
-    </div>
+    <!-- Stats -->
+    <section class="stats">
+      <div class="stat"><span id="moves" class="num">0</span><span class="lbl">Moves</span></div>
+      <div class="stat"><span id="matches" class="num">0</span><span class="lbl">Matches</span></div>
+      <div class="stat"><span id="timer" class="num">00:00</span><span class="lbl">Time</span></div>
+      <div class="stat"><span id="levelTag" class="num">—</span><span class="lbl">Level</span></div>
+    </section>
+
+    <p id="loading" class="note">Loading…</p>
+
+    <!-- Game board -->
+    <main id="board" class="board" aria-live="polite"></main>
   </div>
 
-  <!-- 勝利訊息 -->
-  <div class="victory-message" id="victoryMessage">
-    <h2>🎉 Félicitations!</h2>
-    <p>You've matched all the vocabulary pairs!</p>
-    <button class="btn" id="playAgainBtn">Play Again</button>
-  </div>
+  <!-- Victory -->
+  <section id="victory" class="victory" role="dialog" aria-modal="true" aria-labelledby="vTitle">
+    <div class="panel">
+      <h2 id="vTitle">🎉 Félicitations!</h2>
+      <p>You've matched all the vocabulary pairs!</p>
+      <button id="playAgainBtn" class="btn">Play Again</button>
+    </div>
+  </section>
 
-  <!-- 主要邏輯：改為用 GAS 取題 -->
+  <!-- ===== GAME SCRIPT ===== -->
   <script type="module">
     import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
 
-    // --- 設定 ---
-    const FLIP_BACK_DELAY = 1500; // 放慢為 1.5s
-    const NEED = { easy: 6, advanced: 11 };
+    // ---- constants / state ----
+    const FLIP_BACK_DELAY = 2000; // 放慢為 2.0s
+    const boardEl   = document.getElementById("board");
+    const loadingEl = document.getElementById("loading");
+    const movesEl   = document.getElementById("moves");
+    const matchesEl = document.getElementById("matches");
+    const timerEl   = document.getElementById("timer");
+    const levelTag  = document.getElementById("levelTag");
+    const victoryEl = document.getElementById("victory");
 
-    // --- URL 參數：?set=B4_L16&mode=advanced ---
+    const selDifficulty = document.getElementById("difficulty");
+    const selBook   = document.getElementById("filterBook");
+    const selLesson = document.getElementById("filterLesson");
+    const selLevel  = document.getElementById("filterLevel");
+    const selPos    = document.getElementById("filterPos");
+
     const params = new URLSearchParams(location.search);
-    const SET_ID = params.get("set") || "";
-    const DEFAULT_MODE = (params.get("mode")==="advanced") ? "advanced" : "easy";
+    const SET_FROM_URL = params.get("set") || ""; // e.g. B4_L16
 
-    // --- DOM 參照 ---
-    const board = document.getElementById("gameBoard");
-    const movesEL = document.getElementById("moves");
-    const matchesEL = document.getElementById("matches");
-    const timerEL = document.getElementById("timer");
-    const levelTag = document.getElementById("levelTag");
-    const newBtn = document.getElementById("newGameBtn");
-    const levelSelect = document.getElementById("difficulty");
+    let rawItems = [];   // 來自 GAS 的原始資料
+    let pool     = [];   // 依篩選後可用的資料
+    let deck     = [];   // 牌庫（兩倍）
+    let game     = {};   // 遊戲狀態
+    let timerId  = null;
 
-    // --- 狀態 ---
-    let pool = [];          // 從 GAS 取回的有效題目
-    let gameState = null;   // 一局遊戲狀態
+    // ---- helpers ----
+    const by = (k) => (a,b)=> (a[k]||"").localeCompare(b[k]||"");
+    const uniq = (arr)=> Array.from(new Set(arr.filter(Boolean)));
+    const fmtTime = (s)=> {
+      const mm = String(Math.floor(s/60)).padStart(2,"0");
+      const ss = String(s%60).padStart(2,"0");
+      return `${mm}:${ss}`;
+    };
+    const setLoading = (on)=> loadingEl.textContent = on ? "Loading…" : "";
 
-    // 工具
-    const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
-    function shuffle(a){ const x=[...a]; for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]] } return x }
-    function sampleN(a,n){ return shuffle(a).slice(0, n) }
-    function fmtTime(sec){ const mm=String(Math.floor(sec/60)).padStart(2,"0"); const ss=String(sec%60).padStart(2,"0"); return `${mm}:${ss}` }
+    const updateURL = ()=>{
+      const u = new URL(location.href);
+      u.searchParams.set("mode", selDifficulty.value);
+      u.searchParams.set("book", selBook.value);
+      u.searchParams.set("lesson", selLesson.value);
+      u.searchParams.set("level", selLevel.value);
+      u.searchParams.set("pos", selPos.value);
+      if (SET_FROM_URL) u.searchParams.set("set", SET_FROM_URL);
+      history.replaceState(null, "", u);
+    };
 
-    // 從 GAS 取得題庫
-    async function fetchPool(){
-      board.innerHTML = `<p class="empty">Loading…</p>`;
-      newBtn.classList.add("muted");
-      try{
-        const url = new URL(GAS_ENDPOINT);
-        url.searchParams.set("sheet", SHEETS.memory);  // "Memory Match"
-        url.searchParams.set("active","true");
-        if(SET_ID) url.searchParams.set("set", SET_ID);
+    // ---- fetch from GAS ----
+    async function fetchItems(){
+      setLoading(true);
+      const url = new URL(GAS_ENDPOINT);
+      url.searchParams.set("sheet", SHEETS.memory);
+      url.searchParams.set("active", "true");
+      if (SET_FROM_URL) url.searchParams.set("set", SET_FROM_URL);
 
-        const res = await fetch(url.toString(), { credentials:"omit" });
-        const json = await res.json();
+      const res = await fetch(url.toString(), { credentials: "omit" });
+      if(!res.ok) throw new Error(`Fetch failed ${res.status}`);
+      const data = await res.json();
 
-        const hanziKey = PREF.hanzi || "chinese_tr";
-        const pinyinKey = PREF.pinyin || "pinyin_tw";
+      // 正規化 key（保守處理大小寫/底線）
+      rawItems = (data.items || []).map(x => ({
+        set_id:       x.set_id ?? x.setId ?? "",
+        book:         x.book ?? x.Book ?? "",
+        lesson:       x.lesson ?? x.Lesson ?? "",
+        chinese_tr:   x.chinese_tr ?? x.chineseTR ?? x.chinesetr ?? x[PREF?.hanzi] ?? "",
+        pinyin_tw:    x.pinyin_tw ?? x.pinyintw ?? x[PREF?.pinyin] ?? "",
+        meaning_fr:   x.meaning_fr ?? x.meaningFR ?? "",
+        meaning_en:   x.meaning_en ?? x.meaningEN ?? "",
+        tocfl_level:  x.tocfl_level ?? x.TOCFL_Level ?? x.tocfl ?? "",
+        pos:          x.pos ?? x.part_of_speech ?? "",
+        active:       String(x.active ?? x.Active ?? "").toUpperCase() === "TRUE",
+      }));
 
-        const items = Array.isArray(json.items) ? json.items : [];
-        pool = items.filter(r=>{
-          const active = String(r.active||"").toLowerCase()==="true";
-          const hanzi = (r[hanziKey]||"").trim();
-          const fr = (r["meaning_fr"]||"").trim();
-          const en = (r["meaning_en"]||"").trim();
-          return active && hanzi && (fr || en);
-        }).map(r=>({
-          chinese: (r[hanziKey]||"").trim(),
-          pinyin:  (r[pinyinKey]||"").trim(),
-          // 優先法文，沒有再英⽂
-          meaning: (r["meaning_fr"]||r["meaning_en"]||"").trim()
-        }));
+      setLoading(false);
+    }
 
-        if(pool.length===0){
-          board.innerHTML = `<p class="empty">No items found. Try ?set=B4_L16 or check Sheet "active".</p>`;
-          newBtn.classList.add("muted");
-          return;
-        }
+    // ---- build filters ----
+    function buildFilters(){
+      const opt = (val, text)=> `<option value="${val}">${text}</option>`;
+      const books   = uniq(rawItems.map(i=>i.book)).sort();
+      const lessons = uniq(rawItems.map(i=>i.lesson)).sort(by(undefined));
+      const lvls    = uniq(rawItems.map(i=>i.tocfl_level)).sort();
+      const poses   = uniq(rawItems.map(i=>i.pos)).sort();
 
-        newBtn.classList.remove("muted");
-        board.innerHTML = `<p class="empty">Ready. Choose a difficulty and click <b>New Game</b>.</p>`;
-      }catch(err){
-        console.error(err);
-        board.innerHTML = `<p class="empty">Fetch failed. See console.</p>`;
+      selBook.innerHTML   = opt("", "Book: All")   + books.map(b=>opt(b, b||"—")).join("");
+      selLesson.innerHTML = opt("", "Lesson: All") + lessons.map(l=>opt(l, l||"—")).join("");
+      selLevel.innerHTML  = opt("", "TOCFL: All")  + lvls.map(l=>opt(l, l||"—")).join("");
+      selPos.innerHTML    = opt("", "POS: All")    + poses.map(p=>opt(p, p||"—")).join("");
+
+      // 從 URL 還原
+      selBook.value   = params.get("book")   ?? "";
+      selLesson.value = params.get("lesson") ?? "";
+      selLevel.value  = params.get("level")  ?? "";
+      selPos.value    = params.get("pos")    ?? "";
+    }
+
+    // ---- apply filters ----
+    function filterPool(){
+      pool = rawItems.filter(i => i.active
+        && i.chinese_tr
+        && (i.meaning_fr || i.meaning_en)
+      );
+
+      if (selBook.value)   pool = pool.filter(i => i.book === selBook.value);
+      if (selLesson.value) pool = pool.filter(i => i.lesson === selLesson.value);
+      if (selLevel.value)  pool = pool.filter(i => (i.tocfl_level||"").toUpperCase() === selLevel.value.toUpperCase());
+      if (selPos.value)    pool = pool.filter(i => (i.pos||"").toLowerCase() === selPos.value.toLowerCase());
+
+      // 若 URL 有 set，做雙保險（set_id = Book_Lesson）
+      if (SET_FROM_URL){
+        pool = pool.filter(i => (i.set_id||"").toLowerCase() === SET_FROM_URL.toLowerCase());
       }
     }
 
-    // 建立一局
-    function startRound(mode){
-      const need = NEED[mode] || NEED.easy;
-      if(pool.length < need){
-        board.innerHTML = `<p class="empty">Not enough items in pool (${pool.length}/${need}).</p>`;
-        return;
+    // ---- build deck ----
+    function pickN(arr, n){
+      const a = [...arr];
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
       }
-      const picked = sampleN(pool, need);
-      const cards = buildCardsFrom(picked);
-      setupGame(cards, mode);
+      return a.slice(0, n);
     }
 
-    // 將詞做成 2 張卡
-    function buildCardsFrom(list){
-      const cards = [];
-      list.forEach((item, idx)=>{
-        // A 卡：漢字 + 拼音
-        cards.push({ id:`A_${idx}`, pairId:idx, type:"hanzi",   txt1:item.chinese, txt2:item.pinyin });
-        // B 卡：義項（FR > EN）
-        cards.push({ id:`B_${idx}`, pairId:idx, type:"meaning", txt1:item.meaning });
+    function buildDeck(){
+      const pairs = selDifficulty.value === "advanced" ? 11 : 6;
+      const candidates = pool.length >= pairs ? pool : pool; // 不足時就全取
+
+      const chosen = pickN(candidates, Math.min(pairs, candidates.length));
+      const toMeaning = (i)=> i.meaning_fr || i.meaning_en || "";
+
+      const temp = [];
+      chosen.forEach((item, idx)=>{
+        const hanzi  = item.chinese_tr;
+        const pinyin = item.pinyin_tw || "";
+        const meaning = toMeaning(item);
+        if(!hanzi || !meaning) return;
+
+        temp.push({
+          type: "hanzi", pair: idx,
+          hanzi, pinyin
+        });
+        temp.push({
+          type: "meaning", pair: idx,
+          meaning
+        });
       });
-      return shuffle(cards);
+
+      deck = pickN(temp, temp.length); // 打散
     }
 
-    // 初始化遊戲狀態 + 繪製
-    function setupGame(cards, mode){
-      levelTag.textContent = (mode==="advanced" ? "Advanced" : "Easy");
-      if(gameState?.timerId) clearInterval(gameState.timerId);
-
-      gameState = {
-        cards, flipped:[], moves:0, matches:0,
-        started:false, startMs:0, secs:0, timerId:null, goal: cards.length/2
-      };
-
-      // 清畫面與統計
-      document.getElementById('victoryMessage').style.display='none';
-      movesEL.textContent = "0"; matchesEL.textContent="0"; timerEL.textContent="00:00";
-
-      // 繪板
-      board.innerHTML = "";
-      cards.forEach(c=> board.appendChild(renderCard(c)));
-    }
-
-    function renderCard(card){
+    // ---- rendering ----
+    function cardEl(card){
       const el = document.createElement("div");
-      el.className = "card"; el.dataset.pairId = card.pairId;
+      el.className = "card";
+      el.dataset.pair = card.pair;
 
       const inner = document.createElement("div");
       inner.className = "card-inner";
 
       const front = document.createElement("div");
-      front.className = "card-face card-front";
-      front.innerHTML = `<div style="font-size:3rem;">🀄</div>`;
+      front.className = "face front";
+      front.innerHTML = `<div style="font-size:2.2rem">🀄</div>`;
 
       const back = document.createElement("div");
-      back.className = `card-face card-back ${card.type==='meaning' ? 'french':''}`;
-      back.innerHTML = (card.type==='hanzi')
-        ? `<div class="chinese-char">${card.txt1}</div><div class="pinyin">${card.txt2||""}</div>`
-        : `<div class="french-meaning">${card.txt1}</div>`;
+      back.className = "face back" + (card.type === "meaning" ? " french" : "");
+      back.innerHTML = card.type === "hanzi"
+        ? `<div class="hanzi">${escapeHtml(card.hanzi)}</div><div class="pinyin">${escapeHtml(card.pinyin)}</div>`
+        : `<div class="meaning">${escapeHtml(card.meaning)}</div>`;
 
-      inner.append(front, back); el.appendChild(inner);
+      inner.append(front, back);
+      el.append(inner);
       el.addEventListener("click", ()=> onFlip(el));
       return el;
     }
 
-    function onFlip(cardEl){
-      if(gameState.flipped.length>=2) return;
-      if(cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) return;
-
-      if(!gameState.started){
-        gameState.started = true;
-        gameState.startMs = Date.now();
-        gameState.timerId = setInterval(()=>{
-          gameState.secs = Math.floor((Date.now()-gameState.startMs)/1000);
-          timerEL.textContent = fmtTime(gameState.secs);
-        },1000);
-      }
-
-      cardEl.classList.add("flipped");
-      gameState.flipped.push(cardEl);
-
-      if(gameState.flipped.length===2){
-        gameState.moves++; movesEL.textContent = gameState.moves;
-        setTimeout(checkMatch, FLIP_BACK_DELAY);
-      }
+    function renderBoard(){
+      boardEl.innerHTML = "";
+      deck.forEach(c => boardEl.appendChild(cardEl(c)));
     }
 
-    function checkMatch(){
-      const [a,b] = gameState.flipped;
-      if(a.dataset.pairId === b.dataset.pairId){
-        a.classList.add("matched"); b.classList.add("matched");
-        gameState.matches++; matchesEL.textContent = gameState.matches;
-        gameState.flipped = [];
-        if(gameState.matches === gameState.goal) endGame(true);
-      }else{
-        a.classList.remove("flipped"); b.classList.remove("flipped");
-        gameState.flipped = [];
+    // ---- game logic ----
+    function resetStats(){
+      game.moves = 0;
+      game.matches = 0;
+      game.flipped = [];
+      movesEl.textContent = "0";
+      matchesEl.textContent = "0";
+      timerEl.textContent = "00:00";
+      if (timerId) clearInterval(timerId);
+      game.startedAt = 0;
+    }
+
+    function startTimer(){
+      game.startedAt = Date.now();
+      timerId = setInterval(()=>{
+        const sec = Math.floor((Date.now() - game.startedAt)/1000);
+        timerEl.textContent = fmtTime(sec);
+      }, 1000);
+    }
+
+    function onFlip(card){
+      if (card.classList.contains("flipped") || card.classList.contains("matched")) return;
+      if (game.flipped.length >= 2) return;
+
+      // 開始計時
+      if (!game.startedAt) startTimer();
+
+      card.classList.add("flipped");
+      game.flipped.push(card);
+
+      if (game.flipped.length === 2){
+        game.moves++;
+        movesEl.textContent = game.moves.toString();
+
+        const [a,b] = game.flipped;
+        const same = a.dataset.pair === b.dataset.pair;
+
+        if (same){
+          setTimeout(()=> {
+            a.classList.add("matched");
+            b.classList.add("matched");
+            game.flipped = [];
+            game.matches++;
+            matchesEl.textContent = game.matches.toString();
+            if (game.matches * 2 >= deck.length) endGame(true);
+          }, 220); // 小延遲以顯示翻面效果
+        }else{
+          // 放慢 2 秒再蓋回
+          setTimeout(()=>{
+            a.classList.remove("flipped");
+            b.classList.remove("flipped");
+            game.flipped = [];
+          }, FLIP_BACK_DELAY);
+        }
       }
     }
 
     function endGame(victory){
-      if(gameState.timerId){ clearInterval(gameState.timerId); gameState.timerId=null; }
-      if(victory){
-        setTimeout(()=> document.getElementById("victoryMessage").style.display="block", 300);
+      if (timerId) clearInterval(timerId);
+      if (victory){
+        setTimeout(()=> victoryEl.style.display = "grid", 300);
       }
     }
 
-    // 綁定
-    document.addEventListener("DOMContentLoaded", async ()=>{
-      // 預設模式：依 URL ?mode=
-      levelSelect.value = DEFAULT_MODE;
-      await fetchPool();
+    // ---- main flows ----
+    async function init(){
+      // Difficulty/filters 初始值（可從 URL 還原）
+      selDifficulty.value = params.get("mode") || "easy";
 
-      const start = ()=> {
-        if(newBtn.classList.contains("muted")) return;
-        startRound(levelSelect.value);
-      };
-      newBtn.addEventListener("click", start);
-      document.getElementById("playAgainBtn").addEventListener("click", start);
-      levelSelect.addEventListener("change", ()=> startRound(levelSelect.value));
-    });
+      try{
+        await fetchItems();
+        buildFilters();
+        applyAndStart();
+      }catch(e){
+        console.error(e);
+        loadingEl.textContent = "Failed to load data.";
+      }
+
+      // bind UI
+      document.getElementById("newGameBtn").addEventListener("click", ()=>{ applyAndStart(); });
+      document.getElementById("playAgainBtn").addEventListener("click", ()=>{
+        victoryEl.style.display = "none";
+        applyAndStart();
+      });
+
+      [selDifficulty, selBook, selLesson, selLevel, selPos].forEach(sel=>{
+        sel.addEventListener("change", ()=>{
+          updateURL();
+          applyAndStart();
+        });
+      });
+    }
+
+    function applyAndStart(){
+      levelTag.textContent = selDifficulty.value === "advanced" ? "Advanced" : "Easy";
+
+      filterPool();
+      buildDeck();
+      renderBoard();
+      resetStats();
+    }
+
+    // ---- utils ----
+    function escapeHtml(s=""){
+      return String(s).replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'
+      }[m]));
+    }
+
+    // GO!
+    init();
   </script>
 </body>
 </html>
