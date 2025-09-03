@@ -1,24 +1,243 @@
-<!-- 放在 body 底部即可 -->
-<script type="module">
-    import { GAS_ENDPOINT, SHEETS } from "../../js/config.js";
-  
-    // 讀 URL 參數（可用 ?set=B4_L16）
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Memory Match | JLMS Games</title>
+  <style>
+    :root { --gap:14px; --cardMin:110px; }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:#0b0b0b; color:#fff;
+      font-family:system-ui,-apple-system,"Noto Sans","PingFang TC",sans-serif;
+      min-height:100svh;
+    }
+    .topbar{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      padding:14px; border-bottom:1px solid #222;
+    }
+    select,button{
+      padding:8px 12px; border-radius:8px;
+      border:1px solid #444; background:#121212; color:#fff;
+    }
+    button[disabled]{opacity:.5; cursor:not-allowed}
+    .stats{
+      display:flex; gap:18px; align-items:center;
+      padding:12px 14px; color:#bbb; font-size:.95rem;
+      border-bottom:1px solid #111;
+    }
+    .stats b{color:#fff}
+    .meta{margin-left:auto; color:#8aa; font-size:.9rem}
+    .board{
+      display:grid; gap:var(--gap); padding:14px;
+      grid-template-columns: repeat(auto-fit, minmax(var(--cardMin), 1fr));
+    }
+    .card{ aspect-ratio:3/4; perspective:1000px; cursor:pointer; }
+    .inner{
+      position:relative; width:100%; height:100%;
+      transform-style:preserve-3d; transition:transform .6s;
+    }
+    .card.flipped .inner{ transform:rotateY(180deg) }
+    .face{
+      position:absolute; inset:0; border-radius:14px;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      backface-visibility:hidden; border:1px solid #333;
+      box-shadow:0 6px 18px rgba(0,0,0,.25);
+      padding:12px; text-align:center;
+    }
+    .front{ background:linear-gradient(135deg,#3a3a3a,#1a1a1a) }
+    .back { background:linear-gradient(135deg,#19b6a4,#0d766e); transform:rotateY(180deg); color:#fff }
+    .hanzi{ font-size:1.6rem; font-weight:700; margin-bottom:6px }
+    .pinyin{ opacity:.95 }
+    .meaning{ font-size:1.05rem; line-height:1.35 }
+    .hint{ padding:10px 14px; color:#9aa; font-size:.9rem }
+  </style>
+</head>
+<body>
+
+  <!-- controls -->
+  <div class="topbar">
+    <label>Mode
+      <select id="mode">
+        <option value="basic">Basic (6 pairs)</option>
+        <option value="advanced">Advanced (11 pairs)</option>
+      </select>
+    </label>
+
+    <button id="startBtn" disabled>Start</button>
+    <span class="meta" id="available">Available: —</span>
+  </div>
+
+  <!-- stats -->
+  <div class="stats">
+    <div>Moves: <b id="moves">0</b></div>
+    <div>Matches: <b id="matches">0</b></div>
+    <div>Time: <b id="timer">00:00</b></div>
+  </div>
+
+  <!-- board -->
+  <div id="board" class="board"></div>
+  <div class="hint" id="hint"></div>
+
+  <script type="module">
+    import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
+
+    // ---------- tiny utils ----------
+    const qs = (s, r=document)=>r.querySelector(s);
+    const shuffle = (arr)=>{ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+    const sample = (arr,n)=>shuffle(arr).slice(0,n);
+    const fmtTime = (sec)=>`${String(Math.floor(sec/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`;
+    const esc = (s="")=>s.replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+
+    // ---------- DOM refs ----------
+    const board = qs("#board");
+    const startBtn = qs("#startBtn");
+    const modeSel = qs("#mode");
+    const movesEl = qs("#moves");
+    const matchesEl = qs("#matches");
+    const timerEl = qs("#timer");
+    const availEl = qs("#available");
+    const hintEl = qs("#hint");
+
+    // ---------- state ----------
+    let pool = [];
+    let flipped = [];
+    let moves=0, matches=0;
+    let timer=0, timerId=null;
+    let requiredPairs = 6; // basic=6, advanced=11
+
+    // URL params
     const params = new URLSearchParams(location.search);
-    const set = params.get("set") || "";    // 比如 B4_L16
-    const active = "true";                  // 只取啟用
-  
-    const url = new URL(GAS_ENDPOINT);
-    url.searchParams.set("sheet", SHEETS.memory);
-    if (set) url.searchParams.set("set", set);
-    url.searchParams.set("active", active);
-  
-    try {
-      const res = await fetch(url.toString(), { credentials: "omit" });
-      const data = await res.json();
-      console.log("Fetched", data.items?.length || 0, "items", data);
-      // 👉 明天把 data.items 餵進你的配對卡 UI
-    } catch (err) {
-      console.error("Fetch failed:", err);
+    const setId = params.get("set") || "B4_L16";
+    const initMode = (params.get("mode")==="advanced") ? "advanced" : "basic";
+    modeSel.value = initMode;
+    requiredPairs = initMode==="advanced" ? 11 : 6;
+
+    // init
+    (async function init(){
+      await loadPool();
+      applyAvailability();
+      hintEl.textContent = `Set: ${setId}  ·  Tip: you can change ?set=B4_L16 or add &mode=advanced in URL.`;
+    })();
+
+    modeSel.addEventListener("change", ()=>{
+      requiredPairs = modeSel.value==="advanced" ? 11 : 6;
+      applyAvailability();
+    });
+
+    startBtn.addEventListener("click", startGame);
+
+    // ---------- data ----------
+    async function loadPool(){
+      const url = new URL(GAS_ENDPOINT);
+      url.searchParams.set("sheet", SHEETS.memory);
+      url.searchParams.set("active","true");
+      url.searchParams.set("set", setId);
+
+      try{
+        const res = await fetch(url.toString(), { cache:"no-store", credentials:"omit" });
+        const data = await res.json();
+        pool = (data.items||[])
+          .map(it => ({
+            id: it.item_id || `${it.set_id}_${it.chinese_tr}`,
+            hanzi: (it[PREF.hanzi]||"").trim(),
+            pinyin: (it[PREF.pinyin]||"").trim(),
+            meaning: (it.meaning_fr || it.meaning_en || "").trim()
+          }))
+          .filter(x => x.hanzi && x.meaning); // 至少要同時有 漢字 + 義項
+      }catch(e){
+        console.error("Fetch error:", e);
+        pool = [];
+      }
+    }
+
+    function applyAvailability(){
+      availEl.textContent = `Available: ${pool.length} items (need ≥ ${requiredPairs})`;
+      startBtn.disabled = pool.length < requiredPairs;
+    }
+
+    // ---------- game ----------
+    function startGame(){
+      resetStats();
+
+      const picked = sample(pool, requiredPairs);
+      const cards = [];
+      picked.forEach((v, i)=>{
+        const pid = `${v.id}__${i}`;
+        cards.push({ pid, kind:"hanzi",  hanzi:v.hanzi,  pinyin:v.pinyin });
+        cards.push({ pid, kind:"meaning", meaning:v.meaning });
+      });
+
+      renderBoard(shuffle(cards));
+      board.addEventListener("click", onFirstFlipOnce, { once:true });
+    }
+
+    function renderBoard(cards){
+      board.innerHTML = "";
+      cards.forEach(c=>{
+        const el = document.createElement("div");
+        el.className = "card";
+        el.dataset.pid = c.pid;
+        el.dataset.kind = c.kind;
+        el.innerHTML = `
+          <div class="inner">
+            <div class="face front"><div style="font-size:2rem">🀄</div></div>
+            <div class="face back">
+              ${c.kind==="hanzi"
+                ? `<div class="hanzi">${esc(c.hanzi)}</div><div class="pinyin">${esc(c.pinyin)}</div>`
+                : `<div class="meaning">${esc(c.meaning)}</div>`
+              }
+            </div>
+          </div>`;
+        el.addEventListener("click", ()=>onFlip(el));
+        board.appendChild(el);
+      });
+    }
+
+    function onFirstFlipOnce(){
+      timer=0; timerEl.textContent="00:00";
+      timerId = setInterval(()=>{ timer++; timerEl.textContent = fmtTime(timer); }, 1000);
+    }
+
+    function onFlip(card){
+      if(card.classList.contains("matched") || card.classList.contains("flipped")) return;
+      if(flipped.length>=2) return;
+
+      card.classList.add("flipped");
+      flipped.push(card);
+
+      if(flipped.length===2){
+        moves++; movesEl.textContent=moves;
+        const [a,b] = flipped;
+        const isPair = a.dataset.pid===b.dataset.pid && a.dataset.kind!==b.dataset.kind;
+
+        if(isPair){
+          a.classList.add("matched"); b.classList.add("matched");
+          flipped=[];
+          matches++; matchesEl.textContent=matches;
+
+          const totalPairs = (board.children.length/2)|0;
+          if(matches===totalPairs){ endGame(true); }
+        }else{
+          // 放慢到 900ms 再蓋回
+          setTimeout(()=>{ a.classList.remove("flipped"); b.classList.remove("flipped"); flipped=[]; }, 900);
+        }
+      }
+    }
+
+    function endGame(victory){
+      if(timerId){ clearInterval(timerId); timerId=null; }
+      if(victory){
+        setTimeout(()=>alert(`🎉 Great! Moves: ${moves}, Time: ${fmtTime(timer)}`), 300);
+      }
+    }
+
+    function resetStats(){
+      moves=0; matches=0; flipped=[];
+      movesEl.textContent="0"; matchesEl.textContent="0";
+      if(timerId){ clearInterval(timerId); timerId=null; }
+      timer=0; timerEl.textContent="00:00";
     }
   </script>
-  
+</body>
+</html>
