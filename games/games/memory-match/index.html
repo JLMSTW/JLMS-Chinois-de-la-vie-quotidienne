@@ -1,243 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Memory Match | JLMS Games</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mandarin Memory Match Game</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+
   <style>
-    :root { --gap:14px; --cardMin:110px; }
-    *{box-sizing:border-box}
-    body{
-      margin:0; background:#0b0b0b; color:#fff;
-      font-family:system-ui,-apple-system,"Noto Sans","PingFang TC",sans-serif;
-      min-height:100svh;
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
+    .game-container{max-width:1200px;margin:0 auto}
+    .header{text-align:center;margin-bottom:20px;color:#fff}
+    .header h1{font-size:2.3rem;font-weight:700;margin-bottom:8px;text-shadow:2px 2px 4px rgba(0,0,0,.3)}
+    .header p{font-size:1.05rem;opacity:.9}
+
+    .toolbar{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin:16px 0 8px}
+    .select, .btn{appearance:none;border:none;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
+    .select{background:#fff}
+    .btn{background:linear-gradient(135deg,#ff9a9e,#fecfef);color:#2c3e50;box-shadow:0 4px 12px rgba(0,0,0,.18);transition:transform .2s, box-shadow .2s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.24)}
+    .muted{opacity:.6;pointer-events:none}
+
+    .game-stats{display:flex;justify-content:center;gap:22px;margin:10px 0 20px;flex-wrap:wrap}
+    .stat-item{background:rgba(255,255,255,.2);padding:12px 18px;border-radius:14px;color:#fff;text-align:center;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3)}
+    .stat-number{font-size:1.4rem;font-weight:700;display:block}
+    .stat-label{font-size:.85rem;opacity:.85}
+
+    .game-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:24px}
+    .empty{color:#fff;text-align:center;opacity:.9}
+
+    .card{aspect-ratio:3/4;perspective:1000px;cursor:pointer}
+    .card-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform .6s;transform-style:preserve-3d}
+    .card.flipped .card-inner{transform:rotateY(180deg)}
+    .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:3px solid rgba(255,255,255,.2)}
+    .card-front{background:linear-gradient(135deg,#ff6b6b,#ee5a24);color:#fff}
+    .card-back{background:linear-gradient(135deg,#4ecdc4,#44a08d);color:#fff;transform:rotateY(180deg)}
+    .card-back.french{background:linear-gradient(135deg,#a8edea,#fed6e3);color:#2c3e50}
+    .chinese-char{font-family:'Noto Sans SC',sans-serif;font-size:2.2rem;font-weight:700;margin-bottom:8px;text-shadow:2px 2px 4px rgba(0,0,0,.3)}
+    .pinyin{font-size:1.1rem;font-weight:500;opacity:.95;font-style:italic}
+    .french-meaning{font-size:1.12rem;font-weight:700;text-align:center;line-height:1.35}
+    .card.matched{opacity:.7;transform:scale(.97);pointer-events:none}
+    .card.matched .card-inner{transform:rotateY(180deg)}
+
+    .victory-message{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:34px;border-radius:18px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.3);z-index:1000;display:none}
+    .victory-message h2{font-size:1.8rem;margin-bottom:10px}
+    .victory-message p{font-size:1rem;margin-bottom:16px}
+
+    @media (max-width:768px){
+      .game-board{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+      .chinese-char{font-size:1.9rem}
+      .french-meaning{font-size:1rem}
+      .header h1{font-size:1.9rem}
     }
-    .topbar{
-      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
-      padding:14px; border-bottom:1px solid #222;
-    }
-    select,button{
-      padding:8px 12px; border-radius:8px;
-      border:1px solid #444; background:#121212; color:#fff;
-    }
-    button[disabled]{opacity:.5; cursor:not-allowed}
-    .stats{
-      display:flex; gap:18px; align-items:center;
-      padding:12px 14px; color:#bbb; font-size:.95rem;
-      border-bottom:1px solid #111;
-    }
-    .stats b{color:#fff}
-    .meta{margin-left:auto; color:#8aa; font-size:.9rem}
-    .board{
-      display:grid; gap:var(--gap); padding:14px;
-      grid-template-columns: repeat(auto-fit, minmax(var(--cardMin), 1fr));
-    }
-    .card{ aspect-ratio:3/4; perspective:1000px; cursor:pointer; }
-    .inner{
-      position:relative; width:100%; height:100%;
-      transform-style:preserve-3d; transition:transform .6s;
-    }
-    .card.flipped .inner{ transform:rotateY(180deg) }
-    .face{
-      position:absolute; inset:0; border-radius:14px;
-      display:flex; flex-direction:column; justify-content:center; align-items:center;
-      backface-visibility:hidden; border:1px solid #333;
-      box-shadow:0 6px 18px rgba(0,0,0,.25);
-      padding:12px; text-align:center;
-    }
-    .front{ background:linear-gradient(135deg,#3a3a3a,#1a1a1a) }
-    .back { background:linear-gradient(135deg,#19b6a4,#0d766e); transform:rotateY(180deg); color:#fff }
-    .hanzi{ font-size:1.6rem; font-weight:700; margin-bottom:6px }
-    .pinyin{ opacity:.95 }
-    .meaning{ font-size:1.05rem; line-height:1.35 }
-    .hint{ padding:10px 14px; color:#9aa; font-size:.9rem }
   </style>
 </head>
 <body>
+  <div class="game-container">
+    <div class="header">
+      <h1>🧠 Mandarin Memory Match</h1>
+      <p>Match Chinese characters with their French meanings!</p>
+    </div>
 
-  <!-- controls -->
-  <div class="topbar">
-    <label>Mode
-      <select id="mode">
-        <option value="basic">Basic (6 pairs)</option>
-        <option value="advanced">Advanced (11 pairs)</option>
+    <!-- 控制列：沿用你的設計 -->
+    <div class="toolbar">
+      <label style="color:#fff;font-weight:600">Difficulty</label>
+      <select id="difficulty" class="select" title="Difficulty">
+        <option value="easy">Easy（6 字）</option>
+        <option value="advanced">Advanced（11 字）</option>
       </select>
-    </label>
+      <button class="btn" id="newGameBtn">🔄 New Game</button>
+    </div>
 
-    <button id="startBtn" disabled>Start</button>
-    <span class="meta" id="available">Available: —</span>
+    <!-- 統計 -->
+    <div class="game-stats">
+      <div class="stat-item"><span class="stat-number" id="moves">0</span><span class="stat-label">Moves</span></div>
+      <div class="stat-item"><span class="stat-number" id="matches">0</span><span class="stat-label">Matches</span></div>
+      <div class="stat-item"><span class="stat-number" id="timer">00:00</span><span class="stat-label">Time</span></div>
+      <div class="stat-item"><span class="stat-number" id="levelTag">–</span><span class="stat-label">Level</span></div>
+    </div>
+
+    <!-- 遊戲區 -->
+    <div class="game-board" id="gameBoard">
+      <p class="empty">Loading…</p>
+    </div>
   </div>
 
-  <!-- stats -->
-  <div class="stats">
-    <div>Moves: <b id="moves">0</b></div>
-    <div>Matches: <b id="matches">0</b></div>
-    <div>Time: <b id="timer">00:00</b></div>
+  <!-- 勝利訊息 -->
+  <div class="victory-message" id="victoryMessage">
+    <h2>🎉 Félicitations!</h2>
+    <p>You've matched all the vocabulary pairs!</p>
+    <button class="btn" id="playAgainBtn">Play Again</button>
   </div>
 
-  <!-- board -->
-  <div id="board" class="board"></div>
-  <div class="hint" id="hint"></div>
-
+  <!-- 主要邏輯：改為用 GAS 取題 -->
   <script type="module">
     import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
 
-    // ---------- tiny utils ----------
-    const qs = (s, r=document)=>r.querySelector(s);
-    const shuffle = (arr)=>{ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
-    const sample = (arr,n)=>shuffle(arr).slice(0,n);
-    const fmtTime = (sec)=>`${String(Math.floor(sec/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`;
-    const esc = (s="")=>s.replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+    // --- 設定 ---
+    const FLIP_BACK_DELAY = 1500; // 放慢為 1.5s
+    const NEED = { easy: 6, advanced: 11 };
 
-    // ---------- DOM refs ----------
-    const board = qs("#board");
-    const startBtn = qs("#startBtn");
-    const modeSel = qs("#mode");
-    const movesEl = qs("#moves");
-    const matchesEl = qs("#matches");
-    const timerEl = qs("#timer");
-    const availEl = qs("#available");
-    const hintEl = qs("#hint");
-
-    // ---------- state ----------
-    let pool = [];
-    let flipped = [];
-    let moves=0, matches=0;
-    let timer=0, timerId=null;
-    let requiredPairs = 6; // basic=6, advanced=11
-
-    // URL params
+    // --- URL 參數：?set=B4_L16&mode=advanced ---
     const params = new URLSearchParams(location.search);
-    const setId = params.get("set") || "B4_L16";
-    const initMode = (params.get("mode")==="advanced") ? "advanced" : "basic";
-    modeSel.value = initMode;
-    requiredPairs = initMode==="advanced" ? 11 : 6;
+    const SET_ID = params.get("set") || "";
+    const DEFAULT_MODE = (params.get("mode")==="advanced") ? "advanced" : "easy";
 
-    // init
-    (async function init(){
-      await loadPool();
-      applyAvailability();
-      hintEl.textContent = `Set: ${setId}  ·  Tip: you can change ?set=B4_L16 or add &mode=advanced in URL.`;
-    })();
+    // --- DOM 參照 ---
+    const board = document.getElementById("gameBoard");
+    const movesEL = document.getElementById("moves");
+    const matchesEL = document.getElementById("matches");
+    const timerEL = document.getElementById("timer");
+    const levelTag = document.getElementById("levelTag");
+    const newBtn = document.getElementById("newGameBtn");
+    const levelSelect = document.getElementById("difficulty");
 
-    modeSel.addEventListener("change", ()=>{
-      requiredPairs = modeSel.value==="advanced" ? 11 : 6;
-      applyAvailability();
-    });
+    // --- 狀態 ---
+    let pool = [];          // 從 GAS 取回的有效題目
+    let gameState = null;   // 一局遊戲狀態
 
-    startBtn.addEventListener("click", startGame);
+    // 工具
+    const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
+    function shuffle(a){ const x=[...a]; for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]] } return x }
+    function sampleN(a,n){ return shuffle(a).slice(0, n) }
+    function fmtTime(sec){ const mm=String(Math.floor(sec/60)).padStart(2,"0"); const ss=String(sec%60).padStart(2,"0"); return `${mm}:${ss}` }
 
-    // ---------- data ----------
-    async function loadPool(){
-      const url = new URL(GAS_ENDPOINT);
-      url.searchParams.set("sheet", SHEETS.memory);
-      url.searchParams.set("active","true");
-      url.searchParams.set("set", setId);
-
+    // 從 GAS 取得題庫
+    async function fetchPool(){
+      board.innerHTML = `<p class="empty">Loading…</p>`;
+      newBtn.classList.add("muted");
       try{
-        const res = await fetch(url.toString(), { cache:"no-store", credentials:"omit" });
-        const data = await res.json();
-        pool = (data.items||[])
-          .map(it => ({
-            id: it.item_id || `${it.set_id}_${it.chinese_tr}`,
-            hanzi: (it[PREF.hanzi]||"").trim(),
-            pinyin: (it[PREF.pinyin]||"").trim(),
-            meaning: (it.meaning_fr || it.meaning_en || "").trim()
-          }))
-          .filter(x => x.hanzi && x.meaning); // 至少要同時有 漢字 + 義項
-      }catch(e){
-        console.error("Fetch error:", e);
-        pool = [];
+        const url = new URL(GAS_ENDPOINT);
+        url.searchParams.set("sheet", SHEETS.memory);  // "Memory Match"
+        url.searchParams.set("active","true");
+        if(SET_ID) url.searchParams.set("set", SET_ID);
+
+        const res = await fetch(url.toString(), { credentials:"omit" });
+        const json = await res.json();
+
+        const hanziKey = PREF.hanzi || "chinese_tr";
+        const pinyinKey = PREF.pinyin || "pinyin_tw";
+
+        const items = Array.isArray(json.items) ? json.items : [];
+        pool = items.filter(r=>{
+          const active = String(r.active||"").toLowerCase()==="true";
+          const hanzi = (r[hanziKey]||"").trim();
+          const fr = (r["meaning_fr"]||"").trim();
+          const en = (r["meaning_en"]||"").trim();
+          return active && hanzi && (fr || en);
+        }).map(r=>({
+          chinese: (r[hanziKey]||"").trim(),
+          pinyin:  (r[pinyinKey]||"").trim(),
+          // 優先法文，沒有再英⽂
+          meaning: (r["meaning_fr"]||r["meaning_en"]||"").trim()
+        }));
+
+        if(pool.length===0){
+          board.innerHTML = `<p class="empty">No items found. Try ?set=B4_L16 or check Sheet "active".</p>`;
+          newBtn.classList.add("muted");
+          return;
+        }
+
+        newBtn.classList.remove("muted");
+        board.innerHTML = `<p class="empty">Ready. Choose a difficulty and click <b>New Game</b>.</p>`;
+      }catch(err){
+        console.error(err);
+        board.innerHTML = `<p class="empty">Fetch failed. See console.</p>`;
       }
     }
 
-    function applyAvailability(){
-      availEl.textContent = `Available: ${pool.length} items (need ≥ ${requiredPairs})`;
-      startBtn.disabled = pool.length < requiredPairs;
+    // 建立一局
+    function startRound(mode){
+      const need = NEED[mode] || NEED.easy;
+      if(pool.length < need){
+        board.innerHTML = `<p class="empty">Not enough items in pool (${pool.length}/${need}).</p>`;
+        return;
+      }
+      const picked = sampleN(pool, need);
+      const cards = buildCardsFrom(picked);
+      setupGame(cards, mode);
     }
 
-    // ---------- game ----------
-    function startGame(){
-      resetStats();
-
-      const picked = sample(pool, requiredPairs);
+    // 將詞做成 2 張卡
+    function buildCardsFrom(list){
       const cards = [];
-      picked.forEach((v, i)=>{
-        const pid = `${v.id}__${i}`;
-        cards.push({ pid, kind:"hanzi",  hanzi:v.hanzi,  pinyin:v.pinyin });
-        cards.push({ pid, kind:"meaning", meaning:v.meaning });
+      list.forEach((item, idx)=>{
+        // A 卡：漢字 + 拼音
+        cards.push({ id:`A_${idx}`, pairId:idx, type:"hanzi",   txt1:item.chinese, txt2:item.pinyin });
+        // B 卡：義項（FR > EN）
+        cards.push({ id:`B_${idx}`, pairId:idx, type:"meaning", txt1:item.meaning });
       });
-
-      renderBoard(shuffle(cards));
-      board.addEventListener("click", onFirstFlipOnce, { once:true });
+      return shuffle(cards);
     }
 
-    function renderBoard(cards){
+    // 初始化遊戲狀態 + 繪製
+    function setupGame(cards, mode){
+      levelTag.textContent = (mode==="advanced" ? "Advanced" : "Easy");
+      if(gameState?.timerId) clearInterval(gameState.timerId);
+
+      gameState = {
+        cards, flipped:[], moves:0, matches:0,
+        started:false, startMs:0, secs:0, timerId:null, goal: cards.length/2
+      };
+
+      // 清畫面與統計
+      document.getElementById('victoryMessage').style.display='none';
+      movesEL.textContent = "0"; matchesEL.textContent="0"; timerEL.textContent="00:00";
+
+      // 繪板
       board.innerHTML = "";
-      cards.forEach(c=>{
-        const el = document.createElement("div");
-        el.className = "card";
-        el.dataset.pid = c.pid;
-        el.dataset.kind = c.kind;
-        el.innerHTML = `
-          <div class="inner">
-            <div class="face front"><div style="font-size:2rem">🀄</div></div>
-            <div class="face back">
-              ${c.kind==="hanzi"
-                ? `<div class="hanzi">${esc(c.hanzi)}</div><div class="pinyin">${esc(c.pinyin)}</div>`
-                : `<div class="meaning">${esc(c.meaning)}</div>`
-              }
-            </div>
-          </div>`;
-        el.addEventListener("click", ()=>onFlip(el));
-        board.appendChild(el);
-      });
+      cards.forEach(c=> board.appendChild(renderCard(c)));
     }
 
-    function onFirstFlipOnce(){
-      timer=0; timerEl.textContent="00:00";
-      timerId = setInterval(()=>{ timer++; timerEl.textContent = fmtTime(timer); }, 1000);
+    function renderCard(card){
+      const el = document.createElement("div");
+      el.className = "card"; el.dataset.pairId = card.pairId;
+
+      const inner = document.createElement("div");
+      inner.className = "card-inner";
+
+      const front = document.createElement("div");
+      front.className = "card-face card-front";
+      front.innerHTML = `<div style="font-size:3rem;">🀄</div>`;
+
+      const back = document.createElement("div");
+      back.className = `card-face card-back ${card.type==='meaning' ? 'french':''}`;
+      back.innerHTML = (card.type==='hanzi')
+        ? `<div class="chinese-char">${card.txt1}</div><div class="pinyin">${card.txt2||""}</div>`
+        : `<div class="french-meaning">${card.txt1}</div>`;
+
+      inner.append(front, back); el.appendChild(inner);
+      el.addEventListener("click", ()=> onFlip(el));
+      return el;
     }
 
-    function onFlip(card){
-      if(card.classList.contains("matched") || card.classList.contains("flipped")) return;
-      if(flipped.length>=2) return;
+    function onFlip(cardEl){
+      if(gameState.flipped.length>=2) return;
+      if(cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) return;
 
-      card.classList.add("flipped");
-      flipped.push(card);
+      if(!gameState.started){
+        gameState.started = true;
+        gameState.startMs = Date.now();
+        gameState.timerId = setInterval(()=>{
+          gameState.secs = Math.floor((Date.now()-gameState.startMs)/1000);
+          timerEL.textContent = fmtTime(gameState.secs);
+        },1000);
+      }
 
-      if(flipped.length===2){
-        moves++; movesEl.textContent=moves;
-        const [a,b] = flipped;
-        const isPair = a.dataset.pid===b.dataset.pid && a.dataset.kind!==b.dataset.kind;
+      cardEl.classList.add("flipped");
+      gameState.flipped.push(cardEl);
 
-        if(isPair){
-          a.classList.add("matched"); b.classList.add("matched");
-          flipped=[];
-          matches++; matchesEl.textContent=matches;
+      if(gameState.flipped.length===2){
+        gameState.moves++; movesEL.textContent = gameState.moves;
+        setTimeout(checkMatch, FLIP_BACK_DELAY);
+      }
+    }
 
-          const totalPairs = (board.children.length/2)|0;
-          if(matches===totalPairs){ endGame(true); }
-        }else{
-          // 放慢到 900ms 再蓋回
-          setTimeout(()=>{ a.classList.remove("flipped"); b.classList.remove("flipped"); flipped=[]; }, 900);
-        }
+    function checkMatch(){
+      const [a,b] = gameState.flipped;
+      if(a.dataset.pairId === b.dataset.pairId){
+        a.classList.add("matched"); b.classList.add("matched");
+        gameState.matches++; matchesEL.textContent = gameState.matches;
+        gameState.flipped = [];
+        if(gameState.matches === gameState.goal) endGame(true);
+      }else{
+        a.classList.remove("flipped"); b.classList.remove("flipped");
+        gameState.flipped = [];
       }
     }
 
     function endGame(victory){
-      if(timerId){ clearInterval(timerId); timerId=null; }
+      if(gameState.timerId){ clearInterval(gameState.timerId); gameState.timerId=null; }
       if(victory){
-        setTimeout(()=>alert(`🎉 Great! Moves: ${moves}, Time: ${fmtTime(timer)}`), 300);
+        setTimeout(()=> document.getElementById("victoryMessage").style.display="block", 300);
       }
     }
 
-    function resetStats(){
-      moves=0; matches=0; flipped=[];
-      movesEl.textContent="0"; matchesEl.textContent="0";
-      if(timerId){ clearInterval(timerId); timerId=null; }
-      timer=0; timerEl.textContent="00:00";
-    }
+    // 綁定
+    document.addEventListener("DOMContentLoaded", async ()=>{
+      // 預設模式：依 URL ?mode=
+      levelSelect.value = DEFAULT_MODE;
+      await fetchPool();
+
+      const start = ()=> {
+        if(newBtn.classList.contains("muted")) return;
+        startRound(levelSelect.value);
+      };
+      newBtn.addEventListener("click", start);
+      document.getElementById("playAgainBtn").addEventListener("click", start);
+      levelSelect.addEventListener("change", ()=> startRound(levelSelect.value));
+    });
   </script>
 </body>
 </html>
