@@ -94,7 +94,7 @@ function buildFilters(){
   selBook.innerHTML   = opt("", "Book: All")   + books.map(b=>opt(b, b||"—")).join("");
   selLesson.innerHTML = opt("", "Lesson: All") + lessons.map(l=>opt(l, l||"—")).join("");
   selLevel.innerHTML  = opt("", "TOCFL: All")  + lvls.map(l=>opt(l, l||"—")).join("");
-  selPos.innerHTML    = opt("", "POS: All")    + poses.map(p=>opt(p, p||"—")).join("");
+  selPos.innerHTML = opt("", "POS: All") + posTokens.map(p => opt(p, p || "—")).join("");
 
   // 從 URL 還原
   selBook.value   = params.get("book")   ?? "";
