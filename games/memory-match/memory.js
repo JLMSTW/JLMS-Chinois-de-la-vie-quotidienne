@@ -1,5 +1,6 @@
 import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
 import { escapeHtml } from "/js/shared/dom.js";
+import { shuffle, sample } from "/js/shared/shuffle.js";
 
 // ---- constants / state ----
 const FLIP_BACK_DELAY = 2000; // 放慢為 2.0s
@@ -95,7 +96,7 @@ function buildFilters(){
   selBook.innerHTML   = opt("", "Book: All")   + books.map(b=>opt(b, b||"—")).join("");
   selLesson.innerHTML = opt("", "Lesson: All") + lessons.map(l=>opt(l, l||"—")).join("");
   selLevel.innerHTML  = opt("", "TOCFL: All")  + lvls.map(l=>opt(l, l||"—")).join("");
-  selPos.innerHTML = opt("", "POS: All") + posTokens.map(p => opt(p, p || "—")).join("");
+  selPos.innerHTML    = opt("", "POS: All")    + posTokens.map(p=>opt(p, p||"—")).join("");
 
   // 從 URL 還原
   selBook.value   = params.get("book")   ?? "";
@@ -142,7 +143,7 @@ function pickN(arr, n){
 
 function buildDeck(){
 const pairs = selDifficulty.value === "advanced" ? 11 : 6;
-const chosen = pickN(pool, Math.min(pairs, pool.length));
+const chosen = sample(pool, Math.min(pairs, pool.length));
 
 const lang = selLang.value || "fr"; // 'fr' or 'en'
 const getMeaning = (i) => {
@@ -161,7 +162,7 @@ temp.push({ type:"hanzi",   pair:idx, hanzi, pinyin });
 temp.push({ type:"meaning", pair:idx, meaning });
 });
 
-deck = pickN(temp, temp.length); // 打散
+deck = shuffle(temp);            // 打散
 }
 
 
