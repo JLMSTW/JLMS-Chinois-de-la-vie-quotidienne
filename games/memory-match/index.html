@@ -29,17 +29,20 @@
       <button id="newGameBtn" class="btn">🔄 New Game</button>
     </div>
 
-    <!-- Filters -->
-    <div class="filters">
-      <select id="filterBook" class="select" title="Book"></select>
-      <select id="filterLesson" class="select" title="Lesson"></select>
-      <select id="filterLevel" class="select" title="TOCFL Level"></select>
-      <select id="filterPos" class="select" title="POS"></select>
-      <select id="filterLang"   class="select" title="Meaning language"></select>
-      <option value="fr" selected>Meaning: French</option>
-      <option value="en">Meaning: English</option>
-    </select>
-    </div>
+<!-- Filters -->
+<div class="filters">
+  <select id="filterBook"   class="select" title="Book"></select>
+  <select id="filterLesson" class="select" title="Lesson"></select>
+  <select id="filterLevel"  class="select" title="TOCFL Level"></select>
+  <select id="filterPos"    class="select" title="POS"></select>
+
+  <!-- Language (FIXED: options are inside the select) -->
+  <select id="filterLang" class="select" title="Meaning language">
+    <option value="fr" selected>Meaning: French</option>
+    <option value="en">Meaning: English</option>
+  </select>
+</div>
+
 
     <!-- Stats -->
     <section class="stats">
