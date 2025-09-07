@@ -1,4 +1,5 @@
 import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
+import { escapeHtml } from "/js/shared/dom.js";
 
 // ---- constants / state ----
 const FLIP_BACK_DELAY = 2000; // 放慢為 2.0s
@@ -297,11 +298,6 @@ function applyAndStart(){
 }
 
 // ---- utils ----
-function escapeHtml(s=""){
-  return String(s).replace(/[&<>"']/g, m => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'
-  }[m]));
-}
 
 // GO!
 init();
