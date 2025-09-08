@@ -1,22 +1,24 @@
 // /js/shared/urlState.js
-// 只做讀取（get）；寫入(set) 我們下一步再加
-
 export function get() {
-    const p = new URLSearchParams(location.search);
+    const u = new URL(location.href);
+    const q = u.searchParams;
   
-    // 舊鍵相容：mode -> difficulty
-    const difficulty = (p.get("difficulty") || p.get("mode") || "easy").toLowerCase();
+    // 1) difficulty / mode 兩個鍵都相容
+    const rawDiff = (q.get("difficulty") || q.get("mode") || "easy").trim().toLowerCase();
+    // 2) 規範成兩種合法值
+    const difficulty = (rawDiff === "advanced") ? "advanced" : "easy";
   
-    const state = {
-      difficulty,
-      book:   p.get("book")   || "",
-      lesson: p.get("lesson") || "",
-      level:  p.get("level")  || "",
-      pos:    p.get("pos")    || "",
-      lang:   ((p.get("lang") || "fr").toLowerCase() === "en" ? "en" : "fr"),
-      set:    p.get("set")    || ""
-    };
+    // 語言也做一下規範（fr/en）
+    const rawLang = (q.get("lang") || "fr").trim().toLowerCase();
+    const lang = (rawLang === "en") ? "en" : "fr";
   
-    return state;
+    // 其他欄位照舊（有就帶，沒有給空字串）
+    const book   = q.get("book")   || "";
+    const lesson = q.get("lesson") || "";
+    const level  = q.get("level")  || "";
+    const pos    = q.get("pos")    || "";
+    const set    = q.get("set")    || "";
+  
+    return { difficulty, lang, book, lesson, level, pos, set };
   }
   

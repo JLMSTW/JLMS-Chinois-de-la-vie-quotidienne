@@ -2,6 +2,7 @@ import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
 import { escapeHtml } from "/js/shared/dom.js";
 import { shuffle, sample } from "/js/shared/shuffle.js";
 import { createTimer, formatTime } from "/js/shared/timer.js";
+import { get as getUrlState, set as setUrlState } from "/js/shared/urlState.js";
 // 若不是用 Live Server，而是 file:// 開頁，改成：
 // import { createTimer, formatTime } from "../../js/shared/timer.js";
 
@@ -27,8 +28,8 @@ const selLevel  = document.getElementById("filterLevel");
 const selPos    = document.getElementById("filterPos");
 const selLang   = document.getElementById("filterLang");
 
-const params = new URLSearchParams(location.search);
-const SET_FROM_URL = params.get("set") || ""; // e.g. B4_L16
+const url = getUrlState();     // {difficulty, book, lesson, level, pos, lang, set}
+const SET_FROM_URL = url.set;  // 暫時保留同名變數給後面程式用
 
 let rawItems = [];   // 來自 GAS 的原始資料
 let pool     = [];   // 依篩選後可用的資料
@@ -40,17 +41,7 @@ const by = (k) => (a,b)=> (a[k]||"").localeCompare(b[k]||"");
 const uniq = (arr)=> Array.from(new Set(arr.filter(Boolean)));
 const setLoading = (on)=> loadingEl.textContent = on ? "Loading…" : "";
 
-const updateURL = ()=>{
-  const u = new URL(location.href);
-  u.searchParams.set("mode", selDifficulty.value);
-  u.searchParams.set("book", selBook.value);
-  u.searchParams.set("lesson", selLesson.value);
-  u.searchParams.set("level", selLevel.value);
-  u.searchParams.set("pos", selPos.value);
-  u.searchParams.set("lang", selLang.value || "fr");
-  if (SET_FROM_URL) u.searchParams.set("set", SET_FROM_URL);
-  history.replaceState(null, "", u);
-};
+
 
 // ---- fetch from GAS ----
 async function fetchItems(){
@@ -103,13 +94,13 @@ function buildFilters(){
   selPos.innerHTML    = opt("", "POS: All")    + posTokens.map(p=>opt(p, p||"—")).join("");
 
   // 從 URL 還原
-  selBook.value   = params.get("book")   ?? "";
-  selLesson.value = params.get("lesson") ?? "";
-  selLevel.value  = params.get("level")  ?? "";
-  selPos.value    = params.get("pos")    ?? "";
+  selBook.value   = url.book   || "";
+  selLesson.value = url.lesson || "";
+  selLevel.value  = url.level  || "";
+  selPos.value    = url.pos    || "";
 
   // NEW：語言（預設 fr）
-  const lang = (params.get("lang") || "fr").toLowerCase();
+  const lang = (url.lang || "fr").toLowerCase();
   selLang.value = (lang === "en" ? "en" : "fr");
 }
 
@@ -253,11 +244,13 @@ function endGame(victory){
 // ---- main flows ----
 async function init(){
   // Difficulty/filters 初始值（可從 URL 還原）
-  selDifficulty.value = params.get("mode") || "easy";
 
   try{
     await fetchItems();
     buildFilters();
+     // ← 改成在這裡再還原（確保不被預設值覆蓋）
+     selDifficulty.value = url.difficulty || "easy";
+
     applyAndStart();
   }catch(e){
     console.error(e);
@@ -271,12 +264,23 @@ async function init(){
     applyAndStart();
   });
 
-  [selDifficulty, selBook, selLesson, selLevel, selPos, selLang].forEach(sel=>{
-    sel.addEventListener("change", ()=>{
-      updateURL();
+  [selDifficulty, selBook, selLesson, selLevel, selPos, selLang].forEach(sel => {
+    sel.addEventListener("change", () => {
+      // 寫回 URL（集中在 /js/shared/urlState.js）
+      setUrlState({
+        difficulty: selDifficulty.value,
+        book:       selBook.value,
+        lesson:     selLesson.value,
+        level:      selLevel.value,
+        pos:        selPos.value,
+        lang:       selLang.value || "fr",
+        set:        SET_FROM_URL || undefined, // 有帶 set 的話保留，沒有就別寫
+      });
+  
       applyAndStart();
     });
   });
+  
 }
 
 function applyAndStart(){
