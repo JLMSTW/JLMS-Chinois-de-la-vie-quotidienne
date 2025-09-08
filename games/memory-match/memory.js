@@ -1,6 +1,9 @@
 import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
 import { escapeHtml } from "/js/shared/dom.js";
 import { shuffle, sample } from "/js/shared/shuffle.js";
+import { createTimer, formatTime } from "/js/shared/timer.js";
+// 若不是用 Live Server，而是 file:// 開頁，改成：
+// import { createTimer, formatTime } from "../../js/shared/timer.js";
 
 // ---- constants / state ----
 const FLIP_BACK_DELAY = 2000; // 放慢為 2.0s
@@ -12,12 +15,17 @@ const timerEl   = document.getElementById("timer");
 const levelTag  = document.getElementById("levelTag");
 const victoryEl = document.getElementById("victory");
 
+// 建立共用計時器：每秒把秒數格式化後寫到畫面
+const timer = createTimer((sec) => {
+  timerEl.textContent = formatTime(sec);
+});
+
 const selDifficulty = document.getElementById("difficulty");
 const selBook   = document.getElementById("filterBook");
 const selLesson = document.getElementById("filterLesson");
 const selLevel  = document.getElementById("filterLevel");
 const selPos    = document.getElementById("filterPos");
-const selLang  = document.getElementById("filterLang");
+const selLang   = document.getElementById("filterLang");
 
 const params = new URLSearchParams(location.search);
 const SET_FROM_URL = params.get("set") || ""; // e.g. B4_L16
@@ -25,17 +33,11 @@ const SET_FROM_URL = params.get("set") || ""; // e.g. B4_L16
 let rawItems = [];   // 來自 GAS 的原始資料
 let pool     = [];   // 依篩選後可用的資料
 let deck     = [];   // 牌庫（兩倍）
-let game     = {};   // 遊戲狀態
-let timerId  = null;
+let game     = {};   // 遊戲狀態（moves / matches / flipped 等）
 
 // ---- helpers ----
 const by = (k) => (a,b)=> (a[k]||"").localeCompare(b[k]||"");
 const uniq = (arr)=> Array.from(new Set(arr.filter(Boolean)));
-const fmtTime = (s)=> {
-  const mm = String(Math.floor(s/60)).padStart(2,"0");
-  const ss = String(s%60).padStart(2,"0");
-  return `${mm}:${ss}`;
-};
 const setLoading = (on)=> loadingEl.textContent = on ? "Loading…" : "";
 
 const updateURL = ()=>{
@@ -45,6 +47,7 @@ const updateURL = ()=>{
   u.searchParams.set("lesson", selLesson.value);
   u.searchParams.set("level", selLevel.value);
   u.searchParams.set("pos", selPos.value);
+  u.searchParams.set("lang", selLang.value || "fr");
   if (SET_FROM_URL) u.searchParams.set("set", SET_FROM_URL);
   history.replaceState(null, "", u);
 };
@@ -84,14 +87,15 @@ function buildFilters(){
   const books   = uniq(rawItems.map(i=>i.book)).sort();
   const lessons = uniq(rawItems.map(i=>i.lesson)).sort(by(undefined));
   const lvls    = uniq(rawItems.map(i=>i.tocfl_level)).sort();
-   // 從 pos 欄位擷取縮寫 token（adj. / n. / v. / prep. / pron. / conj. / adv. / mw. / aux. / expr.）
+
+  // 從 pos 欄位擷取縮寫 token（adj. / n. / v. / prep. / pron. / conj. / adv. / mw. / aux. / expr.）
   const posTokens = uniq(
-   rawItems.flatMap(i => {
-     const s = (i.pos || "").toLowerCase();
-     const m = s.match(/\b[a-z]{1,6}\./g);
-     return m || [];
-   })
-   ).sort();
+    rawItems.flatMap(i => {
+      const s = (i.pos || "").toLowerCase();
+      const m = s.match(/\b[a-z]{1,6}\./g);
+      return m || [];
+    })
+  ).sort();
 
   selBook.innerHTML   = opt("", "Book: All")   + books.map(b=>opt(b, b||"—")).join("");
   selLesson.innerHTML = opt("", "Lesson: All") + lessons.map(l=>opt(l, l||"—")).join("");
@@ -121,50 +125,41 @@ function filterPool(){
   if (selLesson.value) pool = pool.filter(i => i.lesson === selLesson.value);
   if (selLevel.value)  pool = pool.filter(i => (i.tocfl_level||"").toUpperCase() === selLevel.value.toUpperCase());
 
-// NEW：pos 只要包含所選 token 就通過（例如 'adj.'）
+  // NEW：pos 只要包含所選 token 就通過（例如 'adj.'）
   if (selPos.value){
     const token = selPos.value.toLowerCase();
     pool = pool.filter(i => (i.pos || "").toLowerCase().includes(token));
   }
-if (SET_FROM_URL){
-pool = pool.filter(i => (i.set_id||"").toLowerCase() === SET_FROM_URL.toLowerCase());
-}
+
+  if (SET_FROM_URL){
+    pool = pool.filter(i => (i.set_id||"").toLowerCase() === SET_FROM_URL.toLowerCase());
+  }
 }
 
 // ---- build deck ----
-function pickN(arr, n){
-  const a = [...arr];
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]] = [a[j],a[i]];
-  }
-  return a.slice(0, n);
-}
-
 function buildDeck(){
-const pairs = selDifficulty.value === "advanced" ? 11 : 6;
-const chosen = sample(pool, Math.min(pairs, pool.length));
+  const pairs = selDifficulty.value === "advanced" ? 11 : 6;
+  const chosen = sample(pool, Math.min(pairs, pool.length));
 
-const lang = selLang.value || "fr"; // 'fr' or 'en'
-const getMeaning = (i) => {
-if (lang === "fr") return i.meaning_fr || i.meaning_en || "";
-return i.meaning_en || i.meaning_fr || "";
-};
+  const lang = selLang.value || "fr"; // 'fr' or 'en'
+  const getMeaning = (i) => {
+    if (lang === "fr") return i.meaning_fr || i.meaning_en || "";
+    return i.meaning_en || i.meaning_fr || "";
+  };
 
-const temp = [];
-chosen.forEach((item, idx)=>{
-const hanzi   = item.chinese_tr;
-const pinyin  = item.pinyin_tw || "";
-const meaning = getMeaning(item);
-if(!hanzi || !meaning) return;
+  const temp = [];
+  chosen.forEach((item, idx)=>{
+    const hanzi   = item.chinese_tr;
+    const pinyin  = item.pinyin_tw || "";
+    const meaning = getMeaning(item);
+    if(!hanzi || !meaning) return;
 
-temp.push({ type:"hanzi",   pair:idx, hanzi, pinyin });
-temp.push({ type:"meaning", pair:idx, meaning });
-});
+    temp.push({ type:"hanzi",   pair:idx, hanzi, pinyin });
+    temp.push({ type:"meaning", pair:idx, meaning });
+  });
 
-deck = shuffle(temp);            // 打散
+  deck = shuffle(temp); // 打散
 }
-
 
 // ---- rendering ----
 function cardEl(card){
@@ -201,27 +196,22 @@ function resetStats(){
   game.moves = 0;
   game.matches = 0;
   game.flipped = [];
+
   movesEl.textContent = "0";
   matchesEl.textContent = "0";
-  timerEl.textContent = "00:00";
-  if (timerId) clearInterval(timerId);
-  game.startedAt = 0;
-}
 
-function startTimer(){
-  game.startedAt = Date.now();
-  timerId = setInterval(()=>{
-    const sec = Math.floor((Date.now() - game.startedAt)/1000);
-    timerEl.textContent = fmtTime(sec);
-  }, 1000);
+  // 以共用計時器為準
+  timer.stop();
+  timer.reset();
+  timerEl.textContent = "00:00";
 }
 
 function onFlip(card){
   if (card.classList.contains("flipped") || card.classList.contains("matched")) return;
   if (game.flipped.length >= 2) return;
 
-  // 開始計時
-  if (!game.startedAt) startTimer();
+  // 第一次翻牌就啟動（重複呼叫也安全）
+  timer.start();
 
   card.classList.add("flipped");
   game.flipped.push(card);
@@ -254,7 +244,7 @@ function onFlip(card){
 }
 
 function endGame(victory){
-  if (timerId) clearInterval(timerId);
+  timer.stop();
   if (victory){
     setTimeout(()=> victoryEl.style.display = "grid", 300);
   }
@@ -297,8 +287,6 @@ function applyAndStart(){
   renderBoard();
   resetStats();
 }
-
-// ---- utils ----
 
 // GO!
 init();
