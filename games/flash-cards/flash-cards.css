@@ -1,180 +1,217 @@
+/* 版心與背景（沿用 Memory Match 氣氛） */
 :root{
-    --glass: rgba(255,255,255,.2);
-    --glass-bd: rgba(255,255,255,.35);
-    --shadow: 0 6px 16px rgba(0,0,0,.12);
-    --radius: 14px;
+    --bg1:#7b6cf6;
+    --bg2:#3d3c96;
+    --pill-bg: rgba(255,255,255,0.14);
+    --pill-border: rgba(255,255,255,0.22);
+    --card-bg:#fff;
+    --card-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    --radius-xl: 18px;
+    --radius-lg: 14px;
+    --radius-md: 12px;
+    --radius-pill: 999px;
   }
   
-  *{margin:0;padding:0;box-sizing:border-box}
-  
+  html,body{
+    height:100%;
+  }
   body{
-    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-    background: radial-gradient(1200px 800px at 20% 10%, #8aa6ff 0%, #7b89ff 20%, #6d6fd6 35%, #5e5fb6 55%, #4f4f96 75%, #3e3e6e 100%);
-    min-height:100vh;
+    margin:0;
+    background: linear-gradient(180deg, var(--bg1), var(--bg2));
+    color:#0f1324;
+    -webkit-font-smoothing: antialiased;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+  
+  .page{
+    min-height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  
+  .page-header{
+    width: min(1100px, 92vw);
+    margin:28px auto 10px;
+  }
+  .page-header h1{
+    margin:0;
+    color:white;
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  
+  /* 篩選列 */
+  .controls{
+    width: min(1100px, 92vw);
+    margin:8px auto 8px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .controls .filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+  }
+  .controls select{
+    appearance:none;
+    padding:10px 38px 10px 14px;
+    border-radius: var(--radius-pill);
+    border:1px solid var(--pill-border);
+    background: var(--pill-bg);
     color:#fff;
-    padding:22px;
+    font-weight:600;
+    outline:none;
+    position:relative;
+  }
+  .controls select:focus{
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
+  }
+  .controls .chk{
+    display:flex; align-items:center; gap:8px;
+    color:#fff; font-weight:700;
+    background: var(--pill-bg);
+    border:1px solid var(--pill-border);
+    border-radius: var(--radius-pill);
+    padding:8px 12px;
+  }
+  .controls .size{
+    display:flex; align-items:center; gap:10px;
+    color:#fff; font-weight:700;
+    background: var(--pill-bg);
+    border:1px solid var(--pill-border);
+    border-radius: var(--radius-pill);
+    padding:8px 12px;
+  }
+  .controls .size select{
+    background:transparent; border:none; padding:0 6px;
   }
   
-  .container{ max-width:1200px; margin:0 auto }
-  
-  /* ---------- Header ---------- */
-  .header{ text-align:center; margin:8px 0 10px }
-  .title{
-    font-size:2.2rem; font-weight:800; letter-spacing:.2px;
-    text-shadow: 2px 2px 6px rgba(0,0,0,.35);
+  /* 模式切換（單選） */
+  .modes{
+    display:flex; flex-wrap:wrap; gap:12px;
   }
-  .subtitle{ opacity:.9; margin-top:6px; font-size:1rem }
-  
-  /* ---------- Toolbar / Filters ---------- */
-  .toolbar{
-    display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap;
-    margin:18px 0 8px;
-  }
-  .chip-label{font-weight:700; opacity:.9}
-  
-  .select, .btn, .chip{
-    appearance:none; border:none; border-radius:9999px; /* 膠囊 */
-    padding:8px 12px; font-weight:600; cursor:pointer;
+  .modes .radio{
+    display:flex; align-items:center; gap:8px;
+    padding:8px 14px;
+    color:#fff;
+    background: var(--pill-bg);
+    border:1px solid var(--pill-border);
+    border-radius: var(--radius-pill);
+    font-weight:700;
   }
   
-  .select{ background:#fff; color:#2c3e50; font-size:0.9rem }
-  .btn{
-    background:linear-gradient(135deg,#ff9a9e,#fecfef); color:#2c3e50;
-    box-shadow:0 3px 10px rgba(0,0,0,.18);
-    transition:transform .2s, box-shadow .2s, opacity .2s;
+  /* 主要按鈕（和 Memory Match 的 New Game 類似） */
+  .btn-primary{
+    margin-left:auto;
+    background: linear-gradient(180deg, #ffb6c9, #ff88a8);
+    color:#36121c;
+    border:none;
+    padding:10px 18px;
+    border-radius: var(--radius-pill);
+    font-weight:800;
+    box-shadow: 0 6px 18px rgba(255,136,168,0.45);
+    cursor:pointer;
   }
-  .btn:hover{ transform:translateY(-1px); box-shadow:0 5px 14px rgba(0,0,0,.24) }
-  .btn:disabled{ opacity:.6; cursor:not-allowed }
+  .btn-primary:hover{ filter:brightness(1.02); transform:translateY(-1px); }
+  .btn-primary:active{ transform:translateY(0); }
+  .btn-primary .icon{ margin-right:6px; }
   
-  .btn--ghost{
-    background:var(--glass); color:#fff; border:1px solid var(--glass-bd);
-    box-shadow: var(--shadow);
-  }
-  
-  .filters{
-    display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px;
-  }
-  .chip{
-    background:var(--glass); color:#fff; border:1px solid var(--glass-bd);
-    backdrop-filter: blur(10px);
-  }
-  
-  /* ---------- Timer line ---------- */
-  .timer{
-    position:relative; height:6px; border-radius:9999px; overflow:hidden;
-    background:rgba(255,255,255,.25); margin:12px auto 0; max-width:720px;
-    box-shadow: var(--shadow); border:1px solid var(--glass-bd);
-  }
-  .timer .bar{
-    position:absolute; inset:0 100% 0 0; /* width 0% 預設 */
-    background:linear-gradient(90deg,#a1c4fd,#c2e9fb);
-    box-shadow: inset 0 0 10px rgba(255,255,255,.5);
-    transition: width .2s linear;
-    width:0%;
-  }
-  
-  /* ---------- Stats (可選) ---------- */
+  /* 統計（計時器膠囊） */
   .stats{
-    display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin:12px 0 16px;
+    width: min(1100px, 92vw);
+    margin: 2px auto 14px;
+    display:flex; gap:12px; flex-wrap:wrap;
   }
   .stat{
-    background:var(--glass); padding:10px 16px; border-radius:12px; text-align:center;
-    backdrop-filter: blur(10px); border:1px solid var(--glass-bd);
-  }
-  .stat .num{ font-size:1.2rem; font-weight:800; display:block }
-  .stat .lbl{ font-size:.8rem; opacity:.85 }
-  
-  /* ---------- Flashcard Stage ---------- */
-  /* 讓字卡「置中且靠上」：頁面中間靠上、下方留空 */
-  .stage{
-    display:flex; flex-direction:column; align-items:center;
-    margin: 14px auto 28px; gap:16px; max-width:900px;
-  }
-  
-  /* 中間主字卡：比記憶配對的單張更聚焦、適合手機閱讀 */
-  .flashcard{
-    width:min(92vw, 560px);
-    aspect-ratio: 3 / 2;           /* 橫式卡，避免太高造成留白 */
-    border-radius: var(--radius);
-    background: linear-gradient(135deg,#4ecdc4,#44a08d);
+    display:grid;
+    grid-template-rows:auto auto;
+    place-items:center;
+    width:110px;
+    background: rgba(255,255,255,0.16);
+    border:1px solid var(--pill-border);
+    border-radius: 16px;
+    padding:10px 8px;
     color:#fff;
-    display:flex; flex-direction:column; justify-content:center; align-items:center;
-    padding:18px; text-align:center;
-    border:2px solid var(--glass-bd);
-    box-shadow: var(--shadow);
+  }
+  .stat-number{
+    font-size: 22px; font-weight: 800; line-height:1.1;
+  }
+  .stat-label{
+    font-size: 12px; opacity:.9; margin-top:2px;
   }
   
-  /* 如果有不同語言面（如法文）可套用 */
-  .flashcard.french{
-    background: linear-gradient(135deg,#a8edea,#fed6e3); color:#2c3e50;
+  /* 舞台／卡片 */
+  .stage{
+    width: min(1100px, 92vw);
+    margin: 0 auto 28px;
   }
-  
-  /* 文字樣式：字體加粗、對比清晰 */
-  .fc-hanzi{
-    font-family:'Noto Sans SC', sans-serif;
-    font-size: clamp(1.6rem, 6.5vw, 2.2rem);
-    font-weight:800; margin-bottom:8px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,.25);
+  .card{
+    background: var(--card-bg);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--card-shadow);
+    padding: clamp(16px, 3vw, 28px);
+    min-height: clamp(220px, 42vh, 360px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:left;
   }
-  .fc-pinyin{
-    font-size: clamp(0.95rem, 3.6vw, 1.05rem);
-    font-weight:700; opacity:.95; font-style:italic; margin-bottom:6px;
+  .card .front, .card .back{
+    width:100%;
   }
-  .fc-meaning{
-    font-size: clamp(1rem, 3.8vw, 1.15rem);
-    font-weight:800; line-height:1.35;
+  .hanzi{
+    font-size: clamp(28px, 5.2vw, 60px);
+    font-weight: 800;
+    letter-spacing:.02em;
+    color:#0f1324;
   }
-  
-  /* ---------- Controls ---------- */
-  /* Start 放在篩選區塊下方、主字卡上方；Speak 在 Prev/Next 旁邊 */
-  .top-actions{
-    display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px;
-  }
-  
-  .controls{
-    display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;
+  .pinyin{
     margin-top:6px;
+    font-size: clamp(14px, 2.4vw, 18px);
+    color:#445; opacity:.85;
   }
-  .btn-icon{
-    display:inline-flex; align-items:center; gap:8px; line-height:1;
-    padding:8px 14px; border-radius:9999px;
-  }
-  
-  /* 進度（第 n / N） */
-  .progress-pill{
-    background:var(--glass); color:#fff; border:1px solid var(--glass-bd);
-    padding:8px 12px; border-radius:9999px; font-weight:700;
-    backdrop-filter: blur(10px);
+  .meaning{
+    font-size: clamp(22px, 3.8vw, 36px);
+    font-weight: 700;
+    color:#0f1324;
   }
   
-  /* ---------- Note / 說明 ---------- */
-  .note{ text-align:center; opacity:.9; margin-top:6px; font-size:0.9rem }
-  
-  /* ---------- Dialog / 成功提示（可選） ---------- */
-  .dialog{
-    position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.35);
-    z-index:1000;
+  /* 頁尾操作列 */
+  .footer-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-top:12px;
   }
-  .dialog .panel{
-    background:linear-gradient(135deg,#667eea,#764ba2); padding:24px 28px; border-radius:16px;
-    text-align:center; box-shadow: 0 16px 32px rgba(0,0,0,.25);
-    min-width: 260px; color:#fff;
+  .progress{
+    color:#fff;
+    font-weight:800;
+    letter-spacing:.02em;
+    opacity:.95;
   }
-  .dialog h2{ font-size:1.5rem; margin-bottom:8px }
-  .dialog p{ margin-bottom:12px }
-  
-  /* ---------- Responsive ---------- */
-  @media (max-width:768px){
-    .title{ font-size:1.7rem }
-    .flashcard{ width:min(94vw, 520px); aspect-ratio: 4 / 3; padding:16px }
-    .fc-hanzi{ font-size: clamp(1.4rem, 7vw, 1.8rem) }
-    .fc-meaning{ font-size: clamp(0.95rem, 4vw, 1.05rem) }
-    .toolbar{ gap:10px }
+  .actions{
+    display:flex; gap:8px;
   }
+  .btn-ghost{
+    background: rgba(255,255,255,0.18);
+    border:1px solid rgba(255,255,255,0.28);
+    color:#fff;
+    padding:8px 12px;
+    border-radius: var(--radius-pill);
+    font-weight:700;
+    cursor:pointer;
+  }
+  .btn-ghost:hover{ filter:brightness(1.05); }
   
-  /* ---------- 小細節（可自由加上 class 使用） ---------- */
-  .hidden{ display:none !important }
-  .center{ text-align:center }
-  .w-full{ width:100% }
-  .maxw-md{ max-width:720px; margin:0 auto }
+  /* 行動裝置微調 */
+  @media (max-width: 560px){
+    .controls .filters{ gap:8px; }
+    .modes .radio span{ font-size: 14px; }
+    .stat{ width:100px; }
+  }
   
