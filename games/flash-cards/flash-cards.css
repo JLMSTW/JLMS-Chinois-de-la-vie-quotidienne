@@ -13,6 +13,10 @@
     --card-shadow:0 12px 30px rgba(0,0,0,0.18);
     --radius-xl:18px;
     --radius-pill:12px;
+  
+    /* 固定卡片尺寸（桌機）；想更小/更大改這裡 */
+    --card-w: 480px;
+    --card-h: 640px;
   }
   
   html,body{ height:100% }
@@ -48,6 +52,11 @@
     margin:8px auto 8px;
     display:flex; flex-direction:column; gap:12px;
   }
+  /* 依序：filters → modes → statusbar（把 Timer+Start 放到模式下方） */
+  .controls .filters{ order: 1; }
+  .modes{              order: 2; }
+  .statusbar{          order: 3; }
+  
   .controls .filters{
     display:flex; flex-wrap:wrap; gap:10px; align-items:center;
   }
@@ -91,7 +100,8 @@
   }
   .controls .size select{ background:transparent; border:none; padding:0 6px }
   
-  .modes{ display:flex; flex-wrap:wrap; gap:12px; }
+  /* 模式列置中 */
+  .modes{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
   .modes .radio{
     display:flex; align-items:center; gap:8px;
     padding:8px 14px;
@@ -132,15 +142,19 @@
   .stage{
     width: min(1100px, 92vw);
     margin: 12px auto 24px;
-    display:flex; align-items:center; justify-content:center;
-    min-height: 58vh; /* 讓卡片看起來在畫面中間 */
+  
+    /* 直向堆疊：卡片在上、footer 在下；同時雙向置中 */
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+  
+    min-height: 60vh; /* 讓卡片視覺位於頁面中段 */
   }
   
-  /* 固定尺寸（桌機），手機改用相對尺寸 */
+  /* 固定尺寸（桌機），手機用相對尺寸維持 3:4 比例 */
   .card{
     position: relative;
-    width: 560px;               /* 桌機固定寬 */
-    height: 740px;              /* 桌機固定高（直式） */
+    width: var(--card-w);
+    height: var(--card-h);
     border-radius: var(--radius-xl);
     box-shadow: var(--card-shadow);
     overflow: hidden;
@@ -149,9 +163,8 @@
   }
   @media (max-width: 640px){
     .card{
-      width: min(92vw, 360px);
-      aspect-ratio: 3 / 4;
-      height: auto;
+      width: min(92vw, 340px);
+      height: calc(min(92vw, 340px) * 4 / 3);
     }
   }
   
@@ -208,4 +221,5 @@
     font-weight:700; cursor:pointer;
   }
   .btn-ghost:hover{ filter:brightness(1.05) }
+  
   
