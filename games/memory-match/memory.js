@@ -4,6 +4,7 @@ import { shuffle, sample } from "/js/shared/shuffle.js";
 import { createTimer, formatTime } from "/js/shared/timer.js";
 import * as urlState from "/js/shared/urlState.js"; // ⬅️ 統一新版匯入
 import { adaptMemoryItem } from "/js/shared/dataAdapter.js";
+import { showDataLoadError } from "/js/shared/errorUi.js";
 
 // ---- constants / state ----
 const FLIP_BACK_DELAY = 2000; // 放慢為 2.0s
@@ -238,9 +239,17 @@ async function init(){
     selDifficulty.value = url.difficulty || "easy";
 
     applyAndStart();
-  }catch(e){
+  } catch (e) {
     console.error(e);
-    loadingEl.textContent = "Failed to load data.";
+    showDataLoadError({
+      sheetName: SHEETS.memory,
+      url: new URL(GAS_ENDPOINT).toString(),
+      hintList: [
+        "確認 Google Apps Script 權限（Anyone with the link）",
+        "檢查 sheet 名稱拼字是否一致",
+        "若有 CORS 問題，可先用 proxy 或在 GAS 設定允許"
+      ]
+    });
   }
 
   // bind UI
