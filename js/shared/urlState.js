@@ -48,4 +48,21 @@ export function get() {
   
     history.replaceState(null, "", u);
   }
-  
+// —— 新增的通用小工具 ——
+// 取單一 key
+export function getOne(key, fallback = null) {
+  const params = new URLSearchParams(location.search);
+  return params.has(key) ? params.get(key) : fallback;
+}
+
+// 一次覆蓋全部參數（不管原本有什麼）
+export function replaceAll(state = {}) {
+  const u = new URL(location.href);
+  u.search = ""; // 清空參數
+  for (const [key, val] of Object.entries(state)) {
+    if (val !== undefined && val !== null && val !== "") {
+      u.searchParams.set(key, String(val));
+    }
+  }
+  history.replaceState(null, "", u);
+}
