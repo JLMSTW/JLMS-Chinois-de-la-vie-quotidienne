@@ -2,9 +2,7 @@ import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
 import { escapeHtml } from "/js/shared/dom.js";
 import { shuffle, sample } from "/js/shared/shuffle.js";
 import { createTimer, formatTime } from "/js/shared/timer.js";
-import { get as getUrlState, set as setUrlState } from "/js/shared/urlState.js";
-// 若不是用 Live Server，而是 file:// 開頁，改成：
-// import { createTimer, formatTime } from "../../js/shared/timer.js";
+import * as urlState from "/js/shared/urlState.js"; // ⬅️ 統一新版匯入
 
 // ---- constants / state ----
 const FLIP_BACK_DELAY = 2000; // 放慢為 2.0s
@@ -28,8 +26,9 @@ const selLevel  = document.getElementById("filterLevel");
 const selPos    = document.getElementById("filterPos");
 const selLang   = document.getElementById("filterLang");
 
-const url = getUrlState();     // {difficulty, book, lesson, level, pos, lang, set}
-const SET_FROM_URL = url.set;  // 暫時保留同名變數給後面程式用
+// 讀 URL（統一用 urlState）
+const url = urlState.get();     // {difficulty, book, lesson, level, pos, lang, set}
+const SET_FROM_URL = url.set;   // 暫時保留同名變數給後面程式用
 
 let rawItems = [];   // 來自 GAS 的原始資料
 let pool     = [];   // 依篩選後可用的資料
@@ -40,8 +39,6 @@ let game     = {};   // 遊戲狀態（moves / matches / flipped 等）
 const by = (k) => (a,b)=> (a[k]||"").localeCompare(b[k]||"");
 const uniq = (arr)=> Array.from(new Set(arr.filter(Boolean)));
 const setLoading = (on)=> loadingEl.textContent = on ? "Loading…" : "";
-
-
 
 // ---- fetch from GAS ----
 async function fetchItems(){
@@ -244,12 +241,11 @@ function endGame(victory){
 // ---- main flows ----
 async function init(){
   // Difficulty/filters 初始值（可從 URL 還原）
-
   try{
     await fetchItems();
     buildFilters();
-     // ← 改成在這裡再還原（確保不被預設值覆蓋）
-     selDifficulty.value = url.difficulty || "easy";
+    // ← 改成在這裡再還原（確保不被預設值覆蓋）
+    selDifficulty.value = url.difficulty || "easy";
 
     applyAndStart();
   }catch(e){
@@ -267,7 +263,7 @@ async function init(){
   [selDifficulty, selBook, selLesson, selLevel, selPos, selLang].forEach(sel => {
     sel.addEventListener("change", () => {
       // 寫回 URL（集中在 /js/shared/urlState.js）
-      setUrlState({
+      urlState.set({
         difficulty: selDifficulty.value,
         book:       selBook.value,
         lesson:     selLesson.value,
@@ -276,11 +272,9 @@ async function init(){
         lang:       selLang.value || "fr",
         set:        SET_FROM_URL || undefined, // 有帶 set 的話保留，沒有就別寫
       });
-  
       applyAndStart();
     });
   });
-  
 }
 
 function applyAndStart(){
