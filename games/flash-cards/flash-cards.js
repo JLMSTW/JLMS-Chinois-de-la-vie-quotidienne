@@ -1,27 +1,28 @@
-// /games/flash-cards/flash-cards.js
-// FCv1.2-2：渲染第一張卡 + 進度（先不做 Flip/Prev/Next / URL）
-
+// FCv1.2-3：Flip / Prev / Next（循環）＋進度同步
 import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
 import { adaptMemoryItem } from "/js/shared/dataAdapter.js";
 import { showDataLoadError } from "/js/shared/errorUi.js";
-import { escapeHtml } from "/js/shared/dom.js"; // 用於安全插入字串
+import { escapeHtml } from "/js/shared/dom.js";
 
-// --- 簡單的頁面狀態（MVP 預設） ---
 const state = {
   items: [],
-  index: 0,              // 目前卡片索引（0-based）
-  lang: "fr",            // 背面語言：'fr' | 'en'（MVP 先預設 fr）
-  showPinyin: true,      // 是否在正面顯示拼音（預設 ON）
-  mode: "front-zh",      // 'front-zh'（正面中文），MVP 不切換
+  index: 0,              // 0-based
+  lang: "fr",            // 背面語言
+  showPinyin: true,      // 正面是否顯示拼音
+  mode: "front-zh",      // 'front-zh'（MVP先用這個）
+  isFront: true,         // true=看正面，false=看背面
 };
 
-// --- DOM 參照 ---
+// DOM
 const cardEl = document.getElementById("card");
 const frontEl = cardEl?.querySelector(".front");
 const backEl  = cardEl?.querySelector(".back");
 const progressEl = document.getElementById("progress");
 
-// --- 讀資料（與 FCv1.2-1 相同，但回傳 items） ---
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+// ---------- 資料 ----------
 async function loadData() {
   try {
     const u = new URL(GAS_ENDPOINT);
@@ -56,53 +57,89 @@ async function loadData() {
   }
 }
 
-// --- 渲染：依 state.index 顯示卡片內容 ---
+// ---------- 渲染 ----------
 function renderCard() {
   if (!frontEl || !backEl || !progressEl) return;
 
   const total = state.items.length;
   if (total === 0) {
-    // 空資料提示（之後會用更漂亮的樣式）
     frontEl.innerHTML = "—";
     backEl.innerHTML = "No cards. Try adjusting filters.";
     progressEl.textContent = "0 / 0";
+    showFace(true);
     return;
   }
 
-  // 安全處理 index（預防超界）
-  if (state.index < 0) state.index = 0;
-  if (state.index >= total) state.index = total - 1;
+  // 邊界保護
+  if (state.index < 0) state.index = (total + (state.index % total)) % total;
+  if (state.index >= total) state.index = state.index % total;
 
   const item = state.items[state.index];
 
   // 正面：中文 +（可選）拼音
   const hanzi = escapeHtml(item.hanzi || "");
   const pinyin = state.showPinyin ? `<div class="pinyin">${escapeHtml(item.pinyin || "")}</div>` : "";
-  // 依語言選義（fr 預設；若無則退回另一語言）
+
+  // 背面：義（fr預設，沒有就退到en）
   const meaning =
     state.lang === "fr"
       ? (item.meaning?.fr || item.meaning?.en || "")
       : (item.meaning?.en || item.meaning?.fr || "");
 
-  // 依 mode 決定誰是正面
   if (state.mode === "front-zh") {
     frontEl.innerHTML = `<div class="hanzi" style="font-size:2.2rem">${hanzi}</div>${pinyin}`;
     backEl.innerHTML = `<div class="meaning">${escapeHtml(meaning)}</div>`;
   } else {
-    // 如果之後要做「顯示外語」，這裡會反過來；MVP 先只處理 front-zh
+    // 未來做「顯示外語」時才用；MVP 仍以 front-zh 為主
     frontEl.innerHTML = `<div class="meaning">${escapeHtml(meaning)}</div>`;
     backEl.innerHTML   = `<div class="hanzi" style="font-size:2.2rem">${hanzi}</div>${pinyin}`;
   }
 
   // 進度
   progressEl.textContent = `${state.index + 1} / ${total}`;
+
+  // 顯示面
+  showFace(state.isFront);
 }
 
-// --- 初始化流程：抓資料 → 存到 state → 渲染第一張 ---
+// 只切換可見面（先用 display 控制，之後可改 3D 翻面）
+function showFace(front) {
+  state.isFront = front;
+  if (!frontEl || !backEl) return;
+  frontEl.style.display = front ? "block" : "none";
+  backEl.style.display  = front ? "none"  : "block";
+}
+
+// ---------- 互動 ----------
+function go(delta) {
+  const total = state.items.length;
+  if (total === 0) return;
+  state.index = (state.index + delta + total) % total; // 循環
+  state.isFront = true; // 換卡片時回到正面
+  renderCard();
+}
+
+function flip() {
+  showFace(!state.isFront);
+}
+
+// 事件綁定
+if (prevBtn) prevBtn.addEventListener("click", () => go(-1));
+if (nextBtn) nextBtn.addEventListener("click", () => go(+1));
+if (cardEl)  cardEl.addEventListener("click", flip);
+
+// 鍵盤快速鍵（可選）
+window.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft")  go(-1);
+  else if (e.key === "ArrowRight") go(+1);
+  else if (e.key === " " || e.key === "Enter") flip();
+});
+
+// ---------- 初始化 ----------
 async function init() {
-  const items = await loadData();
-  state.items = items;
+  state.items = await loadData();
   state.index = 0;
+  state.isFront = true;
   renderCard();
 }
 
