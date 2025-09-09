@@ -3,6 +3,7 @@ import { escapeHtml } from "/js/shared/dom.js";
 import { shuffle, sample } from "/js/shared/shuffle.js";
 import { createTimer, formatTime } from "/js/shared/timer.js";
 import * as urlState from "/js/shared/urlState.js"; // ⬅️ 統一新版匯入
+import { adaptMemoryItem } from "/js/shared/dataAdapter.js";
 
 // ---- constants / state ----
 const FLIP_BACK_DELAY = 2000; // 放慢為 2.0s
@@ -53,18 +54,7 @@ async function fetchItems(){
   const data = await res.json();
 
   // 正規化 key（保守處理大小寫/底線）
-  rawItems = (data.items || []).map(x => ({
-    set_id:       x.set_id ?? x.setId ?? "",
-    book:         x.book ?? x.Book ?? "",
-    lesson:       x.lesson ?? x.Lesson ?? "",
-    chinese_tr:   x.chinese_tr ?? x.chineseTR ?? x.chinesetr ?? x[PREF?.hanzi] ?? "",
-    pinyin_tw:    x.pinyin_tw ?? x.pinyintw ?? x[PREF?.pinyin] ?? "",
-    meaning_fr:   x.meaning_fr ?? x.meaningFR ?? "",
-    meaning_en:   x.meaning_en ?? x.meaningEN ?? "",
-    tocfl_level:  x.tocfl_level ?? x.TOCFL_Level ?? x.tocfl ?? "",
-    pos:          x.pos ?? x.part_of_speech ?? "",
-    active:       String(x.active ?? x.Active ?? "").toUpperCase() === "TRUE",
-  }));
+  rawItems = (data.items || []).map(x => adaptMemoryItem(x, PREF));
 
   setLoading(false);
 }
@@ -74,7 +64,7 @@ function buildFilters(){
   const opt = (val, text)=> `<option value="${val}">${text}</option>`;
   const books   = uniq(rawItems.map(i=>i.book)).sort();
   const lessons = uniq(rawItems.map(i=>i.lesson)).sort(by(undefined));
-  const lvls    = uniq(rawItems.map(i=>i.tocfl_level)).sort();
+  const lvls = uniq(rawItems.map(i=>i.level)).sort();
 
   // 從 pos 欄位擷取縮寫 token（adj. / n. / v. / prep. / pron. / conj. / adv. / mw. / aux. / expr.）
   const posTokens = uniq(
@@ -105,13 +95,13 @@ function buildFilters(){
 function filterPool(){
   pool = rawItems.filter(i =>
     i.active &&
-    i.chinese_tr &&
-    (i.meaning_fr || i.meaning_en)
+    i.hanzi &&
+    (i.meaning.fr || i.meaning.en)
   );
 
   if (selBook.value)   pool = pool.filter(i => i.book === selBook.value);
   if (selLesson.value) pool = pool.filter(i => i.lesson === selLesson.value);
-  if (selLevel.value)  pool = pool.filter(i => (i.tocfl_level||"").toUpperCase() === selLevel.value.toUpperCase());
+  if (selLevel.value)  pool = pool.filter(i => (i.level||"").toUpperCase() === selLevel.value.toUpperCase());
 
   // NEW：pos 只要包含所選 token 就通過（例如 'adj.'）
   if (selPos.value){
@@ -131,14 +121,14 @@ function buildDeck(){
 
   const lang = selLang.value || "fr"; // 'fr' or 'en'
   const getMeaning = (i) => {
-    if (lang === "fr") return i.meaning_fr || i.meaning_en || "";
-    return i.meaning_en || i.meaning_fr || "";
+    if (lang === "fr") return i.meaning.fr || i.meaning.en || "";
+    return i.meaning.en || i.meaning.fr || "";
   };
 
   const temp = [];
   chosen.forEach((item, idx)=>{
-    const hanzi   = item.chinese_tr;
-    const pinyin  = item.pinyin_tw || "";
+    const hanzi  = item.hanzi;
+    const pinyin = item.pinyin || "";
     const meaning = getMeaning(item);
     if(!hanzi || !meaning) return;
 
