@@ -18,9 +18,9 @@
     <div id="controls" class="controls">
       <div class="filters">
         <select id="filterBook"><option value="">Book: All</option></select>
-        <select id="filterLesson"><option value="">L17</option></select>
+        <select id="filterLesson"><option value="">Lesson: All</option></select>
         <select id="filterLevel"><option value="">TOCFL: All</option></select>
-        <select id="filterPos"><option value="">adv.</option></select>
+        <select id="filterPos"><option value="">POS: All</option></select>
 
         <select id="filterLang">
           <option value="fr" selected>Meaning: French</option>
@@ -39,41 +39,28 @@
             <option>25</option><option>30</option><option>40</option><option>50</option>
           </select>
         </label>
-
-        <button id="startBtn" class="btn-primary">
-          <span class="icon">🔄</span> Start
-        </button>
       </div>
 
-      <!-- Modes -->
-      <div id="modeBox" class="modes">
-        <label class="radio">
-          <input type="radio" name="mode" id="modeZh" value="front-zh" checked />
-          <span>See Chinese → Guess meaning</span>
-        </label>
-        <label class="radio">
-          <input type="radio" name="mode" id="modeForeign" value="front-foreign" />
-          <span>See French/English → Say Chinese</span>
-        </label>
+      <!-- Timer + Start 置中 -->
+      <div class="statusbar">
+        <div class="stat">
+          <div class="stat-number" id="timer">00:00</div>
+          <div class="stat-label">Time</div>
+        </div>
+        <button id="startBtn" class="btn-primary"><span class="icon">🔄</span> Start</button>
       </div>
-    </div>
 
-    <!-- Stats -->
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-number" id="timer">00:00</div>
-        <div class="stat-label">Time</div>
-      </div>
+      <!-- Modes（留空，交給 JS 生成，避免重複） -->
+      <div id="modeBox" class="modes"></div>
     </div>
 
     <!-- Stage / Card -->
     <main class="stage">
-      <!-- Memory-Match style flip: .card > .card-inner > .face.front / .face.back -->
       <div id="card" class="card">
         <div class="card-inner">
           <div class="face front">
-            <div class="hanzi" id="hanzi">原本</div>
-            <div class="pinyin" id="pinyin">yuán běn</div>
+            <div class="hanzi"   id="hanzi">原本</div>
+            <div class="pinyin"  id="pinyin">yuán běn</div>
           </div>
           <div class="face back">
             <div class="meaning" id="meaning">original; originally</div>
