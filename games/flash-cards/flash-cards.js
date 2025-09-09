@@ -1,4 +1,4 @@
-// FCv1.2-4：篩選列 + Start + URL 還原/寫回 + Size/ShowPinyin/Mode
+// FCv1.2-4 + FCv1.2-5：篩選列 + Start + URL 還原/寫回 + Size/ShowPinyin/Mode + TTS Speak
 import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
 import { adaptMemoryItem } from "/js/shared/dataAdapter.js";
 import { showDataLoadError } from "/js/shared/errorUi.js";
@@ -17,6 +17,29 @@ const state = {
   timerId: null,
   sec: 0,
   isFront: true,
+};
+
+// ---- TTS 管理 ----
+const tts = {
+  lastUtter: null,
+  speak(text, lang) {
+    if (!text) return;
+    try {
+      window.speechSynthesis.cancel(); // 先停掉上一段
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang || "zh-TW"; // zh-TW / fr-FR / en-US
+      u.rate = 1.0;
+      u.pitch = 1.0;
+      this.lastUtter = u;
+      window.speechSynthesis.speak(u);
+    } catch (e) {
+      console.warn("TTS not available", e);
+    }
+  },
+  cancel() {
+    try { window.speechSynthesis.cancel(); } catch (_) {}
+    this.lastUtter = null;
+  }
 };
 
 // DOM
@@ -41,6 +64,7 @@ const modeForeign = el("modeForeign");
 // Buttons already in your HTML
 const prevBtn = el("prevBtn");
 const nextBtn = el("nextBtn");
+const speakBtn = el("speakBtn");
 
 // ---------- 資料 ----------
 async function loadAllItems() {
@@ -236,14 +260,43 @@ function restoreFromUrl(){
   state.size = parseInt(selSize.value,10);
 }
 
+// ---------- 語音：念目前卡 ----------
+function speakCurrent() {
+  if (!state.items.length) return;
+  const item = state.items[state.index];
+
+  if (state.mode === "front-zh") {
+    if (state.isFront) {
+      // 正面：念中文
+      tts.speak(item.hanzi || "", "zh-TW");
+    } else {
+      // 背面：念外語
+      if (state.lang === "fr") tts.speak(item.meaning?.fr || item.meaning?.en || "", "fr-FR");
+      else tts.speak(item.meaning?.en || item.meaning?.fr || "", "en-US");
+    }
+  } else {
+    // 之後若切到 front-foreign 模式
+    if (state.isFront) {
+      if (state.lang === "fr") tts.speak(item.meaning?.fr || item.meaning?.en || "", "fr-FR");
+      else tts.speak(item.meaning?.en || item.meaning?.fr || "", "en-US");
+    } else {
+      tts.speak(item.hanzi || "", "zh-TW");
+    }
+  }
+}
+
 // ---------- 互動 ----------
 function go(delta){
+  tts.cancel(); // 新增：換卡停止前一段語音
   if (state.items.length === 0) return;
   state.index = (state.index + delta + state.items.length) % state.items.length;
   state.isFront = true;
   renderCard();
 }
-function flip(){ showFace(!state.isFront); }
+function flip(){
+  tts.cancel(); // 新增：翻面停止前一段語音
+  showFace(!state.isFront);
+}
 
 // 綁定
 if (btnStart) btnStart.addEventListener("click", applyAndStart);
@@ -253,10 +306,14 @@ const prevBtnEl = prevBtn, nextBtnEl = nextBtn;
 if (prevBtnEl) prevBtnEl.addEventListener("click", ()=> go(-1));
 if (nextBtnEl) nextBtnEl.addEventListener("click", ()=> go(+1));
 if (cardEl)    cardEl.addEventListener("click", flip);
+
+// Speak 按鈕 + 快捷鍵（S）
+if (speakBtn) speakBtn.addEventListener("click", speakCurrent);
 window.addEventListener("keydown", (e)=>{
   if (e.key === "ArrowLeft") go(-1);
   else if (e.key === "ArrowRight") go(+1);
   else if (e.key === " " || e.key === "Enter") flip();
+  else if (e.key?.toLowerCase?.() === "s") speakCurrent();
 });
 
 // ---------- 初始化 ----------
