@@ -8,6 +8,40 @@
 </head>
 <body>
   <h1>📖 Flash Cards</h1>
+  <!-- Controls -->
+<div id="controls" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 16px;">
+    <select id="filterBook"><option value="">Book: All</option></select>
+    <select id="filterLesson"><option value="">Lesson: All</option></select>
+    <select id="filterLevel"><option value="">TOCFL: All</option></select>
+    <select id="filterPos"><option value="">POS: All</option></select>
+    <select id="filterLang">
+      <option value="fr">Meaning: French</option>
+      <option value="en">Meaning: English</option>
+    </select>
+  
+    <label style="margin-left:8px;">
+      <input type="checkbox" id="chkPinyin" checked>
+      Show Pinyin
+    </label>
+  
+    <label style="margin-left:8px;">
+      Number of cards
+      <select id="selSize">
+        <option>10</option><option>15</option><option selected>20</option>
+        <option>25</option><option>30</option><option>40</option><option>50</option>
+      </select>
+    </label>
+  
+    <button id="startBtn" style="margin-left:8px;">Start</button>
+  
+    <div id="modeBox" style="display:flex;gap:12px;margin-left:16px;">
+      <label><input type="radio" name="mode" id="modeZh" value="front-zh" checked> See Chinese → Guess meaning</label>
+      <label><input type="radio" name="mode" id="modeForeign" value="front-foreign"> See French/English → Say Chinese</label>
+    </div>
+  
+    <div id="timer" style="margin-left:auto;">00:00</div>
+  </div>
+  
   <div id="card" class="card">
     <div class="front">漢字</div>
     <div class="back">Meaning</div>
