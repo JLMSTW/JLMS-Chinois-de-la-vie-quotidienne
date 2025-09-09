@@ -1,6 +1,6 @@
 /* ===== Theme & tokens ===== */
 :root{
-    --bg1:#7b6cf6;
+    --bg1:#3d3c96;
     --bg2:#3d3c96;
   
     /* Pills */
@@ -15,8 +15,8 @@
     --radius-pill:12px;
   
     /* 固定卡片尺寸（桌機）；想更小/更大改這裡 */
-    --card-w: 480px;
-    --card-h: 640px;
+    --card-w: 384px;
+    --card-h: 512px;
   }
   
   html,body{ height:100% }
@@ -219,6 +219,13 @@
     color:#fff; padding:8px 12px;
     border-radius: var(--radius-pill);
     font-weight:700; cursor:pointer;
+  }
+  /* 覆蓋拼音樣式 —— 貼在 flash-cards.css 最底部 */
+.pinyin{
+    font-size: 30px;        /* 大小：改成你要的 px 或 clamp */
+    font-weight: 700;       /* 粗細：400=正常, 600=半粗, 700=粗 */
+    color: #1c1c1c;         /* 顏色 */
+    opacity: 1;             /* 需要就調整，1=不透明 */
   }
   .btn-ghost:hover{ filter:brightness(1.05) }
   
