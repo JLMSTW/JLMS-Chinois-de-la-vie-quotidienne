@@ -42,8 +42,8 @@
   .page-header h1{
     margin:0; color:#fff;
     font-size: clamp(32px, 5vw, 52px);
-    font-weight:900;
-    text-shadow:0 2px 12px rgba(0,0,0,0.25);
+    font-weight:800;
+    text-shadow:0 2px 6px rgba(0,0,0,0.40);
   }
   
   /* ===== Controls ===== */
@@ -189,7 +189,7 @@
   }
   
   /* 你指定的漸層底色 */
-  .front{ background: linear-gradient(135deg,#ff6b6b,#ee5a24); }
+  .front{ background: linear-gradient(135deg,#ffffd5,#ffe6e6); }
   .back { background: linear-gradient(135deg,#4ecdc4,#44a08d); transform: rotateY(180deg); }
   
   /* 文字樣式 */
