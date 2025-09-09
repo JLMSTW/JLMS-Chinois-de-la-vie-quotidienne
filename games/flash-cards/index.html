@@ -4,91 +4,92 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JLMS Flash Cards</title>
-  <!-- 共用樣式 -->
   <link rel="stylesheet" href="../../style/base.css" />
-  <!-- 本頁樣式（置中卡片、控制列排版等） -->
   <link rel="stylesheet" href="./flash-cards.css" />
 </head>
-<body class="flashcards">
-  <div id="page">
-    <h1>📖 Flash Cards</h1>
+<body>
+  <div class="page">
+    <!-- 頁首／標題（和 Memory Match 視覺一致） -->
+    <header class="page-header">
+      <h1>📖 Flash Cards</h1>
+    </header>
 
-    <!-- Controls -->
-    <div id="controls">
-      <select id="filterBook">
-        <option value="">Book: All</option>
-      </select>
+    <!-- 篩選列（Start 放在最右） -->
+    <div id="controls" class="controls">
+      <div class="filters">
+        <select id="filterBook"><option value="">Book: All</option></select>
+        <select id="filterLesson"><option value="">Lesson: All</option></select>
+        <select id="filterLevel"><option value="">TOCFL: All</option></select>
+        <select id="filterPos"><option value="">POS: All</option></select>
 
-      <select id="filterLesson">
-        <option value="">Lesson: All</option>
-      </select>
-
-      <select id="filterLevel">
-        <option value="">TOCFL: All</option>
-      </select>
-
-      <select id="filterPos">
-        <option value="">POS: All</option>
-      </select>
-
-      <select id="filterLang">
-        <option value="fr">Meaning: French</option>
-        <option value="en">Meaning: English</option>
-      </select>
-
-      <label>
-        <input type="checkbox" id="chkPinyin" checked />
-        Show Pinyin
-      </label>
-
-      <label>
-        Number of cards
-        <select id="selSize">
-          <option>10</option>
-          <option>15</option>
-          <option selected>20</option>
-          <option>25</option>
-          <option>30</option>
-          <option>40</option>
-          <option>50</option>
+        <select id="filterLang">
+          <option value="fr">Meaning: French</option>
+          <option value="en">Meaning: English</option>
         </select>
-      </label>
 
-      <button id="startBtn">Start</button>
-      <button id="speakBtn">🔊 Speak</button>
-
-      <div id="modeBox" style="display:flex;gap:12px;margin-left:8px;">
-        <label>
-          <input type="radio" name="mode" id="modeZh" value="front-zh" checked />
-          See Chinese → Guess meaning
+        <label class="chk">
+          <input type="checkbox" id="chkPinyin" checked />
+          <span>Show Pinyin</span>
         </label>
-        <label>
+
+        <label class="size">
+          <span>Number of cards</span>
+          <select id="selSize">
+            <option>10</option><option>15</option><option selected>20</option>
+            <option>25</option><option>30</option><option>40</option><option>50</option>
+          </select>
+        </label>
+
+        <!-- Start 按鈕：沿用 Memory Match 的主要按鈕風格 -->
+        <button id="startBtn" class="btn-primary">
+          <span class="icon">🔄</span>
+          Start
+        </button>
+      </div>
+
+      <!-- 顯示模式切換（文案會由 JS 依語言更新） -->
+      <div id="modeBox" class="modes">
+        <label class="radio">
+          <input type="radio" name="mode" id="modeZh" value="front-zh" checked />
+          <span>See Chinese → Guess meaning</span>
+        </label>
+        <label class="radio">
           <input type="radio" name="mode" id="modeForeign" value="front-foreign" />
-          See French/English → Say Chinese
+          <span>See French/English → Say Chinese</span>
         </label>
       </div>
     </div>
 
-    <!-- 卡片舞台 -->
-    <div id="stage">
+    <!-- 統計膠囊（計時器） -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number" id="timer">00:00</div>
+        <div class="stat-label">Time</div>
+      </div>
+    </div>
+
+    <!-- 卡片 -->
+    <main class="stage">
       <div id="card" class="card">
         <div class="front">漢字</div>
         <div class="back">Meaning</div>
       </div>
-    </div>
 
-    <!-- 底部資訊＆翻頁 -->
-    <div id="footer">
-      <span id="progress">0 / 0</span>
-      <span>·</span>
-      <span id="timer">00:00</span>
-
-      <div style="margin-left:auto; display:flex; gap:8px;">
-        <button id="prevBtn">⬅ Prev</button>
-        <button id="nextBtn">Next ➡</button>
+      <!-- 進度＋操作：Speak 放在 Prev/Next 旁邊 -->
+      <div class="footer-bar">
+        <div id="progress" class="progress">1 / 20</div>
+        <div class="actions">
+          <button id="prevBtn" class="btn-ghost">⬅ Prev</button>
+          <button id="speakBtn" class="btn-ghost">🔊 Speak</button>
+          <button id="nextBtn" class="btn-ghost">Next ➡</button>
+        </div>
       </div>
-    </div>
+    </main>
   </div>
+
+  <script type="module" src="./flash-cards.js"></script>
+</body>
+</html>
 
   <script type="module" src="./flash-cards.js"></script>
 </body>
