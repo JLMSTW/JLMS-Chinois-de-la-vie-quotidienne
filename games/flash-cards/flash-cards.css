@@ -2,19 +2,22 @@
 :root{
     --bg1:#7b6cf6;
     --bg2:#3d3c96;
-    --pill-bg: rgba(255,255,255,0.14);
-    --pill-border: rgba(255,255,255,0.22);
+  
+    /* 膠囊統一樣式 */
+    --pill-bg:#ffffff;
+    --pill-border:rgba(0,0,0,0.12);
+    --pill-fg:#1f2937;
+    --pill-font-size:14px;         /* 想放大統一改這裡 15px/16px */
+  
     --card-bg:#fff;
-    --card-shadow: 0 12px 30px rgba(0,0,0,0.18);
-    --radius-xl: 18px;
-    --radius-lg: 14px;
-    --radius-md: 12px;
-    --radius-pill: 999px;
+    --card-shadow:0 12px 30px rgba(0,0,0,0.18);
+    --radius-xl:18px;
+    --radius-lg:14px;
+    --radius-md:12px;
+    --radius-pill:12px;
   }
   
-  html,body{
-    height:100%;
-  }
+  html,body{ height:100% }
   body{
     margin:0;
     background: linear-gradient(180deg, var(--bg1), var(--bg2));
@@ -30,16 +33,18 @@
     align-items:center;
   }
   
+  /* Header */
   .page-header{
     width: min(1100px, 92vw);
     margin:28px auto 10px;
+    text-align:center;
   }
   .page-header h1{
     margin:0;
-    color:white;
-    font-size: clamp(28px, 4vw, 46px);
-    font-weight: 800;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    color:#fff;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight:900;
+    text-shadow:0 2px 12px rgba(0,0,0,0.25);
   }
   
   /* 篩選列 */
@@ -51,60 +56,75 @@
     gap:12px;
   }
   .controls .filters{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    align-items:center;
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
   }
+  
+  /* 下拉（普通 select 膠囊） */
   .controls select{
     appearance:none;
     padding:10px 38px 10px 14px;
     border-radius: var(--radius-pill);
     border:1px solid var(--pill-border);
     background: var(--pill-bg);
-    color:#fff;
-    font-weight:600;
+    color: var(--pill-fg);
+    font-weight:700;
+    font-size: var(--pill-font-size);
+    line-height: 1.1;
     outline:none;
     position:relative;
   }
   .controls select:focus{
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
+    box-shadow:0 0 0 3px rgba(255,255,255,0.15);
   }
+  
+  /* 勾選類膠囊（Show Pinyin 等） */
   .controls .chk{
     display:flex; align-items:center; gap:8px;
-    color:#fff; font-weight:700;
+    color: var(--pill-fg);
+    font-weight:700;
+    font-size: var(--pill-font-size);
+    line-height: 1.1;
     background: var(--pill-bg);
     border:1px solid var(--pill-border);
     border-radius: var(--radius-pill);
     padding:8px 12px;
   }
+  
+  /* 尺寸/數量膠囊（Number of cards） */
   .controls .size{
     display:flex; align-items:center; gap:10px;
-    color:#fff; font-weight:700;
+    color: var(--pill-fg);
+    font-weight:700;
+    font-size: var(--pill-font-size);
+    line-height: 1.1;
     background: var(--pill-bg);
     border:1px solid var(--pill-border);
-    border-radius: var(--radius-pill);
+    border-radius: 20px;
     padding:8px 12px;
   }
   .controls .size select{
     background:transparent; border:none; padding:0 6px;
+    color: var(--pill-fg);
+    font-weight:700; font-family:inherit;
+    font-size: var(--pill-font-size);
+    line-height: 1.1;
   }
   
-  /* 模式切換（單選） */
-  .modes{
-    display:flex; flex-wrap:wrap; gap:12px;
-  }
+  /* 模式切換（單選膠囊） */
+  .modes{ display:flex; flex-wrap:wrap; gap:12px; }
   .modes .radio{
     display:flex; align-items:center; gap:8px;
     padding:8px 14px;
-    color:#fff;
+    color: var(--pill-fg);
     background: var(--pill-bg);
     border:1px solid var(--pill-border);
     border-radius: var(--radius-pill);
     font-weight:700;
+    font-size: var(--pill-font-size);
+    line-height: 1.1;
   }
   
-  /* 主要按鈕（和 Memory Match 的 New Game 類似） */
+  /* 主要按鈕（Start） */
   .btn-primary{
     margin-left:auto;
     background: linear-gradient(180deg, #ffb6c9, #ff88a8);
@@ -113,105 +133,127 @@
     padding:10px 18px;
     border-radius: var(--radius-pill);
     font-weight:800;
-    box-shadow: 0 6px 18px rgba(255,136,168,0.45);
+    box-shadow:0 6px 18px rgba(255,136,168,0.45);
     cursor:pointer;
   }
-  .btn-primary:hover{ filter:brightness(1.02); transform:translateY(-1px); }
-  .btn-primary:active{ transform:translateY(0); }
-  .btn-primary .icon{ margin-right:6px; }
+  .btn-primary:hover{ filter:brightness(1.02); transform:translateY(-1px) }
+  .btn-primary:active{ transform:translateY(0) }
+  .btn-primary .icon{ margin-right:6px }
   
   /* 統計（計時器膠囊） */
   .stats{
     width: min(1100px, 92vw);
-    margin: 2px auto 14px;
+    margin:2px auto 14px;
     display:flex; gap:12px; flex-wrap:wrap;
   }
   .stat{
-    display:grid;
-    grid-template-rows:auto auto;
-    place-items:center;
+    display:grid; grid-template-rows:auto auto; place-items:center;
     width:110px;
     background: rgba(255,255,255,0.16);
     border:1px solid var(--pill-border);
-    border-radius: 16px;
+    border-radius:16px;
     padding:10px 8px;
     color:#fff;
   }
-  .stat-number{
-    font-size: 22px; font-weight: 800; line-height:1.1;
-  }
-  .stat-label{
-    font-size: 12px; opacity:.9; margin-top:2px;
+  .stat-number{ font-size:22px; font-weight:800; line-height:1.1 }
+  .stat-label{ font-size:12px; opacity:.9; margin-top:2px }
+  
+  /* 舞台／卡片容器 */
+  .stage{
+    width: min(900px, 92vw);
+    margin:16px auto 24px;
+    display:flex; justify-content:center;
   }
   
-  /* 舞台／卡片 */
-  .stage{
-    width: min(1100px, 92vw);
-    margin: 0 auto 28px;
-  }
+  /* 主卡片：更窄更高（直向）、置中、使用 Memory Match 翻牌結構 */
   .card{
-    background: var(--card-bg);
+    position: relative;
+    width: min(560px, 92vw);        /* 想更窄改 520px */
+    aspect-ratio: 3 / 4;            /* 直式比例 */
     border-radius: var(--radius-xl);
     box-shadow: var(--card-shadow);
-    padding: clamp(16px, 3vw, 28px);
-    min-height: clamp(220px, 42vh, 360px);
+    background: transparent;        /* 顏色交給 front/back */
+    overflow: hidden;
+  
+    /* 翻牌 3D 透視 */
+    perspective: 1000px;
+    padding: 0;
+  }
+  
+  /* 內層：可翻轉的容器 */
+  .card-inner{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .6s;
+    border-radius: inherit;
+  }
+  .card.flipped .card-inner{ transform: rotateY(180deg); }
+  
+  /* 兩個面：充滿卡片、置中、隱藏背面 */
+  .face,
+  .card .front,
+  .card .back{
+    position:absolute;
+    inset:0;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
-    text-align:left;
+    padding: clamp(16px, 2.6vw, 24px);
+    border-radius: inherit;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    text-align: center;
   }
-  .card .front, .card .back{
-    width:100%;
-  }
+  
+  /* 指定兩面漸層底色（你要求的配色） */
+  .front{ background: linear-gradient(135deg,#ff6b6b,#ee5a24); }
+  .back { background: linear-gradient(135deg,#4ecdc4,#44a08d); transform: rotateY(180deg); }
+  
+  /* 文字樣式（置中） */
   .hanzi{
-    font-size: clamp(28px, 5.2vw, 60px);
-    font-weight: 800;
+    font-size: clamp(28px, 6vw, 48px);
+    font-weight:800;
     letter-spacing:.02em;
     color:#0f1324;
   }
   .pinyin{
-    margin-top:6px;
-    font-size: clamp(14px, 2.4vw, 18px);
+    margin-top:4px;
+    font-size: clamp(14px, 3.2vw, 18px);
     color:#445; opacity:.85;
   }
   .meaning{
-    font-size: clamp(22px, 3.8vw, 36px);
-    font-weight: 700;
+    margin-top:6px;
+    font-size: clamp(18px, 4.2vw, 28px);
+    font-weight:700;
     color:#0f1324;
   }
   
   /* 頁尾操作列 */
   .footer-bar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-top:12px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; margin-top:12px;
   }
   .progress{
-    color:#fff;
-    font-weight:800;
-    letter-spacing:.02em;
-    opacity:.95;
+    color:#fff; font-weight:800; letter-spacing:.02em; opacity:.95;
   }
-  .actions{
-    display:flex; gap:8px;
-  }
+  .actions{ display:flex; gap:8px }
   .btn-ghost{
     background: rgba(255,255,255,0.18);
     border:1px solid rgba(255,255,255,0.28);
-    color:#fff;
-    padding:8px 12px;
+    color:#fff; padding:8px 12px;
     border-radius: var(--radius-pill);
-    font-weight:700;
-    cursor:pointer;
+    font-weight:700; cursor:pointer;
   }
-  .btn-ghost:hover{ filter:brightness(1.05); }
+  .btn-ghost:hover{ filter:brightness(1.05) }
   
   /* 行動裝置微調 */
-  @media (max-width: 560px){
-    .controls .filters{ gap:8px; }
-    .modes .radio span{ font-size: 14px; }
-    .stat{ width:100px; }
+  @media (max-width:560px){
+    .controls .filters{ gap:8px }
+    .modes .radio span{ font-size:14px }
+    .stat{ width:100px }
+    .card{ width: min(520px, 94vw); aspect-ratio:3/4 }
   }
   

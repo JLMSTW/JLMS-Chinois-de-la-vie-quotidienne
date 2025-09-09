@@ -9,21 +9,21 @@
 </head>
 <body>
   <div class="page">
-    <!-- 頁首／標題（和 Memory Match 視覺一致） -->
+    <!-- Header -->
     <header class="page-header">
       <h1>📖 Flash Cards</h1>
     </header>
 
-    <!-- 篩選列（Start 放在最右） -->
+    <!-- Controls -->
     <div id="controls" class="controls">
       <div class="filters">
         <select id="filterBook"><option value="">Book: All</option></select>
-        <select id="filterLesson"><option value="">Lesson: All</option></select>
+        <select id="filterLesson"><option value="">L17</option></select>
         <select id="filterLevel"><option value="">TOCFL: All</option></select>
-        <select id="filterPos"><option value="">POS: All</option></select>
+        <select id="filterPos"><option value="">adv.</option></select>
 
         <select id="filterLang">
-          <option value="fr">Meaning: French</option>
+          <option value="fr" selected>Meaning: French</option>
           <option value="en">Meaning: English</option>
         </select>
 
@@ -40,14 +40,12 @@
           </select>
         </label>
 
-        <!-- Start 按鈕：沿用 Memory Match 的主要按鈕風格 -->
         <button id="startBtn" class="btn-primary">
-          <span class="icon">🔄</span>
-          Start
+          <span class="icon">🔄</span> Start
         </button>
       </div>
 
-      <!-- 顯示模式切換（文案會由 JS 依語言更新） -->
+      <!-- Modes -->
       <div id="modeBox" class="modes">
         <label class="radio">
           <input type="radio" name="mode" id="modeZh" value="front-zh" checked />
@@ -60,7 +58,7 @@
       </div>
     </div>
 
-    <!-- 統計膠囊（計時器） -->
+    <!-- Stats -->
     <div class="stats">
       <div class="stat">
         <div class="stat-number" id="timer">00:00</div>
@@ -68,14 +66,22 @@
       </div>
     </div>
 
-    <!-- 卡片 -->
+    <!-- Stage / Card -->
     <main class="stage">
+      <!-- Memory-Match style flip: .card > .card-inner > .face.front / .face.back -->
       <div id="card" class="card">
-        <div class="front">漢字</div>
-        <div class="back">Meaning</div>
+        <div class="card-inner">
+          <div class="face front">
+            <div class="hanzi" id="hanzi">原本</div>
+            <div class="pinyin" id="pinyin">yuán běn</div>
+          </div>
+          <div class="face back">
+            <div class="meaning" id="meaning">original; originally</div>
+          </div>
+        </div>
       </div>
 
-      <!-- 進度＋操作：Speak 放在 Prev/Next 旁邊 -->
+      <!-- Footer actions -->
       <div class="footer-bar">
         <div id="progress" class="progress">1 / 20</div>
         <div class="actions">
@@ -86,10 +92,6 @@
       </div>
     </main>
   </div>
-
-  <script type="module" src="./flash-cards.js"></script>
-</body>
-</html>
 
   <script type="module" src="./flash-cards.js"></script>
 </body>
