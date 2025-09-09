@@ -1,84 +1,178 @@
-/* 版面與排版 */
+/* ---- Theme (align with Memory Match) ---- */
 :root {
-    --fc-bg1: #7b88ff;
-    --fc-bg2: #3e4aa3;
-    --fc-card: #ffffff;
-    --fc-text: #1f2937;
-    --fc-muted: #6b7280;
+    --mm-bg1: #8690ff;  /* light indigo */
+    --mm-bg2: #4b3fb5;  /* deep violet */
+    --mm-pill-bg: #ffffff;
+    --mm-pill-text: #1f2937;
+    --mm-muted: #6b7280;
+    --mm-shadow: 0 14px 40px rgba(16, 24, 40, .18);
+    --mm-radius-pill: 9999px;
+    --mm-radius-card: 16px;
+    --mm-focus: 0 0 0 3px rgba(99, 102, 241, .35);
   }
   
+  /* 背景漸層 & 頁面寬度 */
   body.flashcards {
     min-height: 100vh;
-    background: radial-gradient(1200px 600px at 20% -10%, var(--fc-bg1), var(--fc-bg2));
-    color: var(--fc-text);
+    background: radial-gradient(1200px 560px at 20% -10%, var(--mm-bg1), var(--mm-bg2));
+    color: var(--mm-pill-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   #page {
-    max-width: 900px;
-    margin: 24px auto 48px;
-    padding: 0 16px;
+    max-width: 1100px;
+    margin: 28px auto 56px;
+    padding: 0 20px;
   }
   
+  /* 標題風格（對齊 Memory Match） */
   h1 {
-    font-size: 2rem;
-    margin: 8px 0 16px;
+    color: #fff;
+    font-size: clamp(1.8rem, 3.6vw, 3rem);
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: .2px;
+    margin: 0 0 14px;
+    text-shadow: 0 8px 30px rgba(0,0,0,.18);
   }
   
-  /* 控制列 */
+  /* ---- Controls 膠囊 UI ---- */
   #controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 12px;
+    gap: 10px 12px;
     align-items: center;
-    margin: 12px 0 16px;
+    margin: 8px 0 18px;
   }
   
-  #controls select, #controls button, #controls label {
+  #controls select,
+  #controls button,
+  #controls label {
     font-size: 0.95rem;
   }
   
-  /* 卡片 */
+  #controls select,
+  #controls button {
+    background: var(--mm-pill-bg);
+    color: var(--mm-pill-text);
+    border: 0;
+    border-radius: var(--mm-radius-pill);
+    box-shadow: var(--mm-shadow);
+    padding: 8px 14px;
+    line-height: 1.1;
+    cursor: pointer;
+  }
+  
+  #controls select {
+    padding-right: 28px;
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, #9ca3af 50%),
+      linear-gradient(135deg, #9ca3af 50%, transparent 50%);
+    background-position:
+      calc(100% - 18px) 14px,
+      calc(100% - 12px) 14px;
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+  }
+  
+  #controls button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 44px rgba(16,24,40,.22);
+  }
+  
+  #controls button:active {
+    transform: translateY(0);
+    box-shadow: var(--mm-shadow);
+  }
+  
+  #controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--mm-pill-bg);
+    border-radius: var(--mm-radius-pill);
+    padding: 8px 12px;
+    box-shadow: var(--mm-shadow);
+    color: var(--mm-pill-text);
+  }
+  
+  #controls input[type="checkbox"],
+  #controls input[type="radio"] {
+    accent-color: #6366f1;
+  }
+  
+  /* 語音按鈕小圖示間距 */
+  #speakBtn { padding-left: 12px; }
+  
+  /* ---- Card 舞台 ---- */
   #stage {
     display: grid;
     place-items: center;
-    margin: 24px 0 16px;
+    margin: 24px 0 18px;
   }
   
+  /* 白底大卡片 + 陰影（對齊 Memory Match） */
   .card {
-    width: min(680px, 92vw);
-    min-height: 260px;
-    background: var(--fc-card);
-    border-radius: 16px;
-    box-shadow: 0 14px 40px rgba(16,24,40,.18);
-    padding: 28px 32px;
+    width: min(960px, 92vw);
+    min-height: clamp(260px, 42vh, 420px);
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: var(--mm-shadow);
+    padding: clamp(22px, 4vw, 36px) clamp(22px, 4.5vw, 44px);
   }
   
+  /* 內容排版（依你的 JS：front/back 交替顯示） */
   .card .hanzi {
-    font-size: clamp(2.0rem, 6vw, 3.2rem);
-    line-height: 1.25;
-    font-weight: 700;
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    line-height: 1.22;
+    font-weight: 800;
+    letter-spacing: .5px;
   }
   
   .card .pinyin {
     margin-top: 10px;
-    font-size: clamp(1rem, 3.2vw, 1.25rem);
-    color: var(--fc-muted);
+    font-size: clamp(1rem, 3.2vw, 1.2rem);
+    color: var(--mm-muted);
   }
   
   .card .meaning {
-    font-size: clamp(1.2rem, 3.8vw, 1.7rem);
-    line-height: 1.5;
+    font-size: clamp(1.2rem, 4.2vw, 1.7rem);
+    line-height: 1.55;
   }
   
-  /* 底部列 */
+  /* ---- Footer：進度、計時、翻頁 ---- */
   #footer {
     display: flex;
     align-items: center;
     gap: 12px;
     color: #fff;
-    opacity: .9;
+    opacity: .95;
   }
   
-  #progress { font-weight: 600; }
+  #progress { font-weight: 700; }
   #timer    { font-variant-numeric: tabular-nums; }
+  
+  #footer button {
+    background: var(--mm-pill-bg);
+    color: var(--mm-pill-text);
+    border: 0;
+    border-radius: var(--mm-radius-pill);
+    padding: 8px 14px;
+    line-height: 1.1;
+    box-shadow: var(--mm-shadow);
+    cursor: pointer;
+  }
+  #footer button:hover { transform: translateY(-1px); box-shadow: 0 16px 44px rgba(16,24,40,.22); }
+  #footer button:active { transform: translateY(0); box-shadow: var(--mm-shadow); }
+  
+  /* ---- 可用性（鍵盤焦點樣式） ---- */
+  #controls select:focus,
+  #controls button:focus,
+  #controls label:has(:focus-visible),
+  #footer button:focus {
+    outline: none;
+    box-shadow: var(--mm-focus), var(--mm-shadow);
+  }
   
