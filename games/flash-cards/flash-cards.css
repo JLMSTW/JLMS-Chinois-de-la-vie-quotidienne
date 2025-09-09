@@ -1,0 +1,84 @@
+/* 版面與排版 */
+:root {
+    --fc-bg1: #7b88ff;
+    --fc-bg2: #3e4aa3;
+    --fc-card: #ffffff;
+    --fc-text: #1f2937;
+    --fc-muted: #6b7280;
+  }
+  
+  body.flashcards {
+    min-height: 100vh;
+    background: radial-gradient(1200px 600px at 20% -10%, var(--fc-bg1), var(--fc-bg2));
+    color: var(--fc-text);
+  }
+  
+  #page {
+    max-width: 900px;
+    margin: 24px auto 48px;
+    padding: 0 16px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin: 8px 0 16px;
+  }
+  
+  /* 控制列 */
+  #controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: center;
+    margin: 12px 0 16px;
+  }
+  
+  #controls select, #controls button, #controls label {
+    font-size: 0.95rem;
+  }
+  
+  /* 卡片 */
+  #stage {
+    display: grid;
+    place-items: center;
+    margin: 24px 0 16px;
+  }
+  
+  .card {
+    width: min(680px, 92vw);
+    min-height: 260px;
+    background: var(--fc-card);
+    border-radius: 16px;
+    box-shadow: 0 14px 40px rgba(16,24,40,.18);
+    padding: 28px 32px;
+  }
+  
+  .card .hanzi {
+    font-size: clamp(2.0rem, 6vw, 3.2rem);
+    line-height: 1.25;
+    font-weight: 700;
+  }
+  
+  .card .pinyin {
+    margin-top: 10px;
+    font-size: clamp(1rem, 3.2vw, 1.25rem);
+    color: var(--fc-muted);
+  }
+  
+  .card .meaning {
+    font-size: clamp(1.2rem, 3.8vw, 1.7rem);
+    line-height: 1.5;
+  }
+  
+  /* 底部列 */
+  #footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    opacity: .9;
+  }
+  
+  #progress { font-weight: 600; }
+  #timer    { font-variant-numeric: tabular-nums; }
+  
