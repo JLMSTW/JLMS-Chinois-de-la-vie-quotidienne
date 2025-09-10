@@ -1,10 +1,13 @@
-import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
-import { escapeHtml } from "/js/shared/dom.js";
-import { shuffle, sample } from "/js/shared/shuffle.js";
-import { createTimer, formatTime } from "/js/shared/timer.js";
-import * as urlState from "/js/shared/urlState.js"; // ⬅️ 統一新版匯入
-import { adaptMemoryItem } from "/js/shared/dataAdapter.js";
-import { showDataLoadError } from "/js/shared/errorUi.js";
+// games/memory-match/memory-match.js  ← 檔案在這層
+// 改用相對路徑（從 /games/memory-match/ 回到 /js = ../../js）
+
+import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
+import { escapeHtml } from "../../js/shared/dom.js";
+import { shuffle, sample } from "../../js/shared/shuffle.js";
+import { createTimer, formatTime } from "../../js/shared/timer.js";
+import * as urlState from "../../js/shared/urlState.js";
+import { adaptMemoryItem } from "../../js/shared/dataAdapter.js";
+import { showDataLoadError } from "../../js/shared/errorUi.js";
 
 // ---- constants / state ----
 const FLIP_BACK_DELAY = 2000; // 放慢為 2.0s
