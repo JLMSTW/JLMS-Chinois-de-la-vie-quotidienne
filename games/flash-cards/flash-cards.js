@@ -28,8 +28,8 @@ const tts = {
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = lang || "zh-TW"; // zh-TW / fr-FR / en-US
-      u.rate = 1.0;
-      u.pitch = 1.0;
+      u.rate = 0.8;
+      u.pitch = 0.8;
       this.lastUtter = u;
       window.speechSynthesis.speak(u);
     } catch (e) {
