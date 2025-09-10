@@ -60,7 +60,22 @@
   .controls .filters{
     display:flex; flex-wrap:wrap; gap:10px; align-items:center;
   }
-  
+  /* 手機版：把上方膠囊整排置中 */
+@media (max-width: 640px){
+  /* 讓容器和內容都以中央對齊 */
+  .controls{ align-items: center; }
+  .controls .filters{ justify-content: center; }
+
+  /* 每顆膠囊維持自身寬度，不被拉滿 */
+  .controls .filters > *{ flex: 0 0 auto; }
+
+  /* 模式單選那排也一起置中（可選） */
+  .modes{ justify-content: center; }
+
+  /* 計時＋Start 那排也置中（可選） */
+  .statusbar{ justify-content: center; }
+}
+
   /* unified pills */
   .controls select,
   .controls .chk,
