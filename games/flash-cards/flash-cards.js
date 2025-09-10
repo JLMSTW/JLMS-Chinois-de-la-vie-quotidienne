@@ -1,9 +1,9 @@
 // FCv1.2-4 + FCv1.2-5：篩選列 + Start + URL 還原/寫回 + Size/ShowPinyin/Mode + TTS Speak
-import { GAS_ENDPOINT, SHEETS, PREF } from "/js/config.js";
-import { adaptMemoryItem } from "/js/shared/dataAdapter.js";
-import { showDataLoadError } from "/js/shared/errorUi.js";
-import { escapeHtml } from "/js/shared/dom.js";
-import { get as getUrlState, set as setUrlState } from "/js/shared/urlState.js";
+import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
+import { adaptMemoryItem } from "../../js/shared/dataAdapter.js";
+import { showDataLoadError } from "../../js/shared/errorUi.js";
+import { escapeHtml } from "../../js/shared/dom.js";
+import { get as getUrlState, set as setUrlState } from "../../js/shared/urlState.js";
 
 const all = { items: [] }; // 全量資料（未過濾）
 
