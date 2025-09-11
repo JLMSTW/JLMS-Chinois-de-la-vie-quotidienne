@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interactive Games</title>
+  <!-- 主站基底樣式（相對路徑！） -->
+  <link rel="stylesheet" href="../style/base.css" />
+  <!-- 本頁樣式 -->
+  <link rel="stylesheet" href="./games.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <h1>🎮 Interactive Games</h1>
+    </header>
+
+    <main class="games">
+      <div class="grid" id="gamesGrid">
+        <!-- 先放兩張靜態卡；之後會改成自動讀 Sheet -->
+        <a class="card" href="./flash-cards/">
+          <div class="icon" aria-hidden="true">🃏</div>
+          <div class="title">Flash Cards</div>
+          <div class="desc">See the prompt, guess, flip to check. Pinyin & timer.</div>
+          <div class="tags"><span>reading</span><span>recall</span></div>
+        </a>
+
+        <a class="card" href="./memory-match/">
+          <div class="icon" aria-hidden="true">🧠</div>
+          <div class="title">Memory Match</div>
+          <div class="desc">Flip cards to match hanzi with meaning/pinyin.</div>
+          <div class="tags"><span>matching</span><span>recognition</span></div>
+        </a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
