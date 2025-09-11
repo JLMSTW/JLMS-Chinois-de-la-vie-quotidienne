@@ -155,4 +155,24 @@
     .grid{ grid-template-columns:1fr; }
     .backbar{ margin-top:12px; }
   }
+/* === Force a unified sans-serif stack on /games/ page (mobile & desktop) === */
+:root{
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, "Noto Sans",
+                 "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
   
+  /* 全頁預設字體（蓋過 base.css 的 body/全域設定） */
+  body{
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* 標題、卡片標題、返回按鈕：明確指定為同一套字族（避免被 base.css 的 h1 serif 覆寫） */
+  .page-header h1,
+  .card .title,
+  .back-btn{
+    font-family: var(--font-sans) !important;
+  }
+    
