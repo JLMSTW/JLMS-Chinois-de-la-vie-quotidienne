@@ -16,9 +16,9 @@
       <h1>🎮 Interactive Games</h1>
     </header>
 
-    <!-- 返回上一頁（主站） -->
+    <!-- 返回上一頁（JS 會依情況覆寫 href） -->
     <div class="backbar">
-      <a class="back-btn" href="../index.html">← Back to Home</a>
+      <a id="backHome" class="back-btn" href="../home.html">← Back to Home</a>
     </div>
 
     <main class="games">
@@ -42,7 +42,7 @@
     <p style="text-align:center;color:#fff">This page needs JavaScript to load the games list.</p>
   </noscript>
 
-  <!-- 動態載入遊戲卡片（讀 Google Sheet） -->
-  <script type="module" src="./games.js"></script>
+  <!-- 動態載入遊戲卡片（JSONP，避免 CORS；加版本避免舊快取） -->
+  <script type="module" src="./games.js?v=7"></script>
 </body>
 </html>

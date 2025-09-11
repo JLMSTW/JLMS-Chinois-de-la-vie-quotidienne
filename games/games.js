@@ -1,89 +1,107 @@
 // ====== Config ======
-const SHEET_ID   = "1nb2Nnxq26adk9NxDF6k7HAjdW1yDffzKkm58bnJpeWc"; // 你的 Games DB 試算表 ID
+const SHEET_ID   = "1nb2Nnxq26adk9NxDF6k7HAjdW1yDffzKkm58bnJpeWc"; // Games DB 試算表 ID
 const SHEET_NAME = "Games";                                        // 分頁名稱
-const LOGIN_URL  = "https://jlmstw.github.io/JLMS-Chinois-de-la-vie-quotidienne/index.html";
-
-const CACHE_KEY  = "jlms_games_db_v1";
-const TTL_MS     = 24 * 60 * 60 * 1000; // 24h
+const LOGIN_URL  = "../index.html";                                // 登入頁（相對）
+const HOME_URL   = "../home.html";                                 // 已登入首頁（相對）
 
 // ====== Utils ======
 const $ = (sel, root = document) => root.querySelector(sel);
 
-function getGVizUrl(sheetId, sheetName) {
-  const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq`;
-  const params = new URLSearchParams({
-    tqx: "out:json",
-    sheet: sheetName,
-    headers: "1",
-  });
-  return `${base}?${params}`;
-}
-
-function parseGVizResponse(text) {
-  // gviz 會包一層 js 函式，需要剝殼
-  const json = JSON.parse(text.replace(/^[\s\S]*setResponse\(/, "").replace(/\);\s*$/, ""));
-  const table = json.table;
-  const cols = table.cols.map(c => (c.label || c.id || "").toString().trim().toLowerCase());
-  const rows = table.rows || [];
-
-  const list = rows.map(r => {
-    const obj = {};
-    cols.forEach((name, idx) => {
-      const cell = r.c[idx];
-      let v = (cell && (cell.v ?? cell.f)) ?? "";
-      if (typeof v === "string") v = v.trim();
-      obj[name] = v;
-    });
-    return obj;
-  });
-  return list;
-}
-
 function splitTags(val) {
   if (!val) return [];
   if (Array.isArray(val)) return val.map(String).map(s => s.trim()).filter(Boolean);
-  // 去除 chip 可能殘留的括號/引號
   const cleaned = String(val).replace(/[\[\]"'“”‘’]/g, " ");
   return cleaned.split(/[,;|｜\s]+/g).map(s => s.trim()).filter(Boolean);
 }
-
 function toBool(v, def = false) {
   if (typeof v === "boolean") return v;
   if (typeof v === "number") return v !== 0;
   if (typeof v === "string") return !/^(false|0|no|n)$/i.test(v.trim());
   return def;
 }
-
 function toNumber(v, def = 9999) {
   const n = Number(v);
   return Number.isFinite(n) ? n : def;
 }
-
 function buildGameUrl(row) {
-  const url = row.url && String(row.url).trim();
+  const url  = row.url  && String(row.url).trim();
   const path = row.path && String(row.path).trim();
   const slug = row.slug && String(row.slug).trim();
-  if (url)  return url;                 // 完整網址優先
-  if (path) return path;                // 相對路徑
-  if (slug) return `./${slug}/`;        // 備援：用 slug
+  if (url)  return url;           // 完整網址優先
+  if (path) return path;          // 相對路徑
+  if (slug) return `./${slug}/`;  // 備援：用 slug
   return "#";
 }
 
-function setCache(data) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
-  } catch {}
+// ====== Back 行為（已登入 vs guest） ======
+function setBackHomeLink() {
+  const a = $("#backHome");
+  if (!a) return;
+
+  const params = new URLSearchParams(location.search);
+  const isGuest = params.get("guest") === "1" || params.get("from") === "guest";
+
+  const ref = document.referrer || "";
+  const fromSameSite = ref.startsWith(location.origin);
+  const cameFromHome = /\/home\.html(\?|#|$)/.test(ref);
+
+  if (fromSameSite && cameFromHome) {
+    // 從已登入首頁來 → 回上一頁
+    a.href = ref;
+  } else if (isGuest) {
+    // 未登入（Play without login）→ 回登入頁
+    a.href = LOGIN_URL;
+  } else {
+    // 其他情況 → 回已登入首頁
+    a.href = HOME_URL;
+  }
 }
 
-function getCache() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const { ts, data } = JSON.parse(raw);
-    if (!ts || !data) return null;
-    if (Date.now() - ts > TTL_MS) return null;
-    return data;
-  } catch { return null; }
+// ====== 用 JSONP 讀 Google Sheet（避開 CORS） ======
+function fetchGamesJSONP() {
+  return new Promise((resolve, reject) => {
+    const cbName = "__gvizHook_" + Math.random().toString(36).slice(2);
+    window[cbName] = (obj) => {
+      try {
+        const table = obj?.table;
+        const cols = (table?.cols || []).map(c => (c.label || c.id || "").toString().trim().toLowerCase());
+        const rows = table?.rows || [];
+        const list = rows.map(r => {
+          const o = {};
+          cols.forEach((name, idx) => {
+            const cell = r.c[idx];
+            let v = (cell && (cell.v ?? cell.f)) ?? "";
+            if (typeof v === "string") v = v.trim();
+            o[name] = v;
+          });
+          return o;
+        });
+        resolve(list);
+      } catch (e) {
+        reject(e);
+      } finally {
+        cleanup();
+      }
+    };
+
+    const qs = new URLSearchParams({
+      tqx: `out:json;responseHandler:${cbName}`,
+      sheet: SHEET_NAME,
+      headers: "1",
+    });
+    const src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${qs}`;
+
+    const s = document.createElement("script");
+    s.src = src;
+    s.async = true;
+    s.onerror = () => { cleanup(); reject(new Error("JSONP load error")); };
+    document.head.appendChild(s);
+
+    function cleanup() {
+      try { delete window[cbName]; } catch {}
+      try { s.remove(); } catch {}
+    }
+  });
 }
 
 // ====== Render ======
@@ -92,7 +110,7 @@ function renderCards(rows) {
   grid.innerHTML = ""; // 清占位
 
   if (!rows.length) {
-    grid.innerHTML = `<p style="color:#fff">No games available.</p>`;
+    grid.innerHTML = `<div class="error-box">No games available.</div>`;
     return;
   }
 
@@ -111,19 +129,22 @@ function renderCards(rows) {
 
     const a = document.createElement("a");
     a.className = "card";
-    a.href = locked
-      ? `${LOGIN_URL}?redirect=${encodeURIComponent(gameUrl)}`
-      : gameUrl;
 
-    if (!locked) {
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-    } else {
+    if (locked) {
+      // 要登入 → 導去登入頁並帶 redirect
+      const u = new URL(LOGIN_URL, location.href);
+      u.searchParams.set("redirect", gameUrl);
+      a.href = u.toString();
       a.classList.add("locked");
       const lock = document.createElement("span");
       lock.className = "lock-badge";
       lock.textContent = "🔒";
       a.appendChild(lock);
+    } else {
+      // 不需登入 → 直接新分頁開啟
+      a.href = gameUrl;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
     }
 
     const iconEl = document.createElement("div");
@@ -151,65 +172,29 @@ function renderCards(rows) {
     a.appendChild(descEl);
     a.appendChild(tagsWrap);
 
-    $("#gamesGrid").appendChild(a);
+    grid.appendChild(a);
   }
 }
 
-// ====== Main ======
-async function loadGames() {
-  const q = new URLSearchParams(location.search);
-  const noCache = q.get("nocache") === "1";
+function showError(msg) {
+  const grid = $("#gamesGrid");
+  grid.innerHTML = `<div class="error-box">${msg}</div>`;
+}
 
-  if (!noCache) {
-    const cached = getCache();
-    if (cached) {
-      renderCards(cached);
-      // 背景更新（不阻塞畫面）
-      tryFetchAndUpdateCache().catch(()=>{});
-      return;
-    }
+// ====== Init ======
+async function init() {
+  setBackHomeLink();
+  try {
+    const rows = await fetchGamesJSONP();   // 直接 JSONP（不做 localStorage 快取）
+    renderCards(rows);
+  } catch (e) {
+    console.error(e);
+    showError("Failed to load games. Please refresh or try again later.");
+    // 備援：需要可開啟，取消下列註解
+    // renderCards([
+    //   { slug:"flash-cards", title:"Flash Cards", description:"See the prompt, guess, flip to check. Pinyin & timer.", icon:"🃏", url:"./flash-cards/", tags:"reading recall", order:1, active:true, enabled:true, login_required:false },
+    //   { slug:"memory-match", title:"Memory Match", description:"Flip cards to match hanzi with meaning/pinyin.", icon:"🧠", url:"./memory-match/", tags:"matching recognition", order:2, active:true, enabled:true, login_required:false }
+    // ]);
   }
-  await tryFetchAndUpdateCache(true);
 }
-
-async function tryFetchAndUpdateCache(renderImmediately = false) {
-  const url = getGVizUrl(SHEET_ID, SHEET_NAME);
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Fetch failed ${res.status}`);
-  const text = await res.text();
-  const rows = parseGVizResponse(text);
-  setCache(rows);
-  if (renderImmediately) renderCards(rows);
-}
-
-loadGames().catch(err => {
-  console.error(err);
-  // 失敗備援：顯示靜態兩張卡
-  const fallback = [
-    {
-      slug: "flash-cards",
-      title: "Flash Cards",
-      description: "See the prompt, guess, flip to check. Pinyin & timer.",
-      icon: "🃏",
-      url: "./flash-cards/",
-      tags: "reading recall",
-      order: 1,
-      active: true,
-      enabled: true,
-      login_required: false
-    },
-    {
-      slug: "memory-match",
-      title: "Memory Match",
-      description: "Flip cards to match hanzi with meaning/pinyin.",
-      icon: "🧠",
-      url: "./memory-match/",
-      tags: "matching recognition",
-      order: 2,
-      active: true,
-      enabled: true,
-      login_required: false
-    }
-  ];
-  renderCards(fallback);
-});
+init();
