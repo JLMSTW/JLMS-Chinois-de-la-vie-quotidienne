@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Interactive Games</title>
-  <!-- 主站基底樣式（相對路徑！） -->
+
+  <!-- 主站基底樣式（相對路徑） -->
   <link rel="stylesheet" href="../style/base.css" />
   <!-- 本頁樣式 -->
   <link rel="stylesheet" href="./games.css" />
@@ -15,24 +16,33 @@
       <h1>🎮 Interactive Games</h1>
     </header>
 
-    <main class="games">
-      <div class="grid" id="gamesGrid">
-        <!-- 先放兩張靜態卡；之後會改成自動讀 Sheet -->
-        <a class="card" href="./flash-cards/">
-          <div class="icon" aria-hidden="true">🃏</div>
-          <div class="title">Flash Cards</div>
-          <div class="desc">See the prompt, guess, flip to check. Pinyin & timer.</div>
-          <div class="tags"><span>reading</span><span>recall</span></div>
-        </a>
+    <!-- 返回上一頁（主站） -->
+    <div class="backbar">
+      <a class="back-btn" href="../index.html">← Back to Home</a>
+    </div>
 
-        <a class="card" href="./memory-match/">
-          <div class="icon" aria-hidden="true">🧠</div>
-          <div class="title">Memory Match</div>
-          <div class="desc">Flip cards to match hanzi with meaning/pinyin.</div>
-          <div class="tags"><span>matching</span><span>recognition</span></div>
-        </a>
+    <main class="games">
+      <div class="grid" id="gamesGrid" aria-live="polite">
+        <!-- JS 載入前的占位骨架；資料載入後會被替換 -->
+        <div class="card skeleton" aria-hidden="true">
+          <div class="skel-line w60"></div>
+          <div class="skel-line w80"></div>
+          <div class="skel-line w40"></div>
+        </div>
+        <div class="card skeleton" aria-hidden="true">
+          <div class="skel-line w60"></div>
+          <div class="skel-line w80"></div>
+          <div class="skel-line w40"></div>
+        </div>
       </div>
     </main>
   </div>
+
+  <noscript>
+    <p style="text-align:center;color:#fff">This page needs JavaScript to load the games list.</p>
+  </noscript>
+
+  <!-- 動態載入遊戲卡片（讀 Google Sheet） -->
+  <script type="module" src="./games.js"></script>
 </body>
 </html>

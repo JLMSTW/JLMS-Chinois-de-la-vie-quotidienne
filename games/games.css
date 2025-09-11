@@ -9,22 +9,52 @@
     --card-bd: rgba(0, 0, 0, 0.06);
     --card-shadow: 0 10px 24px rgba(0,0,0,.12);
     --radius-xl:18px;
+  
+    /* 其他元件 */
+    --pill-bg: rgba(255,255,255,0.18);
+    --pill-bd: rgba(255,255,255,0.28);
+    --text-on-dark: #fff;
   }
   
-  /* 保險：直接覆寫本頁 body 背景（順序在 base.css 之後，所以會生效） */
+  /* 直接覆寫本頁 body 背景（順序在 base.css 之後，所以會生效） */
   body{
     background: linear-gradient(180deg, var(--bg1), var(--bg2));
+    color: var(--text-on-dark);
   }
   
   .page{ min-height:100%; display:flex; flex-direction:column; align-items:center; }
   
-  .page-header{ width:min(1100px,92vw); margin:28px auto 10px; text-align:center; }
+  /* ===== 返回上一頁工具列 ===== */
+  .backbar{
+    width:min(1100px,92vw);
+    margin:18px auto 0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .back-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none;
+    color:#fff; font-weight:800;
+    background: var(--pill-bg);
+    border:1px solid var(--pill-bd);
+    border-radius: 999px;
+    padding:8px 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.18);
+    transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  }
+  .back-btn:hover{ transform:translateY(-1px); filter:brightness(1.05); }
+  .back-btn:active{ transform:translateY(0); }
+  
+  /* ===== 標題 ===== */
+  .page-header{ width:min(1100px,92vw); margin:10px auto 10px; text-align:center; }
   .page-header h1{
     margin:0; color:#ffffff; font-weight:900;
     font-size:clamp(28px,5vw,46px);
     text-shadow:0 2px 12px rgba(0,0,0,0.25);
   }
   
+  /* ===== 卡片網格 ===== */
   .games{ width:min(1100px,92vw); margin:18px auto 28px; }
   .grid{
     display:grid;
@@ -32,12 +62,14 @@
     gap:14px;
   }
   
+  /* 卡片 */
   .card{
+    position:relative;
     display:block; background:var(--card-bg);
     border:5px solid var(--card-bd); border-radius:var(--radius-xl);
     box-shadow:var(--card-shadow);
     padding:18px; text-decoration:none; color:#ffffff;
-    transition: transform .15s ease, box-shadow .15s ease;
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
   }
   .card:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(0,0,0,.16); }
   
@@ -45,6 +77,7 @@
   .card .title{ font-weight:800; font-size:18px; margin-bottom:6px; }
   .card .desc{ opacity:.9; line-height:1.4; margin-bottom:10px; }
   
+  /* tag 列 */
   .card .tags{ display:flex; gap:8px; flex-wrap:wrap; }
   .card .tags span{
     font-size:12px; font-weight:700; letter-spacing:.02em;
@@ -53,7 +86,52 @@
     padding:4px 8px; border-radius:999px;
   }
   
+  /* 鎖頭徽章（login_required 時由 JS 加上 .locked 與 .lock-badge） */
+  .card.locked{ opacity:.92; }
+  .lock-badge{
+    position:absolute; top:10px; right:10px;
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:800;
+    background: rgba(0,0,0,.24);
+    border:1px solid rgba(0,0,0,.28);
+    padding:4px 8px; border-radius:999px;
+  }
+  
+  /* 載入骨架（JS 會先塞 .skeleton 卡片，等資料回來再替換） */
+  .skeleton{
+    background: rgba(255,255,255,.08);
+    border:5px solid var(--card-bd);
+    border-radius:var(--radius-xl);
+    height:120px;
+    overflow:hidden;
+    position:relative;
+  }
+  .skel-line{
+    height:12px; border-radius:8px;
+    background: rgba(255,255,255,.18);
+    margin:12px 18px;
+    animation: shimmer 1.2s infinite linear alternate;
+  }
+  .skel-line.w60{ width:60% }
+  .skel-line.w40{ width:40% }
+  .skel-line.w80{ width:80% }
+  @keyframes shimmer{
+    from{ filter:brightness(0.9) }
+    to  { filter:brightness(1.15) }
+  }
+  
+  /* 錯誤訊息樣式（讀表失敗時） */
+  .error-box{
+    background: rgba(0,0,0,.28);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius: var(--radius-xl);
+    padding:16px;
+    color:#fff;
+  }
+  
+  /* RWD */
   @media (max-width:640px){
     .grid{ grid-template-columns:1fr; }
+    .backbar{ margin-top:12px; }
   }
   
