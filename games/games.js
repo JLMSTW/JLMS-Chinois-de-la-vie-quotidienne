@@ -1,172 +1,189 @@
-/* /games/games.js  — 直接覆蓋貼上 */
+// ====== Config ======
+const SHEET_ID   = "1nb2Nnxq26adk9NxDF6k7HAjdW1yDffzKkm58bnJpeWc"; // Games DB Sheet ID
+const SHEET_NAME = "Games";                                        // 工作表名稱
+const LOGIN_URL  = "https://jlmstw.github.io/JLMS-Chinois-de-la-vie-quotidienne/index.html";
 
-const SHEET_ID = "1nb2Nnxq26adk9NxDF6k7HAjdW1yDffzKkm58bnJpeWc"; // 你的試算表 ID
-const SHEET_NAME = "Games";                                  // 分頁名稱
-const CACHE_KEY = "jlms_games_cache_v1";
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000;                    // 24h
+// ====== Small helpers ======
+const $ = (sel, root = document) => root.querySelector(sel);
 
-const grid = document.getElementById("gamesGrid");
-const backBtn = document.querySelector(".back-btn");
+function splitTags(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.map(String).map(s => s.trim()).filter(Boolean);
+  const cleaned = String(val).replace(/[\[\]"'“”‘’]/g, " ");
+  return cleaned.split(/[,;|｜\s]+/g).map(s => s.trim()).filter(Boolean);
+}
+function toBool(v, def = false) {
+  if (typeof v === "boolean") return v;
+  if (typeof v === "number") return v !== 0;
+  if (typeof v === "string") return !/^(false|0|no|n)$/i.test(v.trim());
+  return def;
+}
+function toNumber(v, def = 9999) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : def;
+}
+function buildGameUrl(row) {
+  const url  = row.url  && String(row.url).trim();
+  const path = row.path && String(row.path).trim();
+  const slug = row.slug && String(row.slug).trim();
+  if (url)  return url;          // 完整網址優先
+  if (path) return path;         // 相對路徑
+  if (slug) return `./${slug}/`; // 備援：slug
+  return "#";
+}
 
-// ---------- Back 按鈕：依情境導向 ----------
-(function setupSmartBack() {
-  const params = new URLSearchParams(location.search);
-  if (params.get("guest") === "1") {
-    sessionStorage.setItem("jlms_guest", "1");
-  }
+// ====== JSONP 讀 gviz（避開 CORS）======
+function getGVizJsonpUrl(sheetId, sheetName, cbName) {
+  const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq`;
+  const params = new URLSearchParams({
+    sheet: sheetName,
+    headers: "1",
+    tqx: `out:json;responseHandler=${cbName}`,
+  });
+  return `${base}?${params}`;
+}
+function jsonp(url, cbName, timeoutMs = 15000) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    let done = false;
+    const timer = setTimeout(() => {
+      if (done) return;
+      done = true;
+      cleanup();
+      reject(new Error("JSONP timeout"));
+    }, timeoutMs);
 
-  let target = "../home.html"; // 預設：回主站首頁（已登入）
-  const ref = document.referrer || "";
-  const sameOrigin = ref.startsWith(location.origin);
+    window[cbName] = (json) => {
+      if (done) return;
+      done = true;
+      cleanup();
+      resolve(json);
+    };
 
-  if (sessionStorage.getItem("jlms_guest") === "1") {
-    target = "../index.html"; // 未登入玩家回登入頁
-  } else if (sameOrigin && ref) {
-    target = ref; // 同網域且有上一頁 → 回上一頁
-  }
-
-  if (backBtn) backBtn.href = target;
-})();
-
-// ---------- 讀表 + 快取 ----------
-async function fetchGames() {
-  // 讀快取
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (raw) {
-      const { ts, data } = JSON.parse(raw);
-      if (Date.now() - ts < CACHE_TTL_MS) return data;
+    function cleanup() {
+      clearTimeout(timer);
+      try { delete window[cbName]; } catch { window[cbName] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
     }
-  } catch (_) {}
 
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(
-    SHEET_NAME
-  )}&tqx=out:json`;
-
-  const res = await fetch(url, { cache: "no-store" });
-  const text = await res.text();
-  const json = parseGViz(text);
-  const rows = toObjects(json);
-
-  // 存快取
-  try {
-    localStorage.setItem(
-      CACHE_KEY,
-      JSON.stringify({ ts: Date.now(), data: rows })
-    );
-  } catch (_) {}
-
-  return rows;
+    script.src = url;
+    script.onerror = () => {
+      if (done) return;
+      done = true;
+      cleanup();
+      reject(new Error("JSONP network error"));
+    };
+    document.head.appendChild(script);
+  });
 }
 
-// 解析 gviz
-function parseGViz(txt) {
-  const m = txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\)/);
-  if (!m) throw new Error("GViz payload not recognized");
-  return JSON.parse(m[1]);
-}
-
-// table → objects（用表頭當 key）
-function toObjects(gvizJson) {
-  const cols = gvizJson.table.cols.map((c) => (c.label || c.id || "").trim());
-  return gvizJson.table.rows.map((r) => {
+// gviz 物件 -> 列資料
+function rowsFromGvizObject(json) {
+  const table = json.table;
+  const cols = table.cols.map(c => (c.label || c.id || "").toString().trim().toLowerCase());
+  const rows = table.rows || [];
+  return rows.map(r => {
     const obj = {};
-    r.c.forEach((cell, i) => {
-      obj[cols[i]] = cell ? cell.v : "";
+    cols.forEach((name, idx) => {
+      const cell = r.c[idx];
+      let v = (cell && (cell.v ?? cell.f)) ?? "";
+      if (typeof v === "string") v = v.trim();
+      obj[name] = v;
     });
     return obj;
   });
 }
 
-function asBool(v) {
-  if (typeof v === "boolean") return v;
-  if (v == null) return false;
-  const s = String(v).trim().toLowerCase();
-  return s === "true" || s === "y" || s === "yes" || s === "1";
+// ====== Render ======
+function showError(msg) {
+  const grid = $("#gamesGrid");
+  grid.innerHTML = "";
+  const box = document.createElement("div");
+  box.className = "error-box";
+  box.textContent = msg;
+  grid.appendChild(box);
 }
 
-function splitTags(s) {
-  if (!s) return [];
-  return String(s)
-    .split(/[,;、\s]+/)
-    .map((x) => x.trim())
-    .filter(Boolean);
-}
+function renderCards(rows) {
+  const grid = $("#gamesGrid");
+  grid.innerHTML = "";
 
-// 產生絕對連結（path 相對於 repo root）
-function resolveHref(row) {
-  if (row.url) return row.url;
-  if (row.path) {
-    // 將相對路徑轉成絕對
-    const base = location.origin + location.pathname.replace(/\/games\/.*$/, "/");
-    return new URL(row.path.replace(/^\//, ""), base).href;
-  }
-  return "#";
-}
+  const filtered = rows
+    .filter(r => toBool(r.active, true) && toBool(r.enabled, true))
+    .sort((a, b) => toNumber(a.order) - toNumber(b.order));
 
-// ---------- 渲染 ----------
-function render(data) {
-  grid.innerHTML = ""; // 清骨架
-
-  // 過濾 + 排序
-  const list = data
-    .filter((r) => asBool(r.enabled) && (r.active === "" || asBool(r.active)))
-    .sort((a, b) => (parseInt(a.order || 999, 10) - parseInt(b.order || 999, 10)));
-
-  if (list.length === 0) {
-    grid.innerHTML =
-      '<div class="error-box">No games available right now. Please check back later.</div>';
+  if (!filtered.length) {
+    showError("No games available.");
     return;
   }
 
-  const frag = document.createDocumentFragment();
+  for (const r of filtered) {
+    const icon  = r.icon || "🎮";
+    const title = r.title || r.slug || "Untitled";
+    const desc  = r.description || "";
+    const tags  = splitTags(r.tags);
 
-  list.forEach((row) => {
-    const href = resolveHref(row);
-    const needLogin = asBool(row.login_required);
-    const isLocked = needLogin;
+    const gameUrl = buildGameUrl(r);
+    const locked  = toBool(r.login_required, false);
 
     const a = document.createElement("a");
-    a.className = "card" + (isLocked ? " locked" : "");
-    a.href = isLocked ? "../index.html" : href;
-    a.target = "_blank";
-    a.rel = "noopener";
+    a.className = "card";
+    a.href = locked
+      ? `${LOGIN_URL}?redirect=${encodeURIComponent(gameUrl)}`
+      : gameUrl;
 
-    const icon = row.icon ? `<div class="icon" aria-hidden="true">${row.icon}</div>` : "";
-    const title = `<div class="title">${row.title || row.slug || "Untitled"}</div>`;
-    const desc = row.description ? `<div class="desc">${row.description}</div>` : "";
+    if (!locked) {
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+    } else {
+      a.classList.add("locked");
+      const lock = document.createElement("span");
+      lock.className = "lock-badge";
+      lock.textContent = "🔒";
+      a.appendChild(lock);
+    }
 
-    const tags = splitTags(row.tags)
-      .map((t) => `<span>${t}</span>`)
-      .join("");
+    const iconEl = document.createElement("div");
+    iconEl.className = "icon";
+    iconEl.textContent = icon;
 
-    a.innerHTML = `
-      ${icon}
-      ${title}
-      ${desc}
-      <div class="tags">${tags}</div>
-      ${isLocked ? `<span class="lock-badge">🔒 Login required</span>` : ""}
-    `;
+    const titleEl = document.createElement("div");
+    titleEl.className = "title";
+    titleEl.textContent = title;
 
-    frag.appendChild(a);
-  });
+    const descEl = document.createElement("div");
+    descEl.className = "desc";
+    descEl.textContent = desc;
 
-  grid.appendChild(frag);
+    const tagsWrap = document.createElement("div");
+    tagsWrap.className = "tags";
+    for (const t of tags) {
+      const s = document.createElement("span");
+      s.textContent = t;
+      tagsWrap.appendChild(s);
+    }
+
+    a.appendChild(iconEl);
+    a.appendChild(titleEl);
+    a.appendChild(descEl);
+    a.appendChild(tagsWrap);
+
+    grid.appendChild(a);
+  }
 }
 
-// ---------- 初始化 ----------
-(async function init() {
+// ====== Main ======
+async function loadGames() {
   try {
-    // 若有骨架，可先放兩個
-    if (grid && grid.children.length === 0) {
-      grid.innerHTML = `<div class="card skeleton"><div class="skel-line w60"></div><div class="skel-line w80"></div></div>
-                        <div class="card skeleton"><div class="skel-line w60"></div><div class="skel-line w80"></div></div>`;
-    }
-    const rows = await fetchGames();
-    render(rows);
+    const cb = "__JLMS_GVIZ_CB__" + Math.random().toString(36).slice(2);
+    const url = getGVizJsonpUrl(SHEET_ID, SHEET_NAME, cb);
+    const json = await jsonp(url, cb);
+    const rows = rowsFromGvizObject(json);
+    renderCards(rows);
   } catch (err) {
     console.error(err);
-    grid.innerHTML =
-      '<div class="error-box">Failed to load games. Please refresh or try again later.</div>';
+    showError("Failed to load games. Please refresh or try again later.");
   }
-})();
+}
+
+loadGames();
