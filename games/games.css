@@ -10,10 +10,14 @@
     --card-shadow: 0 10px 24px rgba(0,0,0,.12);
     --radius-xl:18px;
   
-    /* 其他元件 */
-    --pill-bg: rgba(255,255,255,0.18);
-    --pill-bd: rgba(255,255,255,0.28);
-    --text-on-dark: #fff;
+    /* 文字 */
+    --text-on-dark:#fff;
+  
+    /* 膠囊（按鈕）— 改為與站內一致的白色膠囊 */
+    --pill-bg:#ffffff;                 /* 白底 */
+    --pill-fg:#1f2937;                 /* 深灰字 */
+    --pill-bd:rgba(0,0,0,0.12);        /* 淺灰邊 */
+    --pill-font-size:14px;
   }
   
   /* 直接覆寫本頁 body 背景（順序在 base.css 之後，所以會生效） */
@@ -24,30 +28,47 @@
   
   .page{ min-height:100%; display:flex; flex-direction:column; align-items:center; }
   
-  /* ===== 返回上一頁工具列 ===== */
+  /* ===== 返回上一頁（膠囊按鈕） ===== */
+  /* 若你使用 <div class="backbar"><a class="back-btn">…</a></div> */
   .backbar{
     width:min(1100px,92vw);
     margin:18px auto 0;
     display:flex;
+    justify-content:center;
     align-items:center;
     gap:10px;
   }
+  
+  /* 若你把 .back-btn 放在 .page-header 裡，也一樣會置中並有間距 */
+  .page-header .back-btn{ margin-top:10px; display:inline-flex; }
+  
+  /* 膠囊樣式（與其他頁一致） */
   .back-btn{
     display:inline-flex; align-items:center; gap:8px;
-    text-decoration:none;
-    color:#fff; font-weight:800;
-    background: var(--pill-bg);
+    padding:8px 14px;
+    border-radius:999px;                       /* 膠囊 */
+    background:var(--pill-bg);
+    color:var(--pill-fg);
     border:1px solid var(--pill-bd);
-    border-radius: 999px;
-    padding:8px 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,.18);
-    transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+    font-weight:700;
+    font-size:var(--pill-font-size);
+    text-decoration:none;
+    box-shadow:0 6px 16px rgba(0,0,0,.12);
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
   }
-  .back-btn:hover{ transform:translateY(-1px); filter:brightness(1.05); }
-  .back-btn:active{ transform:translateY(0); }
+  .back-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 8px 20px rgba(0,0,0,.16);
+    filter:brightness(1.02);
+  }
+  .back-btn:active{ transform:translateY(0) }
   
   /* ===== 標題 ===== */
-  .page-header{ width:min(1100px,92vw); margin:10px auto 10px; text-align:center; }
+  .page-header{
+    width:min(1100px,92vw);
+    margin:10px auto 10px;
+    text-align:center;
+  }
   .page-header h1{
     margin:0; color:#ffffff; font-weight:900;
     font-size:clamp(28px,5vw,46px);
