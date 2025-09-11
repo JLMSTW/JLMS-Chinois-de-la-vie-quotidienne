@@ -1,8 +1,7 @@
 /* ===== Theme & tokens ===== */
 :root{
-    --bg1:#3d3c96;
-    --bg2:#3d3c96;
-  
+    --bg1:#1f213b;
+    --bg2:#1f213b;
     /* Pills */
     --pill-bg:#ffffff;
     --pill-border:rgba(0,0,0,0.12);
@@ -204,7 +203,7 @@
   }
   
   /* 你指定的漸層底色 */
-  .front{ background: linear-gradient(135deg,#ffffd5,#ffe6e6); }
+  .front{ background: linear-gradient(135deg,#fbfbd9,#dfd89a); }
   .back { background: linear-gradient(135deg,#4ecdc4,#44a08d); transform: rotateY(180deg); }
   
   /* 文字樣式 */

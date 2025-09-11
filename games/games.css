@@ -1,15 +1,28 @@
+/* ===== /games/ page styles ===== */
 :root{
-    --card-bg:#fff;
-    --card-bd: rgba(0,0,0,.06);
+    /* 背景漸層（本頁覆寫 base.css 使用的兩個變數） */
+    --bg1: #1f213b;   /* 上方色 */
+    --bg2: #1f213b;   /* 下方色 */
+  
+    /* 卡片樣式變數 */
+    --card-bg:#566fb8;
+    --card-bd: rgba(0, 0, 0, 0.06);
     --card-shadow: 0 10px 24px rgba(0,0,0,.12);
     --radius-xl:18px;
   }
+  
+  /* 保險：直接覆寫本頁 body 背景（順序在 base.css 之後，所以會生效） */
+  body{
+    background: linear-gradient(180deg, var(--bg1), var(--bg2));
+  }
+  
   .page{ min-height:100%; display:flex; flex-direction:column; align-items:center; }
+  
   .page-header{ width:min(1100px,92vw); margin:28px auto 10px; text-align:center; }
   .page-header h1{
-    margin:0; color:#fff; font-weight:900;
+    margin:0; color:#ffffff; font-weight:900;
     font-size:clamp(28px,5vw,46px);
-    text-shadow:0 2px 12px rgba(0,0,0,.25);
+    text-shadow:0 2px 12px rgba(0,0,0,0.25);
   }
   
   .games{ width:min(1100px,92vw); margin:18px auto 28px; }
@@ -18,11 +31,12 @@
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap:14px;
   }
+  
   .card{
     display:block; background:var(--card-bg);
-    border:1px solid var(--card-bd); border-radius:var(--radius-xl);
+    border:5px solid var(--card-bd); border-radius:var(--radius-xl);
     box-shadow:var(--card-shadow);
-    padding:18px; text-decoration:none; color:#0f1324;
+    padding:18px; text-decoration:none; color:#ffffff;
     transition: transform .15s ease, box-shadow .15s ease;
   }
   .card:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(0,0,0,.16); }
@@ -38,6 +52,7 @@
     border:1px solid rgba(0,0,0,.08);
     padding:4px 8px; border-radius:999px;
   }
+  
   @media (max-width:640px){
     .grid{ grid-template-columns:1fr; }
   }
