@@ -127,9 +127,19 @@ function shuffleInPlace(arr) {
 }
 
 /** 試算表項目唯一 id（若沒有 id，就用 book|lesson|hanzi 作為後備） */
+/** 試算表項目唯一 id（優先 item_id，其次 set_id，再用組合鍵） */
 function itemId(i){
-  return i.id || [i.book||"", i.lesson||"", i.hanzi||"", i.pinyin||""].join("|");
+  // 對應試算表欄位：item_id、set_id
+  const id  = i.item_id || i.id;
+  const set = i.set_id  || i.setId;
+
+  if (id) return String(id);
+  if (set && i.hanzi) return `${set}|${i.hanzi}|${i.pinyin || ""}`;
+
+  // 後備：多欄組合，盡量避免撞名
+  return [i.book || "", i.lesson || "", i.hanzi || "", i.pinyin || ""].join("|");
 }
+
 
 /** 用會影響 pool 的篩選條件做簽章 */
 function makeSignature({book, lesson, level, posSel}){
