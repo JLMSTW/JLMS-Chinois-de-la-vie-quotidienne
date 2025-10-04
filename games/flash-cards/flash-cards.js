@@ -1,4 +1,4 @@
-// FCv1.2-6：加入隨機出牌 + 走完一輪自動重洗
+// FCv1.3：回合式抽牌（不重複直到抽完再重洗）+ POS/任意篩選皆可覆蓋 pool
 import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
 import { adaptMemoryItem } from "../../js/shared/dataAdapter.js";
 import { showDataLoadError } from "../../js/shared/errorUi.js";
@@ -8,15 +8,28 @@ import { get as getUrlState, set as setUrlState } from "../../js/shared/urlState
 const all = { items: [] }; // 全量資料（未過濾）
 
 const state = {
+  // 本回合要顯示的卡片（size 張）
   items: [],
   index: 0,
+
+  // 偏好
   lang: "fr",           // 'fr' | 'en'
   showPinyin: true,
   mode: "front-zh",     // 'front-zh' | 'front-foreign'
-  size: 20,             // 10~50
+  size: 20,             // 1~50
+
+  // 計時/翻面
   timerId: null,
   sec: 0,
   isFront: true,
+
+  // 牌堆（跨回合）
+  deck: {
+    signature: "",      // 由會影響 pool 的條件組成（book|lesson|level|pos）
+    idToItem: new Map(),// id -> item
+    poolIds: [],        // 此篩選下的所有 id
+    remainingIds: [],   // 尚未抽出的 id（洗牌後的序列，抽空再重洗）
+  },
 };
 
 // ---- TTS 管理 ----
@@ -111,6 +124,18 @@ function shuffleInPlace(arr) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+/** 試算表項目唯一 id（若沒有 id，就用 book|lesson|hanzi 作為後備） */
+function itemId(i){
+  return i.id || [i.book||"", i.lesson||"", i.hanzi||"", i.pinyin||""].join("|");
+}
+
+/** 用會影響 pool 的篩選條件做簽章 */
+function makeSignature({book, lesson, level, posSel}){
+  const lvl = (level||"").toUpperCase();
+  const pos = (posSel||"").toLowerCase();
+  return [book||"", lesson||"", lvl, pos].join("|");
 }
 
 function buildFiltersOptions() {
@@ -260,7 +285,41 @@ function showFace(front){
   if (cardEl) cardEl.classList.toggle("flipped", !front);
 }
 
-// ---------- 套用篩選 + 生成牌堆 ----------
+// ---------- 牌堆：建立/重置/抽一回合 ----------
+/** 由目前 pool 重置 deck（洗牌） */
+function resetDeck(poolItems, signature){
+  const idToItem = new Map();
+  const poolIds = poolItems.map(it => {
+    const id = itemId(it);
+    idToItem.set(id, it);
+    return id;
+  });
+  shuffleInPlace(poolIds);
+
+  state.deck.signature   = signature;
+  state.deck.idToItem    = idToItem;
+  state.deck.poolIds     = poolIds;
+  state.deck.remainingIds= poolIds.slice(); // 複製一份當「尚未抽出」
+}
+
+/** 從 deck.remainingIds 取 size 張；不夠就重洗補滿；回傳 items[] */
+function drawOneRound(size){
+  const d = state.deck;
+  if (!d.poolIds.length) return [];
+
+  const takeIds = [];
+  while (takeIds.length < size) {
+    if (d.remainingIds.length === 0) {
+      // 抽完一輪 → 重洗整個 pool，繼續補
+      d.remainingIds = d.poolIds.slice();
+      shuffleInPlace(d.remainingIds);
+    }
+    takeIds.push(d.remainingIds.shift());
+  }
+  return takeIds.map(id => d.idToItem.get(id)).filter(Boolean);
+}
+
+// ---------- 套用篩選 + 生成牌堆 + 抽本回合 ----------
 function applyAndStart(){
   // 讀控制項值
   const book   = selBook?.value || "";
@@ -272,39 +331,54 @@ function applyAndStart(){
   const size   = Math.min(50, Math.max(1, parseInt(selSize?.value||"20",10)));
   const mode   = getCheckedMode();
 
-  // 寫回 URL
+  // 寫回 URL（不把 deck 狀態寫入）
   setUrlState({
     book, lesson, level, pos: selPos?.value || "", lang, set: undefined,
     difficulty: undefined,
     mode, showPinyin, size
   });
 
-  // 把選擇記到 state
+  // 記到 state
   state.lang = lang;
   state.showPinyin = showPinyin;
   state.mode = mode;
   state.size = size;
 
-  // 過濾
+  // 依條件過濾出 pool
   let pool = all.items.slice();
   if (book)   pool = pool.filter(i => i.book === book);
   if (lesson) pool = pool.filter(i => i.lesson === lesson);
   if (level)  pool = pool.filter(i => (i.level||"").toUpperCase() === level.toUpperCase());
   if (posSel) pool = pool.filter(i => (i.pos||"").toLowerCase().includes(posSel));
 
-  // ✅ 重點：先洗牌，再取前 size 張，讓每次都是隨機順序
-  shuffleInPlace(pool);
-  state.items = pool.slice(0, size);
+  // 建立/檢查簽章；若條件或 pool 變動 → 重置 deck
+  const signature = makeSignature({book, lesson, level, posSel});
+  const poolChanged = (()=>{
+    if (signature !== state.deck.signature) return true;
+    // 快速比對：數量不同必定改變；數量相同再抽樣比對幾個 id
+    if (pool.length !== state.deck.idToItem.size) return true;
+    // 粗略檢查前 20 個 id 是否都在 deck 中（夠用）
+    const sample = pool.slice(0, 20);
+    for (const it of sample) {
+      if (!state.deck.idToItem.has(itemId(it))) return true;
+    }
+    return false;
+  })();
 
-  // 重置狀態與計時器
+  if (poolChanged) {
+    resetDeck(pool, signature);
+  }
+
+  // 抽本回合 size 張（不夠就自動重洗補滿）
+  state.items = drawOneRound(size);
+
+  // 重置顯示狀態與計時
   state.index = 0;
   state.isFront = true;
   startTimer();
 
   // 渲染
   renderCard();
-
-  // 依 lang 更新模式文字
   refreshModeLabels();
 }
 
@@ -325,10 +399,10 @@ function restoreFromUrl(){
   if (chkPinyin) chkPinyin.checked = (String(u.showPinyin ?? "true") !== "false");
   if (selSize)   selSize.value   = String(Math.min(50, Math.max(1, parseInt(u.size || "20",10))));
 
-  setModeRadio(u.mode || "front-zh"); // 先選定 radio
-  refreshModeLabels();                // 再依語言刷新 label 文字
+  setModeRadio(u.mode || "front-zh");
+  refreshModeLabels();
 
-  // 同步到 state（尚未套用過濾，等按 Start 或我們主動跑）
+  // 同步到 state（尚未抽牌；按 Start 或自動 init 時會抽）
   state.lang = selLang ? selLang.value : "fr";
   state.showPinyin = !!(chkPinyin && chkPinyin.checked);
   state.mode = getCheckedMode();
@@ -362,37 +436,14 @@ function go(delta){
   tts.cancel();
   const len = state.items.length;
   if (!len) return;
-
-  const prevIndex = state.index;
-  // 預先計算下一個 index（尚未套用到 state）
-  const nextIndex = (prevIndex + delta + len) % len;
-
-  // ✅ 關鍵：往前走且從最後一張「環回到 0」→ 視為走完一輪，立刻重洗新一輪
-  if (delta > 0 && prevIndex === len - 1 && nextIndex === 0) {
-    const lastItem = state.items[prevIndex];
-    const newDeck = state.items.slice();
-    shuffleInPlace(newDeck);
-    // 避免新一輪第一張 = 上一輪最後一張（體驗更好）
-    if (newDeck.length > 1 && newDeck[0] === lastItem) {
-      const k = 1 + Math.floor(Math.random() * (newDeck.length - 1));
-      [newDeck[0], newDeck[k]] = [newDeck[k], newDeck[0]];
-    }
-    state.items = newDeck;
-    state.index = 0;
-    state.isFront = true;
-    renderCard();
-    return;
-  }
-
-  // 一般移動
-  state.index = nextIndex;
+  state.index = (state.index + delta + len) % len;
   state.isFront = true;
   renderCard();
 }
 
 function flip(){
   tts.cancel();
-  showFace(!state.isFront); // 用 3D 翻牌切換
+  showFace(!state.isFront);
 }
 
 // 綁定
@@ -419,6 +470,8 @@ async function init(){
   await loadAllItems();   // 3) 載資料
   buildFiltersOptions();  // 4) 建立篩選下拉
   restoreFromUrl();       // 5) 從網址還原控制項與模式
-  applyAndStart();        // 6) 依狀態開始（此處會先洗牌後抽 N 張）
+
+  // 預設：直接起一回合（依目前 URL 篩選）
+  applyAndStart();        // 6) Start（會建立/沿用牌堆並抽本回合）
 }
 init();
