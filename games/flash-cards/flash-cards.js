@@ -138,20 +138,50 @@ function makeSignature({book, lesson, level, posSel}){
   return [book||"", lesson||"", lvl, pos].join("|");
 }
 
+/** 依 Book 建立 Lesson 選項（Book 空白 = 全部 Lesson） */
+function setLessonOptionsForBook(bookValue, keepCurrent = true) {
+  if (!selLesson) return;
+
+  const current = keepCurrent ? (selLesson.value || "") : "";
+  const lessons = uniq(
+    all.items
+      .filter(i => !bookValue || i.book === bookValue)
+      .map(i => i.lesson)
+  ).sort();
+
+  const prefix = bookValue ? `All in ${bookValue}` : "All";
+  const opt = (val, text)=> `<option value="${val}">${text}</option>`;
+  selLesson.innerHTML = opt("", `Lesson: ${prefix}`) + lessons.map(v=>opt(v, v || "—")).join("");
+
+  // 如果原本選的 lesson 還在清單內，就保留；否則清空
+  if (keepCurrent && current && lessons.includes(current)) {
+    selLesson.value = current;
+  } else {
+    selLesson.value = "";
+  }
+}
+
 function buildFiltersOptions() {
   const items = all.items;
   const books   = uniq(items.map(i=>i.book)).sort();
-  const lessons = uniq(items.map(i=>i.lesson)).sort();
   const lvls    = uniq(items.map(i=>i.level)).sort();
   const posTokens = uniq(
     items.flatMap(i => (i.pos||"").toLowerCase().match(/\b[a-z]{1,6}\./g) || [])
   ).sort();
 
   const opt = (val, text)=> `<option value="${val}">${text}</option>`;
-  selBook.innerHTML   = opt("","Book: All")   + books.map(v=>opt(v,v||"—")).join("");
-  selLesson.innerHTML = opt("","Lesson: All") + lessons.map(v=>opt(v,v||"—")).join("");
-  selLevel.innerHTML  = opt("","TOCFL: All")  + lvls.map(v=>opt(v,v||"—")).join("");
-  selPos.innerHTML    = opt("","POS: All")    + posTokens.map(v=>opt(v,v||"—")).join("");
+  if (selBook) {
+    selBook.innerHTML = opt("","Book: All") + books.map(v=>opt(v,v||"—")).join("");
+  }
+
+  // 初次建立 Lesson：先不限定（等 restoreFromUrl 後會依 Book 再重建一次）
+  if (selLesson) {
+    const lessonsAll = uniq(items.map(i=>i.lesson)).sort();
+    selLesson.innerHTML = opt("","Lesson: All") + lessonsAll.map(v=>opt(v,v||"—")).join("");
+  }
+
+  if (selLevel)  selLevel.innerHTML  = opt("","TOCFL: All")  + lvls.map(v=>opt(v,v||"—")).join("");
+  if (selPos)    selPos.innerHTML    = opt("","POS: All")    + posTokens.map(v=>opt(v,v||"—")).join("");
 }
 
 function formatTime(sec){
@@ -391,7 +421,11 @@ function setModeRadio(val){
 
 function restoreFromUrl(){
   const u = getUrlState(); // { book, lesson, level, pos, lang, mode, showPinyin, size ...}
+
   if (selBook)   selBook.value   = u.book   || "";
+  // 先依「已還原的 book」重建對應 lessons，再套用 URL 裡的 lesson
+  setLessonOptionsForBook(selBook ? selBook.value : "", false);
+
   if (selLesson) selLesson.value = u.lesson || "";
   if (selLevel)  selLevel.value  = u.level  || "";
   if (selPos)    selPos.value    = u.pos    || "";
@@ -449,6 +483,15 @@ function flip(){
 // 綁定
 if (btnStart) btnStart.addEventListener("click", applyAndStart);
 if (selLang)  selLang.addEventListener("change", () => refreshModeLabels());
+
+// ✅ 新增：Book 改變時，重建對應 Lesson 選單（若原選項不在清單內則清空）
+if (selBook) {
+  selBook.addEventListener("change", () => {
+    const before = selLesson ? selLesson.value : "";
+    setLessonOptionsForBook(selBook.value || "", true);
+    // 如果原來選的 lesson 不在新清單中，setLessonOptionsForBook 已清空
+  });
+}
 
 if (prevBtn) prevBtn.addEventListener("click", ()=> go(-1));
 if (nextBtn) nextBtn.addEventListener("click", ()=> go(+1));
