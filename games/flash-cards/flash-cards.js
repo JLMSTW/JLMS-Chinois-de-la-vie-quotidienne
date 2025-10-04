@@ -1,4 +1,4 @@
-// FCv1.2-4 + FCv1.2-5：篩選列 + Start + URL 還原/寫回 + Size/ShowPinyin/Mode + TTS Speak
+// FCv1.2-6：加入隨機出牌 + 走完一輪自動重洗
 import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
 import { adaptMemoryItem } from "../../js/shared/dataAdapter.js";
 import { showDataLoadError } from "../../js/shared/errorUi.js";
@@ -103,7 +103,15 @@ async function loadAllItems() {
 
 // ---------- 工具 ----------
 const uniq = (arr) => Array.from(new Set(arr.filter(Boolean)));
-const byKey = (k) => (a,b)=> String((a?.[k]) ?? "").localeCompare(String((b?.[k]) ?? ""));
+
+/** Fisher–Yates 洗牌（原地洗） */
+function shuffleInPlace(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 function buildFiltersOptions() {
   const items = all.items;
@@ -284,7 +292,8 @@ function applyAndStart(){
   if (level)  pool = pool.filter(i => (i.level||"").toUpperCase() === level.toUpperCase());
   if (posSel) pool = pool.filter(i => (i.pos||"").toLowerCase().includes(posSel));
 
-  // 限制數量（順序取前 size）
+  // ✅ 重點：先洗牌，再取前 size 張，讓每次都是隨機順序
+  shuffleInPlace(pool);
   state.items = pool.slice(0, size);
 
   // 重置狀態與計時器
@@ -351,11 +360,36 @@ function speakCurrent() {
 // ---------- 互動 ----------
 function go(delta){
   tts.cancel();
-  if (state.items.length === 0) return;
-  state.index = (state.index + delta + state.items.length) % state.items.length;
+  const len = state.items.length;
+  if (!len) return;
+
+  const prevIndex = state.index;
+  // 預先計算下一個 index（尚未套用到 state）
+  const nextIndex = (prevIndex + delta + len) % len;
+
+  // ✅ 關鍵：往前走且從最後一張「環回到 0」→ 視為走完一輪，立刻重洗新一輪
+  if (delta > 0 && prevIndex === len - 1 && nextIndex === 0) {
+    const lastItem = state.items[prevIndex];
+    const newDeck = state.items.slice();
+    shuffleInPlace(newDeck);
+    // 避免新一輪第一張 = 上一輪最後一張（體驗更好）
+    if (newDeck.length > 1 && newDeck[0] === lastItem) {
+      const k = 1 + Math.floor(Math.random() * (newDeck.length - 1));
+      [newDeck[0], newDeck[k]] = [newDeck[k], newDeck[0]];
+    }
+    state.items = newDeck;
+    state.index = 0;
+    state.isFront = true;
+    renderCard();
+    return;
+  }
+
+  // 一般移動
+  state.index = nextIndex;
   state.isFront = true;
   renderCard();
 }
+
 function flip(){
   tts.cancel();
   showFace(!state.isFront); // 用 3D 翻牌切換
@@ -385,6 +419,6 @@ async function init(){
   await loadAllItems();   // 3) 載資料
   buildFiltersOptions();  // 4) 建立篩選下拉
   restoreFromUrl();       // 5) 從網址還原控制項與模式
-  applyAndStart();        // 6) 依狀態開始
+  applyAndStart();        // 6) 依狀態開始（此處會先洗牌後抽 N 張）
 }
 init();
