@@ -1,4 +1,4 @@
-// FCv1.3：回合式抽牌（不重複直到抽完再重洗）+ POS/任意篩選皆可覆蓋 pool
+// FC v1.4：Book⇄Lesson 聯動 + AND 篩選 + 回合式抽牌（抽完再重洗）
 import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
 import { adaptMemoryItem } from "../../js/shared/dataAdapter.js";
 import { showDataLoadError } from "../../js/shared/errorUi.js";
@@ -6,6 +6,16 @@ import { escapeHtml } from "../../js/shared/dom.js";
 import { get as getUrlState, set as setUrlState } from "../../js/shared/urlState.js";
 
 const all = { items: [] }; // 全量資料（未過濾）
+
+// 供聯動使用的快取對照
+const lookup = {
+  bookToLessons: new Map(),   // Map<Book, Set<Lesson>>
+  lessonToBooks: new Map(),   // Map<Lesson, Set<Book>>
+  books: [],                  // 所有 book（排序後，去重）
+  lessons: [],                // 所有 lesson（排序後，去重）
+  lvls: [],                   // 所有 TOCFL level
+  posTokens: [],              // 所有 POS token
+};
 
 const state = {
   // 本回合要顯示的卡片（size 張）
@@ -100,6 +110,9 @@ async function loadAllItems() {
 
     console.log("[FlashCards] Loaded", items.length, "items");
     all.items = items;
+
+    // 載入完成後建立聯動快取
+    computeLookups();
   } catch (e) {
     console.error(e);
     showDataLoadError({
@@ -138,8 +151,10 @@ function makeSignature({book, lesson, level, posSel}){
   return [book||"", lesson||"", lvl, pos].join("|");
 }
 
-function buildFiltersOptions() {
+/** 建立 lookup（書→章、章→書、pos、level 等） */
+function computeLookups(){
   const items = all.items;
+
   const books   = uniq(items.map(i=>i.book)).sort();
   const lessons = uniq(items.map(i=>i.lesson)).sort();
   const lvls    = uniq(items.map(i=>i.level)).sort();
@@ -147,11 +162,85 @@ function buildFiltersOptions() {
     items.flatMap(i => (i.pos||"").toLowerCase().match(/\b[a-z]{1,6}\./g) || [])
   ).sort();
 
+  const b2l = new Map();
+  const l2b = new Map();
+
+  for (const it of items) {
+    const b = it.book || "";
+    const l = it.lesson || "";
+    if (!b || !l) continue;
+
+    if (!b2l.has(b)) b2l.set(b, new Set());
+    if (!l2b.has(l)) l2b.set(l, new Set());
+    b2l.get(b).add(l);
+    l2b.get(l).add(b);
+  }
+
+  lookup.bookToLessons = b2l;
+  lookup.lessonToBooks = l2b;
+  lookup.books   = books;
+  lookup.lessons = lessons;
+  lookup.lvls    = lvls;
+  lookup.posTokens = posTokens;
+}
+
+/** 以目前資料填入 Book / Level / POS 選項；Lesson 由 updateLessonOptions() 控制 */
+function buildFiltersOptions() {
   const opt = (val, text)=> `<option value="${val}">${text}</option>`;
-  selBook.innerHTML   = opt("","Book: All")   + books.map(v=>opt(v,v||"—")).join("");
-  selLesson.innerHTML = opt("","Lesson: All") + lessons.map(v=>opt(v,v||"—")).join("");
-  selLevel.innerHTML  = opt("","TOCFL: All")  + lvls.map(v=>opt(v,v||"—")).join("");
-  selPos.innerHTML    = opt("","POS: All")    + posTokens.map(v=>opt(v,v||"—")).join("");
+
+  // Book/Level/POS 直接由 lookup 列出
+  selBook.innerHTML   = opt("", "B: All")     + lookup.books.map(v=>opt(v,v||"—")).join("");
+  selLevel.innerHTML  = opt("", "TOCFL: All") + lookup.lvls.map(v=>opt(v,v||"—")).join("");
+  selPos.innerHTML    = opt("", "POS: All")   + lookup.posTokens.map(v=>opt(v,v||"—")).join("");
+
+  // Lesson 交給 updateLessonOptions 根據 Book 決定
+  updateLessonOptions(selBook?.value || "");
+}
+
+/** 依所選 Book 更新 Lesson 選項；若現有選擇不合法則清空為 All */
+function updateLessonOptions(currentBook){
+  const opt = (val, text)=> `<option value="${val}">${text}</option>`;
+
+  let lessons;
+  if (currentBook) {
+    const set = lookup.bookToLessons.get(currentBook) || new Set();
+    lessons = Array.from(set).sort();
+  } else {
+    lessons = lookup.lessons.slice(); // 全部 lesson
+  }
+
+  const currentLesson = selLesson?.value || "";
+  selLesson.innerHTML = opt("", "Lesson: All") + lessons.map(v=>opt(v, v || "—")).join("");
+
+  // 若之前選的 lesson 仍在清單中，保留；否則清空
+  if (currentLesson && lessons.includes(currentLesson)) {
+    selLesson.value = currentLesson;
+  } else {
+    selLesson.value = "";
+  }
+}
+
+/** Book 變更時：更新 Lesson 清單（若原選擇不屬於此 Book，auto 清空） */
+function onBookChange(){
+  const book = selBook?.value || "";
+  updateLessonOptions(book);
+}
+
+/** Lesson 變更時：若 Book 為空或不符且此 Lesson 只對應到唯一 Book → 自動補齊 Book */
+function onLessonChange(){
+  const lesson = selLesson?.value || "";
+  if (!lesson) return;
+
+  const relatedBooks = lookup.lessonToBooks.get(lesson);
+  if (!relatedBooks || relatedBooks.size !== 1) return;
+
+  // 僅在 Book 為空或與此 lesson 不符時自動補齊
+  const onlyBook = Array.from(relatedBooks)[0];
+  if (!selBook.value || !lookup.bookToLessons.get(selBook.value)?.has(lesson)) {
+    selBook.value = onlyBook;
+    updateLessonOptions(onlyBook); // 讓 Lesson 下拉保持一致
+    selLesson.value = lesson;      // 再把 lesson 設回去
+  }
 }
 
 function formatTime(sec){
@@ -322,14 +411,33 @@ function drawOneRound(size){
 // ---------- 套用篩選 + 生成牌堆 + 抽本回合 ----------
 function applyAndStart(){
   // 讀控制項值
-  const book   = selBook?.value || "";
-  const lesson = selLesson?.value || "";
+  let book   = selBook?.value || "";
+  let lesson = selLesson?.value || "";
   const level  = selLevel?.value || "";
   const posSel = (selPos?.value || "").toLowerCase();
   const lang   = (selLang && selLang.value === "en") ? "en" : "fr";
   const showPinyin = !!(chkPinyin && chkPinyin.checked);
   const size   = Math.min(50, Math.max(1, parseInt(selSize?.value||"20",10)));
   const mode   = getCheckedMode();
+
+  // （防呆）若選了 Book 但當前 Lesson 不屬於此 Book → 忽略該 Lesson
+  if (book && lesson) {
+    const set = lookup.bookToLessons.get(book) || new Set();
+    if (!set.has(lesson)) {
+      lesson = "";
+      selLesson.value = "";
+    }
+  }
+  // （補全）若沒選 Book 但選了 Lesson 且此 Lesson 只對應唯一 Book → 自動補 Book
+  if (!book && lesson) {
+    const bset = lookup.lessonToBooks.get(lesson);
+    if (bset && bset.size === 1) {
+      book = Array.from(bset)[0];
+      selBook.value = book;
+      updateLessonOptions(book);
+      selLesson.value = lesson;
+    }
+  }
 
   // 寫回 URL（不把 deck 狀態寫入）
   setUrlState({
@@ -344,7 +452,7 @@ function applyAndStart(){
   state.mode = mode;
   state.size = size;
 
-  // 依條件過濾出 pool
+  // 依條件過濾出 pool（AND 交集）
   let pool = all.items.slice();
   if (book)   pool = pool.filter(i => i.book === book);
   if (lesson) pool = pool.filter(i => i.lesson === lesson);
@@ -355,7 +463,6 @@ function applyAndStart(){
   const signature = makeSignature({book, lesson, level, posSel});
   const poolChanged = (()=>{
     if (signature !== state.deck.signature) return true;
-    // 快速比對：數量不同必定改變；數量相同再抽樣比對幾個 id
     if (pool.length !== state.deck.idToItem.size) return true;
     // 粗略檢查前 20 個 id 是否都在 deck 中（夠用）
     const sample = pool.slice(0, 20);
@@ -392,12 +499,16 @@ function setModeRadio(val){
 function restoreFromUrl(){
   const u = getUrlState(); // { book, lesson, level, pos, lang, mode, showPinyin, size ...}
   if (selBook)   selBook.value   = u.book   || "";
-  if (selLesson) selLesson.value = u.lesson || "";
+  // Lesson 先別填，等 updateLessonOptions 依 Book 產生清單後再填
   if (selLevel)  selLevel.value  = u.level  || "";
   if (selPos)    selPos.value    = u.pos    || "";
   if (selLang)   selLang.value   = (u.lang || "fr").toLowerCase() === "en" ? "en" : "fr";
   if (chkPinyin) chkPinyin.checked = (String(u.showPinyin ?? "true") !== "false");
   if (selSize)   selSize.value   = String(Math.min(50, Math.max(1, parseInt(u.size || "20",10))));
+
+  // 依目前 Book 更新 Lesson 清單，再套入 URL 的 lesson
+  updateLessonOptions(selBook?.value || "");
+  if (selLesson) selLesson.value = u.lesson || "";
 
   setModeRadio(u.mode || "front-zh");
   refreshModeLabels();
@@ -450,6 +561,10 @@ function flip(){
 if (btnStart) btnStart.addEventListener("click", applyAndStart);
 if (selLang)  selLang.addEventListener("change", () => refreshModeLabels());
 
+// 聯動：Book / Lesson 改變時
+if (selBook)   selBook.addEventListener("change", onBookChange);
+if (selLesson) selLesson.addEventListener("change", onLessonChange);
+
 if (prevBtn) prevBtn.addEventListener("click", ()=> go(-1));
 if (nextBtn) nextBtn.addEventListener("click", ()=> go(+1));
 if (cardEl)  cardEl.addEventListener("click", flip);
@@ -467,9 +582,9 @@ window.addEventListener("keydown", (e)=>{
 async function init(){
   ensureFlipDom();        // 1) 先確保翻牌骨架
   buildModes();           // 2) 產生模式（避免重複）
-  await loadAllItems();   // 3) 載資料
-  buildFiltersOptions();  // 4) 建立篩選下拉
-  restoreFromUrl();       // 5) 從網址還原控制項與模式
+  await loadAllItems();   // 3) 載資料 & 建 lookup
+  buildFiltersOptions();  // 4) 建立篩選下拉（會依 Book 決定 Lesson 選項）
+  restoreFromUrl();       // 5) 從網址還原控制項與模式（含更新 Lesson）
 
   // 預設：直接起一回合（依目前 URL 篩選）
   applyAndStart();        // 6) Start（會建立/沿用牌堆並抽本回合）
