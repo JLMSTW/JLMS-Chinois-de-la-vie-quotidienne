@@ -391,6 +391,21 @@ function applyAndStart(){
   if (level)  pool = pool.filter(i => (i.level||"").toUpperCase() === level.toUpperCase());
   if (posSel) pool = pool.filter(i => (i.pos||"").toLowerCase().includes(posSel));
 
+  
+    // ==== DBG STEP-1: 觀察 pool 與唯一鍵 ====
+    console.log('[DBG1] pool length =', pool.length);
+    const uniqByItemId = new Set(pool.map(itemId)).size;
+    console.log('[DBG1] unique by itemId =', uniqByItemId);
+    console.table(
+      pool.slice(0, 5).map(i => ({
+        item_id: i.item_id, itemId: i.itemId, id: i.id,
+        set_id: i.set_id, setId: i.setId,
+        book: i.book, lesson: i.lesson, hanzi: i.hanzi,
+        pinyin: i.pinyin, pinyin_tw: i.pinyin_tw
+      }))
+    );
+    // ==== /DBG STEP-1 ====
+  
   // 建立/檢查簽章；若條件或 pool 變動 → 重置 deck
   const signature = makeSignature({book, lesson, level, posSel});
   const poolChanged = (()=>{
