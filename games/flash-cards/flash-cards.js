@@ -1,3 +1,9 @@
+/* Debug helpers — keep this at the very top of the file */
+const DEBUG  = new URLSearchParams(location.search).has('debug')
+             || location.hostname === 'localhost';
+const dlog   = (...a) => DEBUG && console.log(...a);
+const dtable = (x)    => DEBUG && console.table(x);
+
 // FCv1.3：回合式抽牌（不重複直到抽完再重洗）+ POS/任意篩選皆可覆蓋 pool
 import { GAS_ENDPOINT, SHEETS, PREF } from "../../js/config.js";
 import { adaptMemoryItem } from "../../js/shared/dataAdapter.js";
@@ -97,26 +103,28 @@ async function loadAllItems() {
   
 
 // === DBG: RAW from GAS (before adapt) ===
-console.log('[RAW] sample', (data.items || []).slice(0,5).map(r => ({
-  item_id: r.item_id, set_id: r.set_id, id: r.id,
-  book: r.book, lesson: r.lesson,
-  hanzi: r.chinese_tr || r.hanzi,
-  pinyin: r.pinyin_tw || r.pinyin
-})));
+if (DEBUG) {
+  dtable((data.items || []).slice(0, 5).map(r => ({
+    item_id: r.item_id, set_id: r.set_id, id: r.id,
+    book: r.book, lesson: r.lesson,
+    hanzi: r.chinese_tr || r.hanzi,
+    pinyin: r.pinyin_tw  || r.pinyin
+  })));
+  dlog('[RAW] keys', Object.keys(((data.items || [])[0]) || {}));
+}
 
-// ➊ 新增這一行：看第一筆資料有哪些 key
-console.log('[RAW] keys', Object.keys(((data.items || [])[0] || {})));
-  
-    const items = (data.items || [])
-      .map(x => adaptMemoryItem(x, PREF))
-      .filter(i => i.active && i.hanzi && (i.meaning?.fr || i.meaning?.en));
-    
-    // === DBG: AFTER adaptMemoryItem ===
-    console.log('[ADAPTED] sample', items.slice(0,5).map(i => ({
-      item_id: i.item_id, set_id: i.set_id, id: i.id,
-      book: i.book, lesson: i.lesson,
-      hanzi: i.hanzi, pinyin: i.pinyin
-    })));
+const items = (data.items || [])
+  .map(x => adaptMemoryItem(x, PREF))
+  .filter(i => i.active && i.hanzi && (i.meaning?.fr || i.meaning?.en));
+
+// === DBG: AFTER adaptMemoryItem ===
+if (DEBUG) {
+  dtable(items.slice(0, 5).map(i => ({
+    item_id: i.item_id, set_id: i.set_id, id: i.id,
+    book: i.book, lesson: i.lesson,
+    hanzi: i.hanzi, pinyin: i.pinyin
+  })));
+}
     
     console.log("[FlashCards] Loaded", items.length, "items");
     all.items = items;
@@ -423,10 +431,10 @@ function applyAndStart(){
 
   
     // ==== DBG STEP-1: 觀察 pool 與唯一鍵 ====
-    console.log('[DBG1] pool length =', pool.length);
+    dlog('[DBG1] pool length =', pool.length);
     const uniqByItemId = new Set(pool.map(itemId)).size;
-    console.log('[DBG1] unique by itemId =', uniqByItemId);
-    console.table(
+    dlog('[DBG1] unique by itemId =', uniqByItemId);
+    dtable(
       pool.slice(0, 5).map(i => ({
         item_id: i.item_id, itemId: i.itemId, id: i.id,
         set_id: i.set_id, setId: i.setId,
