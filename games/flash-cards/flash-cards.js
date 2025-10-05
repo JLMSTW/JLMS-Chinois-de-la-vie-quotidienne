@@ -126,19 +126,29 @@ function shuffleInPlace(arr) {
   return arr;
 }
 
-/** 試算表項目唯一 id（若沒有 id，就用 book|lesson|hanzi 作為後備） */
-/** 試算表項目唯一 id（優先 item_id，其次 set_id，再用組合鍵） */
+/** 試算表項目唯一 id：
+ * 1) 優先用 item_id
+ * 2) 其次，若 id 看起來是 item 級別（如 B4_L16_05），才當作 item_id
+ * 3) 否則用 set|hanzi|pinyin 或 book|lesson|hanzi|pinyin 的組合鍵
+ */
 function itemId(i){
-  // 對應試算表欄位：item_id、set_id
-  const id  = i.item_id || i.id;
-  const set = i.set_id  || i.setId;
+  // 1) 最可靠：明確的 item_id 欄位
+  const rawItemId = i.item_id || i.itemId;
+  if (rawItemId) return String(rawItemId);
 
-  if (id) return String(id);
+  // 2) 某些 adapter 會把 item_id 或 set_id 塞進 id：
+  //    - 若 id 形如 "..._數字"（例如 B4_L16_05），才視為 item 級別
+  if (typeof i.id === "string" && /_\d{1,}$/.test(i.id)) {
+    return i.id;
+  }
+
+  // 3) 退而求其次：以 set 或 book/lesson + hanzi + pinyin 組合，盡量做到唯一
+  const set = i.set_id || i.setId || (typeof i.id === "string" ? i.id : "");
   if (set && i.hanzi) return `${set}|${i.hanzi}|${i.pinyin || ""}`;
 
-  // 後備：多欄組合，盡量避免撞名
   return [i.book || "", i.lesson || "", i.hanzi || "", i.pinyin || ""].join("|");
 }
+
 
 
 /** 用會影響 pool 的篩選條件做簽章 */
