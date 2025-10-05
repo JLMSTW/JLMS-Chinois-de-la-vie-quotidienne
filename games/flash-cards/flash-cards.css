@@ -243,11 +243,11 @@
   }
   .btn-ghost:hover{ filter:brightness(1.05) }
   /* === Back pill (shared look) === */
-:root{
-  --pill-bg: rgba(255,255,255,0.18);
-  --pill-bd: rgba(255,255,255,0.28);
-  --text-on-dark: #fff;
-}
+ :root{
+   --back-pill-bg: rgba(255,255,255,0.18);
+   --back-pill-bd: rgba(255,255,255,0.28);
+   --back-text: #fff;
+ }
 
 .backbar{
   width:min(1100px,92vw);
@@ -257,9 +257,9 @@
 .back-btn{
   display:inline-flex; align-items:center; gap:8px;
   text-decoration:none;
-  color:var(--text-on-dark); font-weight:800;
-  background: var(--pill-bg);
-  border:1px solid var(--pill-bd);
+  color: var(--back-text); font-weight:800;
+  background: var(--back-pill-bg);
+  border: 1px solid var(--back-pill-bd);
   border-radius: 999px;
   padding:8px 12px;
   box-shadow: 0 6px 18px rgba(0,0,0,.18);
@@ -268,7 +268,7 @@
 .back-btn:hover{ transform:translateY(-1px); filter:brightness(1.05); }
 .back-btn:active{ transform:translateY(0); }
 .back-btn:focus-visible {
-  outline: 2px solid var(--text-on-dark); /* 或 #fff */
+  outline: 2px solid var(--back-text);
   outline-offset: 2px;
 }
 
