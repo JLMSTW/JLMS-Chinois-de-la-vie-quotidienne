@@ -94,10 +94,30 @@ async function loadAllItems() {
     if (!res.ok) throw new Error(`Fetch failed ${res.status}`);
 
     const data = await res.json();
+  
+
+// === DBG: RAW from GAS (before adapt) ===
+console.log('[RAW] sample', (data.items || []).slice(0,5).map(r => ({
+  item_id: r.item_id, set_id: r.set_id, id: r.id,
+  book: r.book, lesson: r.lesson,
+  hanzi: r.chinese_tr || r.hanzi,
+  pinyin: r.pinyin_tw || r.pinyin
+})));
+
+// ➊ 新增這一行：看第一筆資料有哪些 key
+console.log('[RAW] keys', Object.keys(((data.items || [])[0] || {})));
+  
     const items = (data.items || [])
       .map(x => adaptMemoryItem(x, PREF))
       .filter(i => i.active && i.hanzi && (i.meaning?.fr || i.meaning?.en));
-
+    
+    // === DBG: AFTER adaptMemoryItem ===
+    console.log('[ADAPTED] sample', items.slice(0,5).map(i => ({
+      item_id: i.item_id, set_id: i.set_id, id: i.id,
+      book: i.book, lesson: i.lesson,
+      hanzi: i.hanzi, pinyin: i.pinyin
+    })));
+    
     console.log("[FlashCards] Loaded", items.length, "items");
     all.items = items;
   } catch (e) {
