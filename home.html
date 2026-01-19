@@ -65,14 +65,14 @@
       rateValue.textContent = rateSlider.value;
     });
 
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 5; i++) {
       const opt = document.createElement("option");
       opt.value = i;
       opt.textContent = "Book " + i;
       bookSelect.appendChild(opt);
     }
 
-    const lessonMap = { 1:[1,5], 2:[6,10], 3:[11,15], 4:[16,20] };
+    const lessonMap = { 1:[1,5], 2:[6,10], 3:[11,15], 4:[16,20], 5:[21,25] };
 
     bookSelect.addEventListener("change", updateLessonOptions);
     lessonSelect.addEventListener("change", loadLesson);

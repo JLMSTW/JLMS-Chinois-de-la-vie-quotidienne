@@ -26,7 +26,7 @@ function buildBookList(level) {
   const list = document.getElementById("bookList");
   list.innerHTML = "";
 
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const li = document.createElement("li");
     li.textContent = `Book ${i}`;
 
