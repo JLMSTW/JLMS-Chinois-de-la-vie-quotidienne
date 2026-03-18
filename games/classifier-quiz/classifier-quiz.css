@@ -360,11 +360,11 @@
   
   ruby { ruby-align: center; }
   rt {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: rgba(26,10,0,.42);
-    letter-spacing: .5px;
-    font-weight: 400;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans";
+    font-size: 12px;
+    color: #445;
+    letter-spacing: 0;
+    font-weight: 700;
   }
   
   /* Blank slot */
@@ -427,10 +427,10 @@
   }
   
   .choice-btn .romanization {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    opacity: .58;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans";
+    font-size: 11px;
+    color: #445;
+    opacity: 1;
   }
   
   .choice-btn.correct-ans {
