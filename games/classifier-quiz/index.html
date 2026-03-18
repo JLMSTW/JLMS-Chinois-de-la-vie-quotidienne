@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>量詞大挑戰 · Chinese Classifiers Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./classifier-quiz.css" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- ── HEADER ── -->
+    <header>
+      <div class="header-label">Jeu · 遊戲 · Game</div>
+      <h1>
+        <span class="zh">量詞大挑戰</span>
+        Chinese Classifiers
+      </h1>
+      <div class="subtitle" id="headerSubtitle">Select your language · 選擇語言</div>
+    </header>
+
+    <!-- ── SCREEN 1 : LANGUAGE SELECTOR ── -->
+    <div id="langScreen">
+      <p class="lang-prompt">選擇語言 · Choose your language</p>
+      <div class="lang-options">
+        <button class="lang-btn" id="btnFR" onclick="selectLang('fr')">
+          <span class="lang-flag">🇫🇷</span>
+          <span class="lang-name">Français</span>
+          <span class="lang-sub">FRENCH · 法文</span>
+        </button>
+        <button class="lang-btn" id="btnEN" onclick="selectLang('en')">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-name">English</span>
+          <span class="lang-sub">ENGLISH · 英文</span>
+        </button>
+      </div>
+      <button class="start-btn" id="startBtn" onclick="startGame()" disabled>
+        ▶ Start · 開始
+      </button>
+    </div>
+
+    <!-- ── SCREEN 2 : QUIZ ── -->
+    <div id="quizArea" style="display:none">
+
+      <div class="lang-switcher">
+        <button class="switch-btn" id="swFR" onclick="switchLang('fr')">🇫🇷 Français</button>
+        <button class="switch-btn" id="swEN" onclick="switchLang('en')">🇬🇧 English</button>
+      </div>
+
+      <div class="score-bar">
+        <div class="score-item">
+          <div class="score-num" id="scoreNum">0</div>
+          <div class="score-label">Score</div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+          </div>
+          <div class="progress-text" id="progressText">Question 1 / 20</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num" id="streakNum">0</div>
+          <div class="score-label">Streak 🔥</div>
+        </div>
+      </div>
+
+      <div class="card" id="questionCard">
+        <div class="q-meta">
+          <span class="q-category" id="qCategory"></span>
+          <span class="q-number"   id="qNumber">#01</span>
+        </div>
+        <div class="sentence"    id="qSentence"></div>
+        <div class="translation" id="qTranslation"></div>
+        <div class="choices"     id="choicesGrid"></div>
+        <div class="feedback"    id="feedback">
+          <div class="feedback-title" id="feedbackTitle"></div>
+          <div class="feedback-text"  id="feedbackText"></div>
+        </div>
+        <button class="next-btn" id="nextBtn" style="display:none"></button>
+      </div>
+
+    </div>
+
+    <!-- ── SCREEN 3 : RESULTS ── -->
+    <div id="results" style="display:none">
+      <div class="stars"        id="starsDisplay">★★★</div>
+      <div class="result-score" id="finalScore">0</div>
+      <div class="result-total" id="finalTotal"></div>
+      <div class="result-msg"   id="resultMsg"></div>
+      <div class="result-sub"   id="resultSub"></div>
+      <div class="result-actions">
+        <button class="restart-btn"     id="replayBtn"     onclick="replayGame()"></button>
+        <button class="change-lang-btn" id="changeLangBtn" onclick="goToLangScreen()"></button>
+      </div>
+    </div>
+
+  </div><!-- /.container -->
+
+  <script src="./classifier-quiz.js"></script>
+</body>
+</html>
