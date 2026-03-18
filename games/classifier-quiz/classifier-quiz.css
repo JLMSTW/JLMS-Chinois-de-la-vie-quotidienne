@@ -612,6 +612,56 @@
     to   { opacity: 1; transform: translateY(0);   }
   }
   
+  /* ── QUESTION COUNT SELECTOR ── */
+  .count-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  
+  .count-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(26,10,0,.45);
+  }
+  
+  .count-options {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .count-btn {
+    width: 56px;
+    height: 56px;
+    background: var(--white);
+    border: 2px solid var(--mist);
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all .15s;
+    box-shadow: 3px 3px 0 var(--mist);
+  }
+  
+  .count-btn:hover {
+    border-color: var(--vermillion);
+    transform: translate(-2px,-2px);
+    box-shadow: 5px 5px 0 rgba(200,57,43,.15);
+  }
+  
+  .count-btn.active {
+    background: var(--vermillion);
+    border-color: var(--vermillion);
+    color: #fff;
+    transform: translate(-2px,-2px);
+    box-shadow: 5px 5px 0 rgba(200,57,43,.25);
+  }
+  
   /* ── RESPONSIVE ── */
   @media (max-width: 500px) {
     .container   { padding: 28px 16px 60px; }
@@ -622,3 +672,4 @@
     #results     { padding: 36px 20px; }
     .result-score { font-size: 72px; }
   }
+  

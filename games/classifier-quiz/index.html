@@ -20,7 +20,7 @@
       <div class="subtitle" id="headerSubtitle">Select your language · 選擇語言</div>
     </header>
 
-    <!-- ── SCREEN 1 : LANGUAGE SELECTOR ── -->
+    <!-- ── SCREEN 1 : LANGUAGE + QUESTION COUNT ── -->
     <div id="langScreen">
       <p class="lang-prompt">選擇語言 · Choose your language</p>
       <div class="lang-options">
@@ -35,6 +35,19 @@
           <span class="lang-sub">ENGLISH · 英文</span>
         </button>
       </div>
+
+      <!-- Question count selector -->
+      <div class="count-selector">
+        <label class="count-label" id="countLabel">Number of questions · 題數</label>
+        <div class="count-options">
+          <button class="count-btn active" data-val="10" onclick="setCount(this, 10)">10</button>
+          <button class="count-btn"        data-val="15" onclick="setCount(this, 15)">15</button>
+          <button class="count-btn"        data-val="20" onclick="setCount(this, 20)">20</button>
+          <button class="count-btn"        data-val="30" onclick="setCount(this, 30)">30</button>
+        </div>
+        <input type="hidden" id="countSelect" value="10" />
+      </div>
+
       <button class="start-btn" id="startBtn" onclick="startGame()" disabled>
         ▶ Start · 開始
       </button>
@@ -57,7 +70,7 @@
           <div class="progress-track">
             <div class="progress-fill" id="progressFill" style="width:0%"></div>
           </div>
-          <div class="progress-text" id="progressText">Question 1 / 20</div>
+          <div class="progress-text" id="progressText">Question 1 / 15</div>
         </div>
         <div class="score-item">
           <div class="score-num" id="streakNum">0</div>
@@ -98,5 +111,12 @@
   </div><!-- /.container -->
 
   <script src="./classifier-quiz.js"></script>
+  <script>
+    function setCount(el, val) {
+      document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('countSelect').value = val;
+    }
+  </script>
 </body>
 </html>
