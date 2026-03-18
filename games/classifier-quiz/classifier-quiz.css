@@ -615,43 +615,52 @@
   /* ── QUESTION COUNT SELECTOR ── */
   .count-selector {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 16px;
     margin-top: 4px;
+    background: var(--white);
+    border: 1.5px solid var(--mist);
+    padding: 16px 24px;
+    box-shadow: 4px 4px 0 var(--mist);
+    width: 100%;
+    max-width: 440px;
   }
   
   .count-label {
     font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
+    font-size: 10px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(26,10,0,.45);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   
   .count-options {
     display: flex;
-    gap: 10px;
+    gap: 8px;
   }
   
   .count-btn {
-    width: 56px;
-    height: 56px;
-    background: var(--white);
-    border: 2px solid var(--mist);
+    width: 48px;
+    height: 48px;
+    background: var(--paper);
+    border: 1.5px solid rgba(26,10,0,.14);
     font-family: 'Space Mono', monospace;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--ink);
     cursor: pointer;
     transition: all .15s;
-    box-shadow: 3px 3px 0 var(--mist);
+    box-shadow: 2px 2px 0 var(--mist);
   }
   
   .count-btn:hover {
     border-color: var(--vermillion);
     transform: translate(-2px,-2px);
-    box-shadow: 5px 5px 0 rgba(200,57,43,.15);
+    box-shadow: 4px 4px 0 rgba(200,57,43,.15);
   }
   
   .count-btn.active {
@@ -659,7 +668,41 @@
     border-color: var(--vermillion);
     color: #fff;
     transform: translate(-2px,-2px);
-    box-shadow: 5px 5px 0 rgba(200,57,43,.25);
+    box-shadow: 4px 4px 0 rgba(200,57,43,.25);
+  }
+  
+  /* ── NAV BUTTONS (lang screen) ── */
+  .nav-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  
+  .nav-btn-back {
+    padding: 12px 24px;
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid rgba(26,10,0,.25);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .13s;
+  }
+  
+  .nav-btn-back:hover {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    transform: translate(-2px,-2px);
+    box-shadow: 4px 4px 0 var(--mist);
   }
   
   /* ── RESPONSIVE ── */
@@ -671,5 +714,10 @@
     .lang-options { gap: 10px; }
     #results     { padding: 36px 20px; }
     .result-score { font-size: 72px; }
+    .count-selector {
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px 16px;
+    }
   }
   
