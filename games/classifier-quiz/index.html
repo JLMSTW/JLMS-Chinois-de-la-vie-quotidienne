@@ -54,7 +54,6 @@
 
       <!-- Nav buttons -->
       <div class="nav-btns">
-        <button class="nav-btn-back" onclick="replayGame()">↺ Restart</button>
         <a class="nav-btn-back" href="../">← Back to Interactive Games</a>
       </div>
     </div>
@@ -62,9 +61,12 @@
     <!-- ── SCREEN 2 : QUIZ ── -->
     <div id="quizArea" style="display:none">
 
-      <div class="lang-switcher">
-        <button class="switch-btn" id="swFR" onclick="switchLang('fr')">🇫🇷 Français</button>
-        <button class="switch-btn" id="swEN" onclick="switchLang('en')">🇬🇧 English</button>
+      <div class="quiz-topbar">
+        <div class="lang-switcher">
+          <button class="switch-btn" id="swFR" onclick="switchLang('fr')">🇫🇷 Français</button>
+          <button class="switch-btn" id="swEN" onclick="switchLang('en')">🇬🇧 English</button>
+        </div>
+        <button class="nav-btn-back restart-quiz-btn" onclick="goToLangScreen()">↺ Restart</button>
       </div>
 
       <div class="score-bar">
