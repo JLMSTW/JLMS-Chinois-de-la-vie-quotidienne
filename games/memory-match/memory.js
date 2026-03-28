@@ -41,7 +41,6 @@ let deck     = [];   // 牌庫（兩倍）
 let game     = {};   // 遊戲狀態（moves / matches / flipped 等）
 
 // ---- helpers ----
-const by = (k) => (a,b)=> (a[k]||"").localeCompare(b[k]||"");
 const uniq = (arr)=> Array.from(new Set(arr.filter(Boolean)));
 const setLoading = (on)=> loadingEl.textContent = on ? "Loading…" : "";
 
@@ -64,10 +63,23 @@ async function fetchItems(){
 }
 
 // ---- build filters ----
+function setLessonOptionsForBook(bookValue, keepCurrent = true) {
+  if (!selLesson) return;
+  const current = keepCurrent ? (selLesson.value || "") : "";
+  const lessons = uniq(
+    rawItems
+      .filter(i => !bookValue || i.book === bookValue)
+      .map(i => i.lesson)
+  ).sort();
+  const prefix = bookValue ? `All in ${bookValue}` : "All";
+  const opt = (val, text) => `<option value="${val}">${text}</option>`;
+  selLesson.innerHTML = opt("", `Lesson: ${prefix}`) + lessons.map(v => opt(v, v || "—")).join("");
+  selLesson.value = (keepCurrent && current && lessons.includes(current)) ? current : "";
+}
+
 function buildFilters(){
   const opt = (val, text)=> `<option value="${val}">${text}</option>`;
   const books   = uniq(rawItems.map(i=>i.book)).sort();
-  const lessons = uniq(rawItems.map(i=>i.lesson)).sort(by(undefined));
   const lvls = uniq(rawItems.map(i=>i.level)).sort();
 
   // 從 pos 欄位擷取縮寫 token（adj. / n. / v. / prep. / pron. / conj. / adv. / mw. / aux. / expr.）
@@ -79,16 +91,16 @@ function buildFilters(){
     })
   ).sort();
 
-  selBook.innerHTML   = opt("", "Book: All")   + books.map(b=>opt(b, b||"—")).join("");
-  selLesson.innerHTML = opt("", "Lesson: All") + lessons.map(l=>opt(l, l||"—")).join("");
-  selLevel.innerHTML  = opt("", "TOCFL: All")  + lvls.map(l=>opt(l, l||"—")).join("");
-  selPos.innerHTML    = opt("", "POS: All")    + posTokens.map(p=>opt(p, p||"—")).join("");
+  selBook.innerHTML  = opt("", "Book: All")  + books.map(b=>opt(b, b||"—")).join("");
+  selLevel.innerHTML = opt("", "TOCFL: All") + lvls.map(l=>opt(l, l||"—")).join("");
+  selPos.innerHTML   = opt("", "POS: All")   + posTokens.map(p=>opt(p, p||"—")).join("");
 
   // 從 URL 還原
-  selBook.value   = url.book   || "";
+  selBook.value  = url.book  || "";
+  setLessonOptionsForBook(selBook.value, false);
   selLesson.value = url.lesson || "";
-  selLevel.value  = url.level  || "";
-  selPos.value    = url.pos    || "";
+  selLevel.value = url.level || "";
+  selPos.value   = url.pos   || "";
 
   // NEW：語言（預設 fr）
   const lang = (url.lang || "fr").toLowerCase();
@@ -260,6 +272,10 @@ async function init(){
   document.getElementById("playAgainBtn").addEventListener("click", ()=>{
     victoryEl.style.display = "none";
     applyAndStart();
+  });
+
+  selBook.addEventListener("change", () => {
+    setLessonOptionsForBook(selBook.value, true);
   });
 
   [selDifficulty, selBook, selLesson, selLevel, selPos, selLang].forEach(sel => {
