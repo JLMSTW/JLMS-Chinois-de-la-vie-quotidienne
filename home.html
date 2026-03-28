@@ -91,15 +91,48 @@
       loadLesson();
     }
 
-    async function loadLesson () {
-      const lesson = lessonSelect.value;
+    let _sentenceCache = null;
+
+    async function fetchSentenceData() {
+      if (_sentenceCache) return _sentenceCache;
+      const url = "https://script.google.com/macros/s/AKfycby8K9W8qZliOl55y4ueQTeRmvLV1cYJGiW0yRmluMu-W8eGQZNWyJPlI3fR6ugrin9j1Q/exec?sheet=Sentence%20Builder";
+      const res = await fetch(url, { credentials: "omit" });
+      const data = await res.json();
+      _sentenceCache = data.items || [];
+      return _sentenceCache;
+    }
+
+    async function loadLesson() {
+      const book   = "B" + bookSelect.value;
+      const lesson = lessonSelect.value; // e.g. "L1", "L21"
       sentenceList.innerHTML = "<p>Loading…</p>";
       try {
-        const res = await fetch(`data/${lesson}.json`);
-        const data = await res.json();
-        renderSentences(data);
+        const allData = await fetchSentenceData();
+        const rows = allData
+          .filter(r => r.book === book && r.lesson === lesson)
+          .sort((a, b) => (a.phrase_id || "").localeCompare(b.phrase_id || ""));
+
+        const circled = ["","❶","❷","❸","❹","❺","❻","❼","❽","❾","❿"];
+        const items = [];
+        let lastGramNo = null;
+
+        for (const row of rows) {
+          const gramNo = Number(row.gram_no);
+          if (gramNo !== lastGramNo) {
+            items.push({ grammar: {
+              num:    circled[gramNo] || String(gramNo),
+              text:   row.grammar_tag_tr || "",
+              pinyin: ""
+            }});
+            lastGramNo = gramNo;
+          }
+          items.push({ hanzi: row.chinese_tr || "", pinyin: row.pinyin_tw || "" });
+        }
+
+        renderSentences(items);
       } catch(err) {
-        sentenceList.innerHTML = "<p>❌ Data for this lesson not found.</p>";
+        sentenceList.innerHTML = "<p>❌ Failed to load data.</p>";
+        console.error(err);
       }
     }
 
