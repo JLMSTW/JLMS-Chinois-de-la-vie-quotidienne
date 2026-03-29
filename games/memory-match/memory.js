@@ -65,14 +65,12 @@ async function fetchItems(){
 // ---- build filters ----
 function setLessonOptionsForBook(bookValue, keepCurrent = true) {
   if (!selLesson) return;
-  console.log("[setLessonOptionsForBook] bookValue=", bookValue, "rawItems.length=", rawItems.length);
   const current = keepCurrent ? (selLesson.value || "") : "";
   const lessons = uniq(
     rawItems
       .filter(i => !bookValue || i.book === bookValue)
       .map(i => i.lesson)
   ).sort();
-  console.log("[setLessonOptionsForBook] filtered lessons=", lessons);
   const prefix = bookValue ? `All in ${bookValue}` : "All";
   const opt = (val, text) => `<option value="${val}">${text}</option>`;
   selLesson.innerHTML = opt("", `Lesson: ${prefix}`) + lessons.map(v => opt(v, v || "—")).join("");
