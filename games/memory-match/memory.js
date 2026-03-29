@@ -65,12 +65,14 @@ async function fetchItems(){
 // ---- build filters ----
 function setLessonOptionsForBook(bookValue, keepCurrent = true) {
   if (!selLesson) return;
+  console.log("[setLessonOptionsForBook] bookValue=", bookValue, "rawItems.length=", rawItems.length);
   const current = keepCurrent ? (selLesson.value || "") : "";
   const lessons = uniq(
     rawItems
       .filter(i => !bookValue || i.book === bookValue)
       .map(i => i.lesson)
   ).sort();
+  console.log("[setLessonOptionsForBook] filtered lessons=", lessons);
   const prefix = bookValue ? `All in ${bookValue}` : "All";
   const opt = (val, text) => `<option value="${val}">${text}</option>`;
   selLesson.innerHTML = opt("", `Lesson: ${prefix}`) + lessons.map(v => opt(v, v || "—")).join("");
@@ -274,12 +276,9 @@ async function init(){
     applyAndStart();
   });
 
-  selBook.addEventListener("change", () => {
-    setLessonOptionsForBook(selBook.value, true);
-  });
-
   [selDifficulty, selBook, selLesson, selLevel, selPos, selLang].forEach(sel => {
     sel.addEventListener("change", () => {
+      if (sel === selBook) setLessonOptionsForBook(selBook.value, true);
       // 寫回 URL（集中在 /js/shared/urlState.js）
       urlState.set({
         difficulty: selDifficulty.value,
@@ -296,6 +295,7 @@ async function init(){
 }
 
 function applyAndStart(){
+  setLessonOptionsForBook(selBook.value, true);
   levelTag.textContent = selDifficulty.value === "advanced" ? "Advanced" : "Easy";
 
   filterPool();
