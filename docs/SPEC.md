@@ -2,8 +2,8 @@
 
 ## 專案規格書 Project Specification
 
-> **版本**：v1.0  
-> **日期**：2026-03-20  
+> **版本**：v1.1
+> **日期**：2026-04-01
 > **狀態**：已上線，持續開發中
 
 ---
@@ -90,7 +90,10 @@ Vercel Serverless Functions（輕量後端）
 ```
 JLMS-Chinois-de-la-vie-quotidienne/
 ├── api/                    # Vercel Serverless Functions（輕量後端）
-├── data/                   # 本地資料檔案（JSON）
+├── archive/                # 舊版本地 JSON 資料備份（已遷移至 Google Sheet）
+├── data/                   # 本地資料檔案
+├── docs/                   # 規格書
+│   └── SPEC.md
 ├── games/                  # 互動遊戲區
 │   ├── classifier-quiz/    # 量詞大挑戰
 │   │   ├── classifier-quiz.css
@@ -104,9 +107,10 @@ JLMS-Chinois-de-la-vie-quotidienne/
 │   └── index.html
 ├── js/                     # 共用 JavaScript
 ├── style/                  # 共用樣式
-├── home-v1-complete.html   # 首頁舊版（建議清理或歸檔）
-├── home.html               # 首頁
-├── index.html              # 網站入口
+├── dashboard.html          # 功能總覽頁（登入後跳轉）
+├── home-v1-complete.html   # 首頁舊版備份
+├── home.html               # Shadowing 例句跟讀
+├── index.html              # 登入入口
 └── speaking.html           # 口說練習頁面
 ```
 
@@ -273,8 +277,7 @@ JLMS-Chinois-de-la-vie-quotidienne/
   - 點擊拼音 → 使用瀏覽器 Web Speech API（速度快，品質較低）
   - 點擊「Natural Voice」按鈕 → 串接 OpenAI TTS API（品質好，有延遲）
 
-**目前狀態**：例句資料寫死在本地 JSON 檔案中  
-**計畫**：遷移至 Google Sheet（Sentence Builder 分頁），方便即時更新內容
+**目前狀態**：例句資料已遷移至 Google Sheet（Sentence Builder 分頁），不需修改程式碼即可更新內容
 
 ### 5.2 Interactive Games 互動遊戲區（不需登入）
 
@@ -339,9 +342,37 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 ---
 
-## 6. 開發中功能 In Development
+## 6. 功能總覽頁 Dashboard（新增）
 
-### 6.1 Sentence Builder 造句練習
+**目的**：學生登入後先進入功能總覽頁，一覽所有可用的學習工具，再選擇進入特定功能。
+
+**觸發方式**：登入成功後跳轉至 `dashboard.html`
+
+**頁面結構**：四個功能入口卡片，排列順序暗示學習路徑
+
+| 順序 | 功能名稱 | 英文 | 連結目標 | 狀態 | 學習階段 |
+|------|---------|------|---------|------|---------|
+| 1 | 例句跟讀 | Shadowing | home.html | ✅ 已上線 | 輸入：先聽、先模仿 |
+| 2 | 互動遊戲 | Games | games/index.html | ✅ 已上線 | 練習：邊玩邊記 |
+| 3 | 單課測驗 | Lesson Quiz | （待開發） | 🔧 開發中 | 驗收：學完了？來測試 |
+| 4 | 口說練習 | Speaking | speaking.html | 🔧 開發中 | 輸出：實戰對話 |
+
+**設計要求**：
+- 每張卡片包含：功能名稱（中文 + 英文）、簡短說明、視覺圖示
+- 響應式設計（RWD），手機上正常顯示
+- 尚未開發的功能顯示「即將推出」標示，不可點擊
+- 頁面頂部保留登出按鈕
+- 各功能頁加入「Back to Dashboard」按鈕，方便返回
+
+**對現有程式碼的影響**：
+- 新增 `dashboard.html` 與 `style/dashboard.css`
+- `js/auth.js` 登入成功後改為導向 `dashboard.html`（僅改一行）
+
+---
+
+## 6.1 開發中功能 In Development
+
+### 6.2 Sentence Builder 造句練習
 
 **狀態**：資料庫已建立，遊戲功能開發中  
 **資料來源**：Google Sheet — Sentence Builder 分頁
@@ -360,7 +391,7 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 ---
 
-## 7. 計畫功能 Planned Features
+## 7. 計畫中功能 Planned Features
 
 ### 7.1 單課測驗 Lesson Quiz
 
@@ -376,9 +407,9 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | 2 | 句子填空 | 閱讀句子，選擇正確生詞填入空格 | 例句庫（Sentence Builder 分頁） |
 | 3 | Sentence Building | 拖曳詞組排列成正確句子 | 例句庫（Sentence Builder 分頁） |
 | 4 | 聽力練習 | 聽句子發音，從四個選項選出正確意思 | 例句庫（Sentence Builder 分頁） |
-| 5 | 拼音測驗 | 看漢字與外語意思，選出/輸入正確拼音（含聲調） | 生詞庫（Memory Match 分頁） |
+| 5 | 拼音測驗 | 看漢字與外語意思，從四個選項中選出正確拼音（含聲調） | 生詞庫（Memory Match 分頁） |
 
-> **備註**：關卡 5 的作答方式待定。方案 A：學生自行輸入拼音（含聲調），須完全正確才得分。方案 B：四選一，選項為發音相近或聲調易混淆的拼音。
+> **作答方式**：方案 B — 四選一。選項以聲調相近或容易混淆的拼音作為干擾。選擇原因：手機端輸入拼音含聲調體驗不佳，四選一可兼顧學習效果與使用體驗。
 
 **結算畫面**：
 - 雷達圖（Spider Chart）呈現五個關卡的表現分布
@@ -437,9 +468,12 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 ### 8.1 例句資料遷移
 
-| 項目 | 現狀 | 目標 |
-|------|------|------|
-| Shadowing 例句 | 寫死在 JSON 檔案中 | 改為讀取 Google Sheet（Sentence Builder 分頁） |
+**狀態**：✅ 已完成
+
+| 項目 | 現狀 |
+|------|------|
+| Shadowing 例句 | 已遷移至 Google Sheet（Sentence Builder 分頁） |
+| 舊版 JSON 檔案 | 保留於 `archive/` 資料夾作為備份 |
 
 **優點**：
 - 不需修改程式碼即可新增或更新例句
@@ -464,18 +498,30 @@ JLMS-Chinois-de-la-vie-quotidienne/
 ## 10. 導覽結構 Navigation Structure
 
 ```
-首頁（需登入後完整顯示）
-├── Book 1 ~ Book 5          ← 依 accessLevel 顯示
-│   └── Lesson 選擇          ← 依書本顯示對應課程
-│       └── 例句跟讀 Shadowing
-├── Speaking Practice          ← 計畫中，尚無內容
-├── Scenario-based Speaking    ← 計畫中，尚無內容
-└── Interactive Games          ← 不需登入
-    ├── Memory Match           ✅ 已上線
-    ├── Classifier Quiz        ✅ 已上線
-    ├── Flashcards             ✅ 已上線
-    └── Sentence Builder       🔧 開發中
+登入（index.html）
+└── 功能總覽 Dashboard（dashboard.html）
+    │
+    ├── 1. 例句跟讀 Shadowing（home.html）        ← 先聽、先模仿
+    │   └── 選 Book + Lesson → 例句練習
+    │
+    ├── 2. 互動遊戲 Games（games/index.html）      ← 邊玩邊記
+    │   ├── Memory Match           ✅ 已上線
+    │   ├── Classifier Quiz        ✅ 已上線
+    │   ├── Flashcards             ✅ 已上線
+    │   └── Sentence Builder       🔧 開發中
+    │
+    ├── 3. 單課測驗 Lesson Quiz                    ← 學完了？來測試
+    │   └── 選 Book + Lesson → 5 關卡 × 5 題 → 雷達圖結算
+    │
+    └── 4. 口說練習 Speaking（speaking.html）      ← 實戰對話
+        ├── 情境練習 Scenario-based Speaking
+        └── 口說練習 Speaking Practice
 ```
+
+**備註**：
+- 四個功能的排列順序暗示學習路徑：輸入 → 練習 → 驗收 → 輸出
+- 學生不強制按順序使用，可自由選擇任何功能
+- 各功能頁均有「Back to Dashboard」按鈕返回總覽頁
 
 ---
 
@@ -501,3 +547,4 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | 版本 | 日期 | 說明 |
 |------|------|------|
 | v1.0 | 2026-03-20 | 初版規格書，記錄所有已上線與計畫中功能 |
+| v1.1 | 2026-04-01 | 新增 Dashboard 功能總覽頁；Shadowing 例句遷移至 Google Sheet 完成；單課測驗關卡 5 確定採用方案 B（四選一）；更新導覽結構 |
