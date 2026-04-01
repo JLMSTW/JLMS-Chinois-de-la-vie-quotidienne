@@ -1,0 +1,139 @@
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #222;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  border-color: #aaa;
+  color: #fff;
+}
+
+.dashboard-container {
+  max-width: 860px;
+  margin: 48px auto 80px;
+  padding: 0 24px;
+}
+
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.dashboard-title h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.dashboard-title p {
+  color: #888;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feature-card {
+  background: #181818;
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-decoration: none;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #2a2a2a;
+  transition: border-color 0.2s, transform 0.15s;
+  position: relative;
+}
+
+.feature-card:hover {
+  border-color: #555;
+  transform: translateY(-2px);
+}
+
+.feature-card.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.card-icon {
+  font-size: 2rem;
+}
+
+.card-order {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.card-title-zh {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.card-title-en {
+  font-size: 0.95rem;
+  color: #888;
+}
+
+.card-desc {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+.card-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.badge-live {
+  background: #1a3a2a;
+  color: #4caf84;
+}
+
+.badge-soon {
+  background: #2a2a1a;
+  color: #aaa86a;
+}
+
+.card-path {
+  font-size: 0.78rem;
+  color: #555;
+  margin-top: 4px;
+}

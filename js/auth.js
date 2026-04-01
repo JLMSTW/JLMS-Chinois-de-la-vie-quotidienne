@@ -16,7 +16,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
     .then(() => {
       /* 把 email 暫存，讓 home.html 可以拿來查權限 */
       sessionStorage.setItem("jlmsUserEmail", email);
-      window.location.href = "home.html";
+      window.location.href = "dashboard.html";
     })
     .catch(err => {
       document.getElementById("errorMsg").textContent =

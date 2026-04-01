@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JLMS | 功能總覽</title>
+  <link rel="stylesheet" href="style/main.css" />
+  <link rel="stylesheet" href="style/dashboard.css" />
+</head>
+<body>
+
+  <div class="dashboard-header">
+    <h2>📚 JLMS — Chinois de la vie quotidienne</h2>
+    <button class="logout-btn" id="logoutBtn">登出</button>
+  </div>
+
+  <div class="dashboard-container">
+    <div class="dashboard-title">
+      <h1>功能總覽 Dashboard</h1>
+      <p>學習路徑：先聽模仿 → 邊玩邊記 → 測驗驗收 → 實戰口說</p>
+    </div>
+
+    <div class="card-grid">
+
+      <a href="home.html" class="feature-card">
+        <span class="card-badge badge-live">✅ 已上線</span>
+        <div class="card-icon">🎧</div>
+        <div class="card-order">Step 1 · 輸入</div>
+        <div class="card-title-zh">例句跟讀</div>
+        <div class="card-title-en">Shadowing</div>
+        <div class="card-desc">聽例句、模仿語調、練習發音</div>
+      </a>
+
+      <a href="games/" class="feature-card">
+        <span class="card-badge badge-live">✅ 已上線</span>
+        <div class="card-icon">🎮</div>
+        <div class="card-order">Step 2 · 練習</div>
+        <div class="card-title-zh">互動遊戲</div>
+        <div class="card-title-en">Interactive Games</div>
+        <div class="card-desc">Memory Match、Flashcards、Classifier Quiz</div>
+      </a>
+
+      <a href="#" class="feature-card disabled">
+        <span class="card-badge badge-soon">🔧 即將推出</span>
+        <div class="card-icon">📝</div>
+        <div class="card-order">Step 3 · 驗收</div>
+        <div class="card-title-zh">單課測驗</div>
+        <div class="card-title-en">Lesson Quiz</div>
+        <div class="card-desc">5 關卡 × 5 題，完成後看雷達圖結算</div>
+      </a>
+
+      <a href="speaking.html" class="feature-card">
+        <span class="card-badge badge-soon">🔧 開發中</span>
+        <div class="card-icon">🗣️</div>
+        <div class="card-order">Step 4 · 輸出</div>
+        <div class="card-title-zh">口說練習</div>
+        <div class="card-title-en">Speaking Practice</div>
+        <div class="card-desc">情境對話、AI 口說練習</div>
+      </a>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { firebaseConfig } from "./js/firebase-config.js";
+
+    initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => {
+        sessionStorage.removeItem("jlmsUserEmail");
+        window.location.href = "index.html";
+      });
+    });
+  </script>
+
+</body>
+</html>
