@@ -238,7 +238,7 @@ h1 {
 
 /* ===== Grammar point ===== */
 .grammar-number {
-  background-color: var(--natural-voice);
+  background-color: #33406f;
   color: #fff;
   border-radius: 50%;
   font-family: var(--font-sans);
