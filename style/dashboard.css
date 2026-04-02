@@ -1,139 +1,216 @@
+/* ===== Dashboard styles — aligned with games.css color system ===== */
+:root {
+  --bg1: #1f213b;
+  --bg2: #1f213b;
+  --card-bg: #566fb8;
+  --card-bd: rgba(0, 0, 0, 0.06);
+  --card-shadow: 0 10px 24px rgba(0,0,0,.12);
+  --radius-xl: 18px;
+  --text-on-dark: #fff;
+  --pill-bg: #ffffff;
+  --pill-fg: #1f2937;
+  --pill-bd: rgba(0,0,0,0.12);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, "Noto Sans",
+               "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+body {
+  background: linear-gradient(180deg, var(--bg1), var(--bg2));
+  color: var(--text-on-dark);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* ===== Header ===== */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid #222;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .dashboard-header h2 {
   margin: 0;
-  font-size: 1.2rem;
-  color: #ccc;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  font-family: var(--font-sans);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Language toggle — matches back-btn pill style from games.css */
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  border: 1px solid var(--pill-bd);
+  font-weight: 700;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.lang-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.16);
 }
 
 .logout-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border-radius: 999px;
   background: transparent;
-  border: 1px solid #555;
-  color: #ccc;
-  padding: 6px 14px;
-  border-radius: 6px;
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.25);
+  font-weight: 700;
+  font-size: 14px;
+  font-family: var(--font-sans);
   cursor: pointer;
-  font-size: 0.9rem;
+  transition: border-color .15s, color .15s;
 }
-
 .logout-btn:hover {
-  border-color: #aaa;
+  border-color: rgba(255,255,255,0.6);
   color: #fff;
 }
 
+/* ===== Page title ===== */
 .dashboard-container {
-  max-width: 860px;
-  margin: 48px auto 80px;
+  max-width: 900px;
+  margin: 36px auto 80px;
   padding: 0 24px;
 }
 
 .dashboard-title {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 36px;
 }
 
 .dashboard-title h1 {
-  font-size: 2rem;
-  margin-bottom: 8px;
-  justify-content: center;
+  margin: 0 0 10px;
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 900;
+  color: #fff;
+  font-family: var(--font-sans) !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.25);
 }
 
 .dashboard-title p {
-  color: #888;
+  color: rgba(255,255,255,0.65);
   font-size: 1rem;
   margin: 0;
+  line-height: 1.5;
 }
 
+/* ===== Card grid ===== */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 14px;
 }
 
 @media (max-width: 600px) {
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
+  .card-grid { grid-template-columns: 1fr; }
 }
 
+/* ===== Feature card — matches games.css .card style ===== */
 .feature-card {
-  background: #181818;
-  border-radius: 14px;
-  padding: 28px 24px;
+  position: relative;
+  display: block;
+  background: var(--card-bg);
+  border: 5px solid var(--card-bd);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
+  padding: 18px;
   text-decoration: none;
   color: #fff;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border: 1px solid #2a2a2a;
-  transition: border-color 0.2s, transform 0.15s;
-  position: relative;
+  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
 }
-
 .feature-card:hover {
-  border-color: #555;
   transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.16);
 }
 
+/* Coming soon cards — transparent */
 .feature-card.disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   pointer-events: none;
 }
 
+/* ===== Card internals ===== */
 .card-icon {
-  font-size: 2rem;
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 8px;
 }
 
 .card-order {
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.65);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  margin-bottom: 4px;
 }
 
-.card-title-zh {
-  font-size: 1.4rem;
-  font-weight: bold;
-}
-
+/* English title — primary, matches games.css .card .title */
 .card-title-en {
-  font-size: 0.95rem;
-  color: #888;
+  font-weight: 800;
+  font-size: 18px;
+  font-family: var(--font-sans) !important;
+  margin-bottom: 2px;
+  color: #fff;
+}
+
+/* Chinese subtitle — secondary, smaller */
+.card-title-zh {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 8px;
 }
 
 .card-desc {
-  font-size: 0.9rem;
-  color: #aaa;
-  margin-top: 4px;
+  opacity: .9;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 10px;
 }
 
+/* ===== Badge ===== */
 .card-badge {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  font-size: 0.75rem;
-  padding: 3px 10px;
-  border-radius: 20px;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
 .badge-live {
-  background: #1a3a2a;
-  color: #4caf84;
+  background: rgba(0,0,0,.20);
+  border: 1px solid rgba(255,255,255,.20);
+  color: #fff;
 }
 
 .badge-soon {
-  background: #2a2a1a;
-  color: #aaa86a;
-}
-
-.card-path {
-  font-size: 0.78rem;
-  color: #555;
-  margin-top: 4px;
+  background: rgba(0,0,0,.20);
+  border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,0.55);
 }

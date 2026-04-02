@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JLMS | 功能總覽</title>
+  <title>JLMS | Dashboard</title>
   <link rel="stylesheet" href="style/main.css" />
   <link rel="stylesheet" href="style/dashboard.css" />
 </head>
@@ -11,51 +11,83 @@
 
   <div class="dashboard-header">
     <h2>📚 JLMS — Chinois de la vie quotidienne</h2>
-    <button class="logout-btn" id="logoutBtn">登出</button>
+    <div class="header-actions">
+      <button class="lang-toggle" id="langToggle">🌐 FR</button>
+      <button class="logout-btn" id="logoutBtn"
+        data-en="Logout" data-fr="Déconnexion">Logout</button>
+    </div>
   </div>
 
   <div class="dashboard-container">
     <div class="dashboard-title">
-      <h1>功能總覽 Dashboard</h1>
-      <p>學習路徑：先聽模仿 → 邊玩邊記 → 測驗驗收 → 實戰口說</p>
+      <h1>Dashboard</h1>
+      <p id="learningPath"
+        data-en="Your learning path: Listen &amp; Mimic → Play &amp; Memorize → Test Yourself → Speak Up"
+        data-fr="Votre parcours : Écouter &amp; Imiter → Jouer &amp; Mémoriser → Se Tester → Prendre la Parole">
+        Your learning path: Listen &amp; Mimic → Play &amp; Memorize → Test Yourself → Speak Up
+      </p>
     </div>
 
     <div class="card-grid">
 
       <a href="home.html" class="feature-card">
-        <span class="card-badge badge-live">✅ 已上線</span>
+        <span class="card-badge badge-live"
+          data-en="✅ Live" data-fr="✅ En ligne">✅ Live</span>
         <div class="card-icon">🎧</div>
-        <div class="card-order">Step 1 · 輸入</div>
+        <div class="card-order"
+          data-en="Step 1 · Input" data-fr="Étape 1 · Écoute">Step 1 · Input</div>
+        <div class="card-title-en"
+          data-en="Shadowing" data-fr="Shadowing">Shadowing</div>
         <div class="card-title-zh">例句跟讀</div>
-        <div class="card-title-en">Shadowing</div>
-        <div class="card-desc">聽例句、模仿語調、練習發音</div>
+        <div class="card-desc"
+          data-en="Listen to example sentences and mimic the tones"
+          data-fr="Écoutez des phrases exemples et imitez les tons">
+          Listen to example sentences and mimic the tones</div>
       </a>
 
       <a href="games/" class="feature-card">
-        <span class="card-badge badge-live">✅ 已上線</span>
+        <span class="card-badge badge-live"
+          data-en="✅ Live" data-fr="✅ En ligne">✅ Live</span>
         <div class="card-icon">🎮</div>
-        <div class="card-order">Step 2 · 練習</div>
+        <div class="card-order"
+          data-en="Step 2 · Practice" data-fr="Étape 2 · Pratique">Step 2 · Practice</div>
+        <div class="card-title-en"
+          data-en="Interactive Games" data-fr="Jeux interactifs">Interactive Games</div>
         <div class="card-title-zh">互動遊戲</div>
-        <div class="card-title-en">Interactive Games</div>
-        <div class="card-desc">Memory Match、Flashcards、Classifier Quiz</div>
+        <div class="card-desc"
+          data-en="Memory Match, Flashcards, Classifier Quiz"
+          data-fr="Memory Match, Flashcards, Quiz des classificateurs">
+          Memory Match, Flashcards, Classifier Quiz</div>
       </a>
 
       <a href="#" class="feature-card disabled">
-        <span class="card-badge badge-soon">🔧 即將推出</span>
+        <span class="card-badge badge-soon"
+          data-en="🔧 Coming Soon" data-fr="🔧 Bientôt disponible">🔧 Coming Soon</span>
         <div class="card-icon">📝</div>
-        <div class="card-order">Step 3 · 驗收</div>
+        <div class="card-order"
+          data-en="Step 3 · Test" data-fr="Étape 3 · Évaluation">Step 3 · Test</div>
+        <div class="card-title-en"
+          data-en="Lesson Quiz" data-fr="Quiz de leçon">Lesson Quiz</div>
         <div class="card-title-zh">單課測驗</div>
-        <div class="card-title-en">Lesson Quiz</div>
-        <div class="card-desc">5 關卡 × 5 題，完成後看雷達圖結算</div>
+        <div class="card-desc"
+          data-en="5 rounds × 5 questions — radar chart results"
+          data-fr="5 niveaux × 5 questions — résultats en radar">
+          5 rounds × 5 questions — radar chart results</div>
       </a>
 
-      <a href="speaking.html" class="feature-card">
-        <span class="card-badge badge-soon">🔧 開發中</span>
+      <a href="#" class="feature-card disabled">
+        <span class="card-badge badge-soon"
+          data-en="🔧 Coming Soon" data-fr="🔧 Bientôt disponible">🔧 Coming Soon</span>
         <div class="card-icon">🗣️</div>
-        <div class="card-order">Step 4 · 輸出</div>
+        <div class="card-order"
+          data-en="Step 4 · Output" data-fr="Étape 4 · Expression">Step 4 · Output</div>
+        <div class="card-title-en"
+          data-en="Speaking Practice" data-fr="Pratique orale">Speaking Practice</div>
         <div class="card-title-zh">口說練習</div>
-        <div class="card-title-en">Speaking Practice</div>
-        <div class="card-desc">情境對話、AI 口說練習</div>
+        <div class="card-desc"
+          data-en="Scenario-based AI conversation practice"
+          data-fr="Pratique de conversation IA en situation">
+          Scenario-based AI conversation practice</div>
       </a>
 
     </div>
@@ -75,6 +107,28 @@
         window.location.href = "index.html";
       });
     });
+  </script>
+
+  <script>
+    // ── Language toggle (EN / FR) ──────────────────────────────────
+    const langToggleBtn = document.getElementById("langToggle");
+    let currentLang = localStorage.getItem("jlmsDashLang") || "en";
+
+    function applyLang(lang) {
+      document.querySelectorAll("[data-en]").forEach(el => {
+        el.innerHTML = el.dataset[lang];
+      });
+      langToggleBtn.textContent = lang === "en" ? "🌐 FR" : "🌐 EN";
+      localStorage.setItem("jlmsDashLang", lang);
+      currentLang = lang;
+    }
+
+    langToggleBtn.addEventListener("click", () => {
+      applyLang(currentLang === "en" ? "fr" : "en");
+    });
+
+    // Apply saved preference on load
+    applyLang(currentLang);
   </script>
 
 </body>
