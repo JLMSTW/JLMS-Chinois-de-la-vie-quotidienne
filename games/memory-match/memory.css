@@ -7,7 +7,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-  background: radial-gradient(1200px 800px at 20% 10%, #8aa6ff 0%, #7b89ff 20%, #6d6fd6 35%, #5e5fb6 55%, #4f4f96 75%, #3e3e6e 100%);
+  background: #1f213b;
   min-height:100vh;
   color:#fff;
   padding:22px;
