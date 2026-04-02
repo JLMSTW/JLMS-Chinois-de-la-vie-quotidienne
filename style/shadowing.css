@@ -9,7 +9,7 @@
   --pill-font-size: 14px;
   --radius-pill: 999px;
   --accent: #566fb8;
-  --natural-voice: #c64049;
+  --natural-voice: #33406f;
 }
 
 body {
@@ -227,18 +227,18 @@ h1 {
   font-weight: 700;
   padding: 8px 18px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(198,64,73,0.35);
+  box-shadow: 0 4px 14px rgba(51,64,111,0.35);
   transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
 .audio-button:hover {
   filter: brightness(1.1);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(198,64,73,0.45);
+  box-shadow: 0 6px 18px rgba(51,64,111,0.45);
 }
 
 /* ===== Grammar point ===== */
 .grammar-number {
-  background-color: #33406f;
+  background-color: #c64049;
   color: #fff;
   border-radius: 50%;
   font-family: var(--font-sans);
