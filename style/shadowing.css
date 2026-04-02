@@ -1,0 +1,263 @@
+/* ===== Shadowing page — overrides main.css to match site design ===== */
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, "Noto Sans",
+               "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --pill-bg: #ffffff;
+  --pill-fg: #1f2937;
+  --pill-border: rgba(0,0,0,0.12);
+  --pill-font-size: 14px;
+  --radius-pill: 999px;
+  --accent: #566fb8;
+  --natural-voice: #c64049;
+}
+
+body {
+  background: #1f213b;
+  color: #fff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Back to Homepage pill ===== */
+.backbar {
+  width: min(1100px, 92vw);
+  margin: 18px auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 !important;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  border: 1px solid var(--pill-border);
+  font-weight: 700;
+  font-size: var(--pill-font-size);
+  font-family: var(--font-sans);
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.back-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.16);
+}
+
+/* ===== 我的課本 header ===== */
+h2 {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.55);
+  padding: 20px 18px 6px;
+  margin: 0;
+}
+
+/* ===== Book buttons ===== */
+#bookList li.unlocked {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  transition: transform .1s, filter .1s;
+}
+#bookList li.unlocked:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+#bookList li.locked {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.35);
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+/* ===== Extra links (Speaking / Games) ===== */
+.book-button {
+  background: var(--accent);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 18px;
+  transition: transform .1s, filter .1s;
+}
+.book-button:hover {
+  background: var(--accent);
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* ===== Main container ===== */
+.main-container {
+  max-width: 720px;
+}
+
+h1 {
+  font-family: var(--font-sans) !important;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 900;
+  color: #fff;
+}
+
+/* ===== Toolbar — pill style matching Flashcards ===== */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* Lesson select pill */
+.toolbar label[for="lessonSelect"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  border: 1px solid var(--pill-border);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-size: var(--pill-font-size);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+#lessonSelect {
+  appearance: none;
+  background: transparent;
+  border: none;
+  font-size: var(--pill-font-size);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--pill-fg);
+  cursor: pointer;
+  padding: 0 4px;
+  outline: none;
+}
+
+/* Show pinyin pill */
+.toolbar label:has(#togglePinyin) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  border: 1px solid var(--pill-border);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-size: var(--pill-font-size);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#togglePinyin {
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+/* Speed pill */
+.toolbar label:has(#rateSlider) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  border: 1px solid var(--pill-border);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-size: var(--pill-font-size);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+#rateSlider {
+  width: 90px;
+  accent-color: var(--accent);
+}
+
+#rateValue {
+  font-weight: 700;
+  min-width: 24px;
+}
+
+/* ===== Sentence card ===== */
+.sentence-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+}
+
+.sentence-text {
+  font-family: var(--font-sans);
+  color: #fff;
+}
+
+.sentence-text.playing {
+  color: #7aa3f5;
+}
+
+.pinyin-text {
+  color: rgba(255,255,255,0.6);
+  font-family: var(--font-sans);
+}
+
+/* ===== Natural Voice button — #c64049 pill ===== */
+.audio-button {
+  background: var(--natural-voice);
+  border: none;
+  border-radius: var(--radius-pill);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(198,64,73,0.35);
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.audio-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(198,64,73,0.45);
+}
+
+/* ===== Grammar point ===== */
+.grammar-number {
+  background-color: var(--natural-voice);
+  color: #fff;
+  border-radius: 50%;
+  font-family: var(--font-sans);
+}
+
+.grammar-text {
+  font-family: var(--font-sans);
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 480px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar label[for="lessonSelect"],
+  .toolbar label:has(#togglePinyin),
+  .toolbar label:has(#rateSlider) {
+    justify-content: space-between;
+  }
+  #rateSlider { width: 100%; }
+}
