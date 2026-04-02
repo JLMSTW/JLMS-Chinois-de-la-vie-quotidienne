@@ -2,7 +2,7 @@
 const SHEET_ID   = "1nb2Nnxq26adk9NxDF6k7HAjdW1yDffzKkm58bnJpeWc"; // Games DB 試算表 ID
 const SHEET_NAME = "Games";                                        // 分頁名稱
 const LOGIN_URL  = "../index.html";                                // 登入頁（相對）
-const HOME_URL   = "../home.html";                                 // 已登入首頁（相對）
+const HOME_URL   = "../dashboard.html";                            // 已登入首頁（相對）
 
 // ====== Utils ======
 const $ = (sel, root = document) => root.querySelector(sel);

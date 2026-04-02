@@ -1,8 +1,16 @@
 /* login.css — 登入頁樣式 */
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, "Noto Sans",
+               "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
 body.login-page {
-  background: #000;
+  background: #1f213b;
   color: #fff;
-  font-family: "Noto Sans", "PingFang TC", sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   margin: 0;
   height: 100vh;
   overflow: hidden;
@@ -17,13 +25,16 @@ body.login-page {
   width: 100%;
   max-width: 400px;
   text-align: center;
+  padding: 0 24px;
 }
 
 .login-container h1 {
   font-size: 1.8rem;
+  font-weight: 900;
   line-height: 1.4;
   margin: 0.5rem 0;
   text-align: center;
+  font-family: var(--font-sans);
 }
 
 .login-container h1:first-child {
@@ -37,69 +48,90 @@ input[type="password"] {
   padding: 12px;
   margin: 10px 0;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
+  font-family: var(--font-sans);
   text-align: center;
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.92);
+  color: #1f2937;
 }
 
 button#loginBtn {
-  background-color: #1e90ff;
+  background-color: #566fb8;
   color: white;
   padding: 12px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 999px;
   cursor: pointer;
   width: 100%;
   font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font-sans);
   margin-top: 10px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.2);
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
 button#loginBtn:hover {
-  background-color: #0077cc;
+  background-color: #4a5fa8;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
 }
 
 #errorMsg {
   margin-top: 1rem;
   color: #ff6b6b;
+  font-family: var(--font-sans);
 }
-/* --- Guest / No-login actions (below Login button) --- */
-#guestBtn{
-  font-family: inherit;       /* 跟整頁一致 */
-  font-size: .95rem;          /* 比主按鈕小一點 */
-  color: #fff;                /* 白字 */
-  background: transparent;    /* 透明底，當次要行動 */
-  border: 1.5px solid rgba(255,255,255,.65);
-  border-radius: 6px;         /* 和 #loginBtn 一致的圓角 */
-  padding: 8px 14px;
+
+/* Continue as guest — secondary pill */
+#guestBtn {
+  font-family: var(--font-sans);
+  font-size: .95rem;
+  font-weight: 700;
+  color: #fff;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,.45);
+  border-radius: 999px;
+  padding: 10px 20px;
   cursor: pointer;
   margin-top: 10px;
+  width: 100%;
+  transition: border-color .15s, background .15s;
 }
-#guestBtn:hover{
-  border-color: #fff;
+#guestBtn:hover {
+  border-color: rgba(255,255,255,.8);
   background: rgba(255,255,255,.08);
 }
-#guestBtn:focus-visible{
-  outline: 2px solid #1e90ff; /* 無障礙焦點 */
-  outline-offset: 2px;
+
+/* "Play without login" pill link */
+.play-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f2937;
+  border: 1px solid rgba(0,0,0,0.12);
+  font-weight: 700;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.play-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
 }
 
-/* 文字與連結（排除錯誤訊息） */
-.login-container p:not(#errorMsg){
-  color: #fff;
-  opacity: .9;
-  font-family: inherit;
-  font-size: .95rem;
-  text-align: center;
-  margin-top: 10px;
+/* divider text */
+.login-divider {
+  color: rgba(255,255,255,0.45);
+  font-size: .85rem;
+  margin-top: 14px;
+  font-family: var(--font-sans);
 }
-.login-container p:not(#errorMsg) a:link,
-.login-container p:not(#errorMsg) a:visited{
-  color: #fff;                /* 移除預設紫色 */
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.login-container p:not(#errorMsg) a:hover{
-  opacity: 1;
-}
-
-
