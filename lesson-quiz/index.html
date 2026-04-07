@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JLMS | Lesson Quiz</title>
+  <link rel="stylesheet" href="../style/base.css" />
+  <link rel="stylesheet" href="./lesson-quiz.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════════════ SCREEN 1: FILTER ═══════════════════ -->
+  <div id="screen-filter" class="screen">
+    <header class="page-header">
+      <h1>📝 Lesson Quiz</h1>
+    </header>
+    <div class="backbar">
+      <a href="../dashboard.html" class="back-btn">← Back to Homepage</a>
+    </div>
+
+    <div class="filter-card">
+      <div class="filters">
+        <select id="filterBook">
+          <option value="B1">Book 1</option>
+          <option value="B2">Book 2</option>
+          <option value="B3">Book 3</option>
+          <option value="B4">Book 4</option>
+          <option value="B5">Book 5</option>
+        </select>
+        <select id="filterLesson"></select>
+        <select id="filterLang">
+          <option value="fr">Meaning: French</option>
+          <option value="en">Meaning: English</option>
+        </select>
+      </div>
+      <p id="loadStatus" class="load-status">Loading data…</p>
+      <button id="startBtn" class="btn-primary" disabled>Start Quiz →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ SCREEN 2: ROUND INTRO ═══════════════════ -->
+  <div id="screen-intro" class="screen hidden">
+    <div class="intro-card">
+      <div class="intro-meta">
+        <span class="round-chip" id="introChip">Round 1 / 5</span>
+        <span class="timer-frozen" id="introTimer">00:00</span>
+      </div>
+      <div class="intro-icon" id="introIcon">🔤</div>
+      <h2 id="introTitle"></h2>
+      <p id="introDesc"></p>
+      <button id="introBtn" class="btn-primary">Start Round →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ SCREEN 3: QUESTION ═══════════════════ -->
+  <div id="screen-question" class="screen hidden">
+    <div class="quiz-header">
+      <span class="q-label" id="qCounter">Q1 / 25</span>
+      <span class="timer-live" id="timerDisplay">00:00</span>
+      <span class="round-chip" id="roundChip">Round 1</span>
+    </div>
+    <div id="question-area" class="question-area"></div>
+    <div class="quiz-nav">
+      <button id="nextBtn"   class="btn-primary hidden">Next →</button>
+      <button id="submitBtn" class="btn-primary hidden">Submit ✓</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ SCREEN 4: RESULTS ═══════════════════ -->
+  <div id="screen-results" class="screen hidden">
+    <div class="results-header">
+      <h2 id="resultsTitle">Quiz Complete!</h2>
+      <div class="score-big" id="scoreDisplay">—</div>
+      <div class="score-sub" id="timeDisplay"></div>
+    </div>
+    <div class="radar-wrap">
+      <canvas id="radarChart"></canvas>
+    </div>
+    <div class="results-actions">
+      <button id="reviewBtn" class="btn-ghost">Review Answers</button>
+      <button id="retryBtn"  class="btn-primary">Try Again</button>
+    </div>
+    <div id="review-panel" class="review-panel hidden"></div>
+  </div>
+
+</div>
+<script type="module" src="./lesson-quiz.js"></script>
+</body>
+</html>
