@@ -49,6 +49,7 @@ const S = {
   scores:  [0, 0, 0, 0, 0],
   timerSec: 0, _tid: null, totalTime: 0,
   fillState: null,     // runtime state for fill-blank round
+  speechRate: 1.0,     // listening speed (0.5 – 1.5)
 };
 
 // ═══════════════════════════════════════════════
@@ -172,10 +173,11 @@ function genR2(vocab, sents) {
   return [{
     type: 'fill-blank',
     slots: selected.map(p => ({
-      text:   p.s.chinese_tr,
-      pinyin: p.s.pinyin_tw || '',
-      answer: p.v.hanzi,
-      filled: null,
+      text:        p.s.chinese_tr,
+      pinyin:      p.s.pinyin_tw || '',
+      answer:      p.v.hanzi,
+      answerPinyin: p.v.pinyin || '',
+      filled:      null,
     })),
     bank: bank.map(v => ({ hanzi: v.hanzi, pinyin: v.pinyin || '', used: false })),
   }];
@@ -373,7 +375,22 @@ function renderListening(q) {
   const btn  = el('button', 'listen-btn', '🔊');
   const hint = el('div', 'listen-hint', S.lang === 'fr' ? 'Appuyez pour écouter' : 'Tap to listen');
   btn.addEventListener('click', () => speak(q.item.hanzi));
-  wrap.append(btn, hint);
+
+  // Speed control
+  const speedWrap  = el('div', 'speed-wrap');
+  const speedLbl   = el('span', 'speed-label', S.lang === 'fr' ? 'Vitesse :' : 'Speed:');
+  const slider     = document.createElement('input');
+  slider.type = 'range'; slider.min = '0.5'; slider.max = '1.5';
+  slider.step = '0.25'; slider.value = String(S.speechRate);
+  slider.className = 'speed-slider';
+  const valLbl = el('span', 'speed-val', S.speechRate + 'x');
+  slider.addEventListener('input', () => {
+    S.speechRate = parseFloat(slider.value);
+    valLbl.textContent = S.speechRate + 'x';
+  });
+  speedWrap.append(speedLbl, slider, valLbl);
+
+  wrap.append(btn, hint, speedWrap);
   area.appendChild(wrap);
 
   // Auto-play on load
@@ -392,7 +409,9 @@ function renderPinyin(q) {
   stem.append(hDisp, mSub);
   area.appendChild(stem);
 
-  area.appendChild(buildChoices(q));
+  const grid = buildChoices(q);
+  grid.classList.add('choices--pinyin');
+  area.appendChild(grid);
 }
 
 // ── Shared choice builder ─────────────────────────────────────────────────────
@@ -460,9 +479,12 @@ function renderFillBlank(q) {
   q.slots.forEach((slot, si) => {
     const wrapper = el('div', 'fill-row-wrap');
 
-    // Pinyin line above sentence
+    // Pinyin line above sentence — mask the answer word's pinyin
     if (slot.pinyin) {
-      const pyRow = el('div', 'fill-pinyin', slot.pinyin);
+      const masked = slot.answerPinyin
+        ? slot.pinyin.replace(slot.answerPinyin, '___')
+        : slot.pinyin;
+      const pyRow = el('div', 'fill-pinyin', masked);
       wrapper.appendChild(pyRow);
     }
 
@@ -767,7 +789,7 @@ function el(tag, cls = '', text = '') {
 
 function speak(text) {
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'zh-TW'; u.rate = 0.9;
+  u.lang = 'zh-TW'; u.rate = S.speechRate;
   speechSynthesis.cancel();
   speechSynthesis.speak(u);
 }
