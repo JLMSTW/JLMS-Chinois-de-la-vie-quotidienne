@@ -123,6 +123,25 @@ function toneVariants(pinyin) {
 
 function globalQ(ri, qi) { return Q_START[ri] + qi; }
 
+// Mask the answer word's pinyin inside a sentence pinyin string
+function maskPinyin(sentPinyin, answerPinyin) {
+  if (!sentPinyin || !answerPinyin) return sentPinyin;
+  // 1. Exact match
+  if (sentPinyin.includes(answerPinyin))
+    return sentPinyin.replace(answerPinyin, '___');
+  // 2. Compact: remove spaces in answer (e.g. "suàn shì" → "suànshì")
+  const compact = answerPinyin.replace(/\s+/g, '');
+  if (sentPinyin.includes(compact))
+    return sentPinyin.replace(compact, '___');
+  // 3. Case-insensitive exact
+  const reExact = new RegExp(answerPinyin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+  const r1 = sentPinyin.replace(reExact, '___');
+  if (r1 !== sentPinyin) return r1;
+  // 4. Case-insensitive compact
+  const reCompact = new RegExp(compact.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+  return sentPinyin.replace(reCompact, '___');
+}
+
 // ═══════════════════════════════════════════════
 //  QUESTION GENERATORS
 // ═══════════════════════════════════════════════
@@ -477,17 +496,6 @@ function renderFillBlank(q) {
   // Sentences
   const sentsDiv = el('div', 'fill-sentences');
   q.slots.forEach((slot, si) => {
-    const wrapper = el('div', 'fill-row-wrap');
-
-    // Pinyin line above sentence — mask the answer word's pinyin
-    if (slot.pinyin) {
-      const masked = slot.answerPinyin
-        ? slot.pinyin.replace(slot.answerPinyin, '___')
-        : slot.pinyin;
-      const pyRow = el('div', 'fill-pinyin', masked);
-      wrapper.appendChild(pyRow);
-    }
-
     const row   = el('div', 'fill-row');
     const parts = slot.text.split(slot.answer);
 
@@ -516,8 +524,13 @@ function renderFillBlank(q) {
     row.appendChild(blank);
     if (parts[1]) row.appendChild(document.createTextNode(parts[1]));
 
-    wrapper.appendChild(row);
-    sentsDiv.appendChild(wrapper);
+    // Pinyin line inside the box, below the Chinese sentence
+    if (slot.pinyin) {
+      const pyDiv = el('div', 'fill-pinyin', maskPinyin(slot.pinyin, slot.answerPinyin));
+      row.appendChild(pyDiv);
+    }
+
+    sentsDiv.appendChild(row);
   });
   area.appendChild(sentsDiv);
 
