@@ -101,6 +101,25 @@ function groupBy(arr, fn) {
   return arr.reduce((m, x) => { const k = fn(x); (m[k] = m[k]||[]).push(x); return m; }, {});
 }
 
+// ── Tone variant generator (Round 5) ─────────────────────────────────────────
+const TONE_MAP = {
+  'ā':['ā','á','ǎ','à'], 'á':['ā','á','ǎ','à'], 'ǎ':['ā','á','ǎ','à'], 'à':['ā','á','ǎ','à'],
+  'ē':['ē','é','ě','è'], 'é':['ē','é','ě','è'], 'ě':['ē','é','ě','è'], 'è':['ē','é','ě','è'],
+  'ī':['ī','í','ǐ','ì'], 'í':['ī','í','ǐ','ì'], 'ǐ':['ī','í','ǐ','ì'], 'ì':['ī','í','ǐ','ì'],
+  'ō':['ō','ó','ǒ','ò'], 'ó':['ō','ó','ǒ','ò'], 'ǒ':['ō','ó','ǒ','ò'], 'ò':['ō','ó','ǒ','ò'],
+  'ū':['ū','ú','ǔ','ù'], 'ú':['ū','ú','ǔ','ù'], 'ǔ':['ū','ú','ǔ','ù'], 'ù':['ū','ú','ǔ','ù'],
+  'ǖ':['ǖ','ǘ','ǚ','ǜ'], 'ǘ':['ǖ','ǘ','ǚ','ǜ'], 'ǚ':['ǖ','ǘ','ǚ','ǜ'], 'ǜ':['ǖ','ǘ','ǚ','ǜ'],
+};
+
+function toneVariants(pinyin) {
+  for (const [toned, variants] of Object.entries(TONE_MAP)) {
+    if (pinyin.includes(toned)) {
+      return shuffle(variants.map(v => pinyin.replace(toned, v)));
+    }
+  }
+  return null; // no tone mark — fall back to mc4
+}
+
 function globalQ(ri, qi) { return Q_START[ri] + qi; }
 
 // ═══════════════════════════════════════════════
@@ -158,7 +177,7 @@ function genR2(vocab, sents) {
       answer: p.v.hanzi,
       filled: null,
     })),
-    bank: bank.map(v => ({ hanzi: v.hanzi, used: false })),
+    bank: bank.map(v => ({ hanzi: v.hanzi, pinyin: v.pinyin || '', used: false })),
   }];
 }
 
@@ -185,7 +204,8 @@ function genR5(vocab) {
     type: 'pinyin',
     item,
     answer:  item.pinyin,
-    choices: mc4(item.pinyin, vocab.filter(v => v !== item && v.pinyin), v => v.pinyin),
+    choices: toneVariants(item.pinyin) ||
+             mc4(item.pinyin, vocab.filter(v => v !== item && v.pinyin), v => v.pinyin),
   }));
 }
 
@@ -414,9 +434,23 @@ function renderFillBlank(q) {
   // Word bank
   const bank = el('div', 'word-bank');
   q.bank.forEach((w, i) => {
-    const chip = el('button', 'word-chip', w.hanzi);
+    const chip = el('div', 'word-chip');
     chip.dataset.i = i;
+    chip.draggable = true;
+    const hanziSpan  = el('span', 'chip-hanzi', w.hanzi);
+    const pinyinSpan = el('span', 'chip-pinyin', w.pinyin);
+    chip.append(hanziSpan, pinyinSpan);
+
+    // Click: select
     chip.addEventListener('click', () => onBankClick(i));
+
+    // Drag: source
+    chip.addEventListener('dragstart', e => {
+      if (q.bank[i].used) { e.preventDefault(); return; }
+      e.dataTransfer.setData('text/plain', String(i));
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
     bank.appendChild(chip);
   });
   area.appendChild(bank);
@@ -424,6 +458,14 @@ function renderFillBlank(q) {
   // Sentences
   const sentsDiv = el('div', 'fill-sentences');
   q.slots.forEach((slot, si) => {
+    const wrapper = el('div', 'fill-row-wrap');
+
+    // Pinyin line above sentence
+    if (slot.pinyin) {
+      const pyRow = el('div', 'fill-pinyin', slot.pinyin);
+      wrapper.appendChild(pyRow);
+    }
+
     const row   = el('div', 'fill-row');
     const parts = slot.text.split(slot.answer);
 
@@ -431,40 +473,95 @@ function renderFillBlank(q) {
 
     const blank = el('span', 'fill-blank');
     blank.dataset.si = si;
-    blank.addEventListener('click', () => onBlankClick(si));
-    row.appendChild(blank);
 
+    // Click: place selected chip
+    blank.addEventListener('click', () => onBlankClick(si));
+
+    // Drag: target
+    blank.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      blank.classList.add('drag-over');
+    });
+    blank.addEventListener('dragleave', () => blank.classList.remove('drag-over'));
+    blank.addEventListener('drop', e => {
+      e.preventDefault();
+      blank.classList.remove('drag-over');
+      const idx = parseInt(e.dataTransfer.getData('text/plain'), 10);
+      if (!isNaN(idx)) dropOnBlank(si, idx);
+    });
+
+    row.appendChild(blank);
     if (parts[1]) row.appendChild(document.createTextNode(parts[1]));
-    sentsDiv.appendChild(row);
+
+    wrapper.appendChild(row);
+    sentsDiv.appendChild(wrapper);
   });
   area.appendChild(sentsDiv);
 
   sh('submitBtn');
 }
 
-function onBankClick(idx) {
-  const { q } = S.fillState;
-  if (q.bank[idx].used) return;
+function chipEls()  { return document.querySelectorAll('.word-chip'); }
+function blankEls() { return document.querySelectorAll('.fill-blank'); }
 
-  const chips = document.querySelectorAll('.word-chip');
-
-  if (S.fillState.selectedBankIdx === idx) {
-    S.fillState.selectedBankIdx = null;
-    chips[idx]?.classList.remove('selected');
-    return;
-  }
+function selectChip(idx) {
+  const chips = chipEls();
   chips.forEach(c => c.classList.remove('selected'));
   S.fillState.selectedBankIdx = idx;
   chips[idx]?.classList.add('selected');
 }
 
+function placeWord(si, bankIdx) {
+  const { q } = S.fillState;
+  const slot   = q.slots[si];
+  const chips  = chipEls();
+  const blanks = blankEls();
+
+  // Return old word first
+  if (slot.filled !== null) {
+    const prev = slot.filled;
+    q.bank[prev].used = false;
+    chips[prev]?.classList.remove('used');
+  }
+
+  q.bank[bankIdx].used = true;
+  chips[bankIdx]?.classList.remove('selected');
+  chips[bankIdx]?.classList.add('used');
+  slot.filled = bankIdx;
+  blanks[si].textContent = q.bank[bankIdx].hanzi;
+  blanks[si].classList.add('filled');
+  S.fillState.selectedBankIdx = null;
+}
+
+function onBankClick(idx) {
+  const { q } = S.fillState;
+  if (q.bank[idx].used) return;
+
+  if (S.fillState.selectedBankIdx === idx) {
+    // Deselect
+    chipEls()[idx]?.classList.remove('selected');
+    S.fillState.selectedBankIdx = null;
+    return;
+  }
+  selectChip(idx);
+}
+
 function onBlankClick(si) {
   const { q } = S.fillState;
   const slot   = q.slots[si];
-  const blanks = document.querySelectorAll('.fill-blank');
-  const chips  = document.querySelectorAll('.word-chip');
+  const blanks = blankEls();
+  const chips  = chipEls();
 
-  // Return existing word to bank
+  const sel = S.fillState.selectedBankIdx;
+
+  if (sel !== null && !q.bank[sel].used) {
+    // Place selected chip into blank
+    placeWord(si, sel);
+    return;
+  }
+
+  // No chip selected — if blank is filled, return it to bank
   if (slot.filled !== null) {
     const prev = slot.filled;
     q.bank[prev].used = false;
@@ -473,24 +570,23 @@ function onBlankClick(si) {
     blanks[si].textContent = '';
     blanks[si].classList.remove('filled');
   }
+}
 
-  // Place selected word
-  const sel = S.fillState.selectedBankIdx;
-  if (sel !== null && !q.bank[sel].used) {
-    q.bank[sel].used = true;
-    chips[sel]?.classList.remove('selected');
-    chips[sel]?.classList.add('used');
-    slot.filled = sel;
-    blanks[si].textContent = q.bank[sel].hanzi;
-    blanks[si].classList.add('filled');
-    S.fillState.selectedBankIdx = null;
-  }
+function dropOnBlank(si, bankIdx) {
+  const { q } = S.fillState;
+  if (q.bank[bankIdx].used) return;
+
+  // Deselect any selection
+  chipEls().forEach(c => c.classList.remove('selected'));
+  S.fillState.selectedBankIdx = null;
+
+  placeWord(si, bankIdx);
 }
 
 function gradeFillBlank() {
   const { q } = S.fillState;
-  const blanks = document.querySelectorAll('.fill-blank');
-  const chips  = document.querySelectorAll('.word-chip');
+  const blanks = blankEls();
+  const chips  = chipEls();
 
   q.slots.forEach((slot, si) => {
     const gIdx   = globalQ(S.ri, si);
@@ -505,7 +601,7 @@ function gradeFillBlank() {
     }
   });
 
-  chips.forEach(c => { c.disabled = true; });
+  chips.forEach(c => { c.style.pointerEvents = 'none'; c.draggable = false; });
   blanks.forEach(b => b.style.cursor = 'default');
   hd('submitBtn');
 }
