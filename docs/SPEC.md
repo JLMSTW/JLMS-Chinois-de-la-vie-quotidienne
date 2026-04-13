@@ -2,8 +2,8 @@
 
 ## 專案規格書 Project Specification
 
-> **版本**：v1.1
-> **日期**：2026-04-01
+> **版本**：v1.2
+> **日期**：2026-04-13
 > **狀態**：已上線，持續開發中
 
 ---
@@ -12,7 +12,7 @@
 
 ### 1.1 專案簡介
 
-JLMS 生活華語是一個中文教學輔助網站，專為法語母語的中文學習者設計，搭配同名實體教材使用。網站提供例句跟讀（Shadowing）、互動遊戲、測驗等多元學習工具，幫助學生在課後進行自主練習。
+JLMS 生活華語是一個中文教學輔助網站，專為法語母語的中文學習者設計，搭配同名實體教材使用。網站提供例句跟讀（Shadowing）、互動遊戲、單課測驗等多元學習工具，幫助學生在課後進行自主練習。
 
 ### 1.2 教材結構
 
@@ -84,6 +84,7 @@ Vercel Serverless Functions（輕量後端）
 | **Google Sheets API** | 資料庫（BaaS） | 生詞、例句、學生權限、遊戲管理 |
 | **OpenAI TTS API** | AI 服務 | 自然語音合成（Natural Voice） |
 | **Web Speech API** | 瀏覽器內建 API | 瀏覽器語音合成（備用方案，解決 API 延遲問題） |
+| **Chart.js** | 前端圖表庫 | 單課測驗結算雷達圖 |
 
 ### 2.5 專案檔案結構（目前）
 
@@ -94,48 +95,33 @@ JLMS-Chinois-de-la-vie-quotidienne/
 ├── data/                   # 本地資料檔案
 ├── docs/                   # 規格書
 │   └── SPEC.md
-├── games/                  # 互動遊戲區
-│   ├── classifier-quiz/    # 量詞大挑戰
-│   │   ├── classifier-quiz.css
-│   │   ├── classifier-quiz.js
-│   │   └── index.html
-│   ├── flash-cards/        # 閃卡練習
-│   ├── memory-match/       # 記憶配對
+├── games/                  # 互動遊戲區（不需登入）
+│   ├── classifier-quiz/
+│   ├── flash-cards/
+│   ├── memory-match/
 │   ├── sentence-builder/   # 造句練習（開發中）
 │   ├── games.css
 │   ├── games.js
 │   └── index.html
 ├── js/                     # 共用 JavaScript
+│   ├── config.js           # GAS 端點、分頁名稱設定
+│   └── shared/
+│       ├── dataAdapter.js  # GAS 資料轉換器
+│       ├── shuffle.js      # 隨機工具（shuffle / sample）
+│       └── timer.js        # 計時格式化工具
+├── lesson-quiz/            # 單課測驗（需登入）
+│   ├── index.html
+│   ├── lesson-quiz.css
+│   └── lesson-quiz.js
 ├── style/                  # 共用樣式
-├── dashboard.html          # 功能總覽頁（登入後跳轉）
-├── home-v1-complete.html   # 首頁舊版備份
+│   ├── base.css
+│   ├── dashboard.css
+│   ├── main.css
+│   └── shadowing.css
+├── dashboard.html          # 功能總覽頁（My Learning Hub）
 ├── home.html               # Shadowing 例句跟讀
 ├── index.html              # 登入入口
 └── speaking.html           # 口說練習頁面
-```
-
-### 2.6 建議的檔案結構優化
-
-```
-JLMS-Chinois-de-la-vie-quotidienne/
-├── README.md               # 專案說明
-├── docs/
-│   └── SPEC.md             # 本規格書
-├── api/
-├── data/
-├── games/
-│   ├── classifier-quiz/
-│   ├── flash-cards/
-│   ├── memory-match/
-│   ├── sentence-builder/
-│   ├── games.css
-│   ├── games.js
-│   └── index.html
-├── js/
-├── style/
-├── index.html              # 入口頁保留在根目錄
-├── home.html
-└── speaking.html
 ```
 
 ---
@@ -157,12 +143,14 @@ JLMS-Chinois-de-la-vie-quotidienne/
 - `accessLevel = 10` → 測試帳號 / 管理員
 - 超出權限的書本按鈕顯示為灰色（disabled）
 
-### 3.3 登入需求（目前規則，未來可能調整）
+### 3.3 登入需求
 
 | 功能 | 是否需要登入 |
 |------|-------------|
-| Interactive Games | 不需要 |
-| 句子跟讀練習（Shadowing） | 需要登入 |
+| Interactive Games（遊戲區） | 不需要 |
+| 句子跟讀練習 Shadowing | 需要登入 |
+| 單課測驗 Lesson Quiz | 需要登入 |
+| 口說練習 Speaking | 需要登入（計畫中） |
 
 ### 3.4 學生資料總表欄位
 
@@ -205,7 +193,7 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 ### 4.2 Memory Match 分頁 — 生詞庫
 
-供 Memory Match 和 Flashcards 共用，約 379 筆資料。
+供 Memory Match、Flashcards、單課測驗 Round 1 & 4 & 5 共用，約 379 筆資料。
 
 | 欄位 | 說明 |
 |------|------|
@@ -229,28 +217,32 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 ### 4.3 Sentence Builder 分頁 — 文法例句庫
 
-供 Sentence Builder 遊戲及首頁 Shadowing 跟讀練習使用。
+供 Sentence Builder 遊戲、Shadowing 跟讀、單課測驗 Round 2 & 3 & 4 使用。
 
-| 欄位 | 說明 |
-|------|------|
-| set_id | 資料集 ID（如 `B1_L1`） |
-| book | 書本編號 |
-| Lesson | 課程編號 |
-| gram_no | 文法編號（對應實體課本中的文法號碼） |
-| phrase_id | 例句 ID（如 `B1L010301`） |
-| grammar_tag_tr | 繁體文法標籤 |
-| chinese_tr | 繁體中文例句 |
-| pinyin_tw | 台灣拼音 |
-| segments_tr | 繁體斷句（以 `/` 分隔，供拖曳排序用） |
-| segments_pinyin_tw | 斷句拼音 |
-| grammar_tag_sp | 簡體文法標籤 |
-| chinese_sp | 簡體中文 |
-| pinyin_cn | 中國拼音 |
-| segments_sp | 簡體斷句 |
-| segments_pinyin_cn | 簡體斷句拼音 |
-| tocfl_level | TOCFL 等級 |
-| active | 是否啟用 |
-| review_status | 審核狀態 |
+| 欄位 | 說明 | 狀態 |
+|------|------|------|
+| set_id | 資料集 ID（如 `B1_L1`） | ✅ |
+| book | 書本編號 | ✅ |
+| Lesson | 課程編號 | ✅ |
+| gram_no | 文法編號（對應實體課本中的文法號碼） | ✅ |
+| phrase_id | 例句 ID（如 `B1L010301`） | ✅ |
+| grammar_tag_tr | 繁體文法標籤 | ✅ |
+| chinese_tr | 繁體中文例句 | ✅ |
+| pinyin_tw | 台灣拼音 | ✅ |
+| segments_tr | 繁體斷句（以 `/` 分隔，供拖曳排序用） | 🔧 填寫中 |
+| segments_pinyin_tw | 斷句拼音 | 🔧 填寫中 |
+| grammar_tag_sp | 簡體文法標籤 | ✅ |
+| chinese_sp | 簡體中文 | ✅ |
+| pinyin_cn | 中國拼音 | ✅ |
+| segments_sp | 簡體斷句 | 🔧 填寫中 |
+| segments_pinyin_cn | 簡體斷句拼音 | 🔧 填寫中 |
+| **french_tr** | **法語例句翻譯** | ⏳ 待新增 |
+| **english_tr** | **英語例句翻譯** | ⏳ 待新增 |
+| tocfl_level | TOCFL 等級 | ✅ |
+| active | 是否啟用 | ✅ |
+| review_status | 審核狀態 | ✅ |
+
+> **注意**：`french_tr` 和 `english_tr` 為計畫新增欄位，新增後可啟用單課測驗 Round 4 的**句子聽力理解題**功能。
 
 ### 4.4 JLMS_ChatbotPrompt設定 分頁
 
@@ -260,174 +252,169 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 ## 5. 已上線功能 Current Features
 
-### 5.1 句子跟讀練習 Shadowing（需登入）
+### 5.0 全站 UI 設計系統
 
-**功能說明**：學生選擇書本和課程，瀏覽該課的文法例句，進行跟讀練習。
+> 自 v1.2 起，所有頁面統一採用以下設計語言：
 
-**操作流程**：
-1. 登入後進入主頁
-2. 選擇 Book（B1 ~ B5，依權限顯示）
-3. 選擇 Lesson（依所選 Book 顯示對應課程）
-4. 瀏覽例句列表，按照文法編號分組
+| 項目 | 值 |
+|------|------|
+| 背景色 | `#1f213b`（深藍） |
+| 主卡片色 | `#566fb8`（中藍） |
+| 深卡片色 | `#3d5294` |
+| 按鈕形狀 | 藥丸形（`border-radius: 999px`） |
+| 字體 | `ui-sans-serif, system-ui`（標題），`Noto Sans TC`（中文） |
+| 語言切換 | EN / FR 雙語，`localStorage` 保存偏好 |
 
-**功能細節**：
-- **語速控制**：拉條（Speed slider）調整播放速度，預設 1.0
-- **拼音顯示**：Show pinyin 勾選框，可開/關拼音
-- **雙軌語音系統**：
-  - 點擊拼音 → 使用瀏覽器 Web Speech API（速度快，品質較低）
-  - 點擊「Natural Voice」按鈕 → 串接 OpenAI TTS API（品質好，有延遲）
+### 5.1 登入頁 Login（index.html）
 
-**目前狀態**：例句資料已遷移至 Google Sheet（Sentence Builder 分頁），不需修改程式碼即可更新內容
+- Firebase Authentication 帳號密碼登入
+- 「Play without login」藥丸按鈕 → 直接進遊戲區
+- 設計：深藍底色、#566fb8 登入按鈕、藥丸樣式
 
-### 5.2 Interactive Games 互動遊戲區（不需登入）
+### 5.2 功能總覽頁 Dashboard（dashboard.html）
 
-進入遊戲區後，以卡片形式呈現可用遊戲，遊戲列表由 Google Sheet Games 分頁控制。
-
-#### 5.2.1 Memory Match 記憶配對（已上線）
-
-**資料來源**：Google Sheet — Memory Match 分頁（生詞庫）
-
-**篩選功能**：
-- Book（書本）
-- Lesson（課程）
-- TOCFL（中文能力等級）
-- POS（詞性）
-- Meaning（法語 / 英語）
-
-**難度設定**：
-- Easy（6 字）：6 個詞彙，共 12 張牌
-- Advanced：11 個詞彙，共 22 張牌
-
-**遊戲機制**：
-- 翻牌配對：中文 ↔ 法語 / 英語
-- 計分追蹤：Moves（翻牌次數）、Matches（配對成功數）、Time（計時）
-- New Game 按鈕重新開始
-
-#### 5.2.2 Classifier Quiz 量詞大挑戰（已上線）
-
-**資料來源**：寫死在 JavaScript 檔案中（資料固定，25 個常見量詞，共 75 題）
-
-**設定選項**：
-- 語言選擇：Français / English
-- 題數選擇：10 / 15 / 20 / 30 題
-- 隨機出題
-
-**遊戲機制**：
-- 四選一：顯示帶量詞的詞組，選出正確的量詞
-- 即時回饋：答對/答錯都顯示解釋（以所選語言呈現）
-- 計分：Score（得分）、Streak（連續答對數）
-- 進度條：Question X / Y
-- 結算畫面：星星評價 + 最終分數
-
-**介面特色**：三語並呈（中文 + 法文 + 英文），含拼音與翻譯
-
-#### 5.2.3 Flashcards 閃卡練習（已上線）
-
-**資料來源**：Google Sheet — Memory Match 分頁（與 Memory Match 共用生詞庫）
-
-**篩選功能**：Book、Lesson、TOCFL、POS、Meaning 語言
-
-**練習模式**：
-- See Chinese → Guess meaning（看中文猜外語意思）
-- See French → Say Chinese（看法文說中文）
-
-**功能細節**：
-- Show Pinyin 開關：控制是否顯示拼音
-- Number of cards：自訂卡片數量
-- 隨機出牌，每次練習順序不同
-- 計時器（Time）
-- Speak 按鈕：點擊聽詞彙發音
-- Prev / Next 導覽按鈕
-- 進度顯示（如 1/20）
-
----
-
-## 6. 功能總覽頁 Dashboard（新增）
-
-**目的**：學生登入後先進入功能總覽頁，一覽所有可用的學習工具，再選擇進入特定功能。
-
-**觸發方式**：登入成功後跳轉至 `dashboard.html`
+**目的**：學生登入後先進入功能總覽頁「My Learning Hub」，一覽所有學習工具。
 
 **頁面結構**：四個功能入口卡片，排列順序暗示學習路徑
 
-| 順序 | 功能名稱 | 英文 | 連結目標 | 狀態 | 學習階段 |
-|------|---------|------|---------|------|---------|
-| 1 | 例句跟讀 | Shadowing | home.html | ✅ 已上線 | 輸入：先聽、先模仿 |
-| 2 | 互動遊戲 | Games | games/index.html | ✅ 已上線 | 練習：邊玩邊記 |
-| 3 | 單課測驗 | Lesson Quiz | （待開發） | 🔧 開發中 | 驗收：學完了？來測試 |
-| 4 | 口說練習 | Speaking | speaking.html | 🔧 開發中 | 輸出：實戰對話 |
+| 順序 | 功能名稱 | 狀態 | 學習階段 |
+|------|---------|------|---------|
+| 1 | Shadowing 例句跟讀 | ✅ 已上線 | 輸入：先聽、先模仿 |
+| 2 | Interactive Games 互動遊戲 | ✅ 已上線 | 練習：邊玩邊記 |
+| 3 | Lesson Quiz 單課測驗 | ✅ 已上線 | 驗收：學完了？來測試 |
+| 4 | Speaking Practice 口說練習 | 🔧 開發中（顯示 opacity 0.3） | 輸出：實戰對話 |
 
-**設計要求**：
-- 每張卡片包含：功能名稱（中文 + 英文）、簡短說明、視覺圖示
-- 響應式設計（RWD），手機上正常顯示
-- 尚未開發的功能顯示「即將推出」標示，不可點擊
-- 頁面頂部保留登出按鈕
-- 各功能頁加入「Back to Dashboard」按鈕，方便返回
+**功能細節**：
+- EN / FR 語言切換按鈕（右上角）
+- 未上線功能卡片透明度 0.3，不可點擊
+- 各功能頁均有「← Back to Homepage」藥丸按鈕返回
 
-**對現有程式碼的影響**：
-- 新增 `dashboard.html` 與 `style/dashboard.css`
-- `js/auth.js` 登入成功後改為導向 `dashboard.html`（僅改一行）
+### 5.3 句子跟讀練習 Shadowing（home.html，需登入）
+
+**操作流程**：登入 → Dashboard → 選 Book + Lesson → 瀏覽文法例句跟讀
+
+**功能細節**：
+- 語速控制 Speed slider（0.5 ~ 1.5x）
+- Show Pinyin 開關
+- 雙軌語音：Web Speech API（快）/ Natural Voice OpenAI TTS（品質高）
+- 自然語音按鈕：`#33406f` 深藍藥丸樣式
+- 文法編號標示：`#c64049` 深紅色
+
+### 5.4 互動遊戲區 Interactive Games（games/index.html，不需登入）
+
+進入遊戲區後以卡片呈現，遊戲列表由 Google Sheet Games 分頁控制。
+
+#### 5.4.1 Memory Match 記憶配對 ✅
+
+**篩選**：Book、Lesson、TOCFL、POS、Meaning 語言
+
+**難度**：Easy（6 詞 12 牌）/ Advanced（11 詞 22 牌）
+
+**機制**：翻牌配對（中文 ↔ 外語），計時、計步
+
+#### 5.4.2 Classifier Quiz 量詞大挑戰 ✅
+
+**資料**：寫死於 JS，25 個量詞，共 75 題
+
+**機制**：四選一、即時回饋、連續答對 Streak、星星結算
+
+#### 5.4.3 Flashcards 閃卡練習 ✅
+
+**篩選**：Book、Lesson、TOCFL、POS、Meaning 語言
+
+**模式**：看中文猜外語 / 看外語說中文，Show Pinyin 開關，計時
+
+#### 5.4.4 Sentence Builder 造句練習 🔧 開發中
+
+**待完成**：`segments_tr` 欄位填寫完畢後即可啟用拖曳重組功能
+
+### 5.5 單課測驗 Lesson Quiz（lesson-quiz/，需登入）✅
+
+**目的**：學生學完一課後進行綜合測驗，評估學習成效。
+
+**篩選**：Book（B1–B5）、Lesson（單課 or All lessons in this book）、語言（EN/FR）
+
+**系統設計**：
+- 全程一個計時器，進關卡介紹頁時暫停
+- 每關顯示關卡介紹頁（說明玩法）再進入答題
+- 題數顯示：`Q1/25`（選擇題）/ `Q11–15/25`（填空整關）
+- 題目每次隨機抽取，可無限重玩
+
+**測驗結構（目前）**：5 關，共 25 題，滿分 20 分
+
+| 關卡 | 類型 | 題數 | 分數 | 狀態 |
+|------|------|------|------|------|
+| 1 🔤 Vocabulary Match | 看漢字+拼音，點發音，四選一外文意思 | 10 | 0.5×10 = 5 | ✅ |
+| 2 ✏️ Fill in the Blank | 8 生字（5+3干擾）填入 5 個句子 | 5 | 1×5 = 5 | ✅ |
+| 3 🧩 Sentence Building | 詞組拖曳重組 | — | 0 | ⏳ Coming Soon |
+| 4 🔊 Listening | 聽生詞發音，四選一外文意思 | 5 | 1×5 = 5 | ✅ |
+| 5 🎵 Pinyin Quiz | 看漢字+意思，四選一聲調（同字四聲） | 5 | 1×5 = 5 | ✅ |
+
+**Round 2 Fill in the Blank 細節**：
+- 生字卡片顯示漢字 + 拼音
+- 句子框內漢字下方顯示拼音，答案位置用 `___` 遮蔽
+- 空格為半透明圓角色塊，整塊可點選
+- 互動：點擊選字+點空格（手機）/ HTML5 drag-and-drop（電腦）
+
+**Round 4 Listening 細節**：
+- 進題自動播放，可重播
+- 速度滑桿（0.5x – 1.5x），設定跨題保留
+
+**Round 5 Pinyin Quiz 細節**：
+- `toneVariants()` 自動產生同字四個聲調選項（如 `mǎi → māi / mái / mǎi / mài`）
+- 無聲調符號時 fallback 至隨機四選一
+
+**結算畫面**：
+- 雷達圖（Chart.js，五個維度）
+- 總分 + 用時
+- 「Review Answers」展開各題對錯詳情（預設隱藏）
 
 ---
 
-## 6.1 開發中功能 In Development
+## 6. 開發中功能 In Development
 
-### 6.2 Sentence Builder 造句練習
+### 6.1 Round 3 Sentence Building（單課測驗內）
 
-**狀態**：資料庫已建立，遊戲功能開發中  
-**資料來源**：Google Sheet — Sentence Builder 分頁
+**狀態**：UI 框架已完成，顯示「Coming Soon」  
+**待完成**：Google Sheet Sentence Builder 分頁的 `segments_tr` 欄位填寫完畢後即可實作
 
-**篩選功能**：Book、Lesson
+### 6.2 Round 4 句子聽力理解（單課測驗內）
 
-**遊戲機制**：
-- 從 `segments_tr` 欄位讀取以 `/` 分隔的詞組
-- 打亂詞組順序
-- 學生透過拖曳將詞組排列成正確句子
-- 點擊或拖曳詞組時可聽發音
+**目標**：在現有 5 題生詞聽力之外，新增 5 題句子聽力理解
 
-**介面設定**：
-- 顯示模式：拼音 + 漢字 / 僅漢字
-- 課本範圍篩選
+**設計**：
+- 播放句子音頻 → 四選一選出正確外文意思
+- 每題 0.5 分（5 題 = 2.5 分）
+- 按語法點選句：每個 `gram_no` 至少選出一句
+
+**前置條件**：Sentence Builder 分頁需新增 `french_tr` 和 `english_tr` 欄位
+
+**新增後分數結構**：
+
+| 關卡 | 題數 | 分數 |
+|------|------|------|
+| 1 Vocabulary Match | 10 | 5 |
+| 2 Fill in the Blank | 5 | 5 |
+| 3 Sentence Building | 5 | 5 |
+| 4 Listening — 生詞 | 5 | 5 |
+| 4 Listening — 句子 | 5 | 2.5 |
+| 5 Pinyin Quiz | 5 | 5 |
+| **合計** | **35** | **27.5** |
+
+> 待 Round 3 與 Round 4 句子題完成後，分數結構需重新確認。
+
+### 6.3 Sentence Builder 造句遊戲（games/sentence-builder/）
+
+**狀態**：資料庫已建立，遊戲邏輯待開發  
+**待完成**：`segments_tr` 欄位填好後實作拖曳重組
 
 ---
 
 ## 7. 計畫中功能 Planned Features
 
-### 7.1 單課測驗 Lesson Quiz
-
-**目的**：學生學完一課後，進行綜合測驗以評估學習成效。
-
-**篩選**：僅需選擇 Book + Lesson
-
-**測驗結構**：5 個關卡，每關 5 題，共 25 題 25 分
-
-| 關卡 | 名稱 | 題型 | 資料來源 |
-|------|------|------|---------|
-| 1 | 生詞意思配對 | 中文與外語意思配對 | 生詞庫（Memory Match 分頁） |
-| 2 | 句子填空 | 閱讀句子，選擇正確生詞填入空格 | 例句庫（Sentence Builder 分頁） |
-| 3 | Sentence Building | 拖曳詞組排列成正確句子 | 例句庫（Sentence Builder 分頁） |
-| 4 | 聽力練習 | 聽句子發音，從四個選項選出正確意思 | 例句庫（Sentence Builder 分頁） |
-| 5 | 拼音測驗 | 看漢字與外語意思，從四個選項中選出正確拼音（含聲調） | 生詞庫（Memory Match 分頁） |
-
-> **作答方式**：方案 B — 四選一。選項以聲調相近或容易混淆的拼音作為干擾。選擇原因：手機端輸入拼音含聲調體驗不佳，四選一可兼顧學習效果與使用體驗。
-
-**結算畫面**：
-- 雷達圖（Spider Chart）呈現五個關卡的表現分布
-- 依答題正確率給予評語：
-
-| 正確率 | 評語 |
-|-------|------|
-| 90%+ | 完美 |
-| 80%+ | 優秀 |
-| 70%+ | 不錯 |
-| 60%+ | 加油 |
-| <60% | 繼續努力 |
-
-### 7.2 Speaking Practice 口說練習
+### 7.1 Speaking Practice 口說練習
 
 **目的**：學生針對特定課程的文法與詞彙，與 AI 進行對話練習。
-
-**篩選**：選擇 Book + Lesson，限定該課範圍
 
 **技術方案**：
 - 串接 OpenAI Chat API
@@ -439,7 +426,7 @@ JLMS-Chinois-de-la-vie-quotidienne/
 1. **Phase 1**：文字版對話（先上線基本功能）
 2. **Phase 2**：加入語音輸入與輸出
 
-### 7.3 Scenario-based Speaking Practice 情境口說練習
+### 7.2 Scenario-based Speaking Practice 情境口說練習
 
 **目的**：設定生活場景（如餐廳點餐、租房子、看醫生），學生進行更自由的對話練習。
 
@@ -447,20 +434,12 @@ JLMS-Chinois-de-la-vie-quotidienne/
 - Speaking Practice → 限定單一課程的文法和詞彙
 - Scenario-based → 混合多課內容，以場景為導向，更貼近真實溝通
 
-**技術方案**：
-- 同樣串接 OpenAI Chat API
-- Prompt 設計結合場景設定 + 從 Sentence Builder 資料庫撈取相關文法和例句
-- 讓 AI 知道學生已學過哪些內容，對話時自然運用
-
-### 7.4 學習成果紀錄 Learning Analytics（構想階段）
-
-**目的**：記錄並追蹤學生的學習歷程。
+### 7.3 學習成果紀錄 Learning Analytics（構想階段）
 
 **可能功能**：
 - 單課測驗成績存入 Google Sheet
 - 教師端：查看每位學生的測驗紀錄與各關卡表現
 - 學生端：查看自己的歷史成績與進步趨勢
-- 數據分析：各課程 / 各題型的整體通過率
 
 ---
 
@@ -475,11 +454,6 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | Shadowing 例句 | 已遷移至 Google Sheet（Sentence Builder 分頁） |
 | 舊版 JSON 檔案 | 保留於 `archive/` 資料夾作為備份 |
 
-**優點**：
-- 不需修改程式碼即可新增或更新例句
-- Shadowing 與 Sentence Builder 共用同一份資料，確保一致性
-- 透過 Google Sheet 的 `active` 欄位控制啟用/停用
-
 ---
 
 ## 9. Google Sheet 資料庫總覽
@@ -487,9 +461,8 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | Google Sheet | 分頁 | 用途 | 使用功能 |
 |-------------|------|------|---------|
 | Games DB | Games | 遊戲列表管理 | Interactive Games 首頁 |
-| Games DB | Memory Match | 生詞庫（~379 筆） | Memory Match、Flashcards、單課測驗關卡 1 & 5 |
-| Games DB | Sentence Builder | 文法例句庫 | Shadowing、Sentence Builder、單課測驗關卡 2, 3, 4 |
-| Games DB | （未命名）工作表4 | 待確認 | — |
+| Games DB | Memory Match | 生詞庫（~379 筆） | Memory Match、Flashcards、單課測驗 R1、R4（生詞）、R5 |
+| Games DB | Sentence Builder | 文法例句庫 | Shadowing、Sentence Builder、單課測驗 R2、R3、R4（句子，待翻譯欄位） |
 | 學生資料 | JLMS_學生資料總表 | 學生帳號與權限管理 | 登入驗證、accessLevel 權限控制 |
 | 學生資料 | JLMS_ChatbotPrompt設定 | AI 對話 prompt 管理 | Speaking Practice（計畫中） |
 
@@ -499,29 +472,34 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 ```
 登入（index.html）
-└── 功能總覽 Dashboard（dashboard.html）
+└── 功能總覽 My Learning Hub（dashboard.html）
     │
-    ├── 1. 例句跟讀 Shadowing（home.html）        ← 先聽、先模仿
-    │   └── 選 Book + Lesson → 例句練習
+    ├── 1. 例句跟讀 Shadowing（home.html）           ← 先聽、先模仿
+    │   └── 選 Book + Lesson → 文法例句跟讀
     │
-    ├── 2. 互動遊戲 Games（games/index.html）      ← 邊玩邊記
+    ├── 2. 互動遊戲 Games（games/index.html）         ← 邊玩邊記
     │   ├── Memory Match           ✅ 已上線
     │   ├── Classifier Quiz        ✅ 已上線
     │   ├── Flashcards             ✅ 已上線
     │   └── Sentence Builder       🔧 開發中
     │
-    ├── 3. 單課測驗 Lesson Quiz                    ← 學完了？來測試
-    │   └── 選 Book + Lesson → 5 關卡 × 5 題 → 雷達圖結算
+    ├── 3. 單課測驗 Lesson Quiz（lesson-quiz/）        ← 學完了？來測試
+    │   └── 選 Book + Lesson + 語言
+    │       → Round 1 生詞配對（10 題）
+    │       → Round 2 句子填空（5 題）
+    │       → Round 3 Sentence Building（Coming Soon）
+    │       → Round 4 聽力（5 題，句子題待翻譯欄位）
+    │       → Round 5 拼音聲調（5 題）
+    │       → 雷達圖結算 + 答題檢討
     │
-    └── 4. 口說練習 Speaking（speaking.html）      ← 實戰對話
-        ├── 情境練習 Scenario-based Speaking
-        └── 口說練習 Speaking Practice
+    └── 4. 口說練習 Speaking（speaking.html）         ← 實戰對話（開發中）
+        ├── Speaking Practice
+        └── Scenario-based Speaking
 ```
 
 **備註**：
-- 四個功能的排列順序暗示學習路徑：輸入 → 練習 → 驗收 → 輸出
-- 學生不強制按順序使用，可自由選擇任何功能
-- 各功能頁均有「Back to Dashboard」按鈕返回總覽頁
+- 四個功能排列順序暗示學習路徑：輸入 → 練習 → 驗收 → 輸出
+- 各功能頁均有「← Back to Homepage」藥丸按鈕返回 Dashboard
 
 ---
 
@@ -539,6 +517,8 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | System Prompt | 系統指令 | 給 AI 的角色設定與行為指引 |
 | Static Site | 靜態網站 | 不需後端伺服器的網站 |
 | accessLevel | 存取權限等級 | 控制學生可查看的書本範圍 |
+| gram_no | 文法編號 | 對應課本中的文法點編號 |
+| segments_tr | 斷句 | 以 `/` 分隔的詞組，供造句拖曳排序用 |
 
 ---
 
@@ -547,4 +527,5 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | 版本 | 日期 | 說明 |
 |------|------|------|
 | v1.0 | 2026-03-20 | 初版規格書，記錄所有已上線與計畫中功能 |
-| v1.1 | 2026-04-01 | 新增 Dashboard 功能總覽頁；Shadowing 例句遷移至 Google Sheet 完成；單課測驗關卡 5 確定採用方案 B（四選一）；更新導覽結構 |
+| v1.1 | 2026-04-01 | 新增 Dashboard；Shadowing 例句遷移至 Google Sheet；單課測驗 Round 5 確定四選一方案；更新導覽結構 |
+| v1.2 | 2026-04-13 | 單課測驗 Lesson Quiz 正式上線（Round 1、2、4、5 完成，Round 3 Coming Soon）；全站 UI 設計系統統一（#1f213b / #566fb8 / 藥丸按鈕）；新增 Sentence Builder 翻譯欄位規劃（french_tr / english_tr）；更新檔案結構、登入規則、資料庫欄位說明 |

@@ -123,23 +123,41 @@ function toneVariants(pinyin) {
 
 function globalQ(ri, qi) { return Q_START[ri] + qi; }
 
-// Mask the answer word's pinyin inside a sentence pinyin string
+// Strip tone marks and spaces → bare letters only (for position matching)
+function normPinyin(s) {
+  return s.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')   // remove diacritics (tones)
+    .replace(/ü/g, 'u')
+    .toLowerCase()
+    .replace(/[^a-z]/g, '');           // keep only a-z letters
+}
+
+// Mask the answer word's pinyin inside a sentence pinyin string.
+// Works even when tone marks or spacing differ between vocab and sentence data.
 function maskPinyin(sentPinyin, answerPinyin) {
   if (!sentPinyin || !answerPinyin) return sentPinyin;
-  // 1. Exact match
-  if (sentPinyin.includes(answerPinyin))
-    return sentPinyin.replace(answerPinyin, '___');
-  // 2. Compact: remove spaces in answer (e.g. "suàn shì" → "suànshì")
-  const compact = answerPinyin.replace(/\s+/g, '');
-  if (sentPinyin.includes(compact))
-    return sentPinyin.replace(compact, '___');
-  // 3. Case-insensitive exact
-  const reExact = new RegExp(answerPinyin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-  const r1 = sentPinyin.replace(reExact, '___');
-  if (r1 !== sentPinyin) return r1;
-  // 4. Case-insensitive compact
-  const reCompact = new RegExp(compact.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-  return sentPinyin.replace(reCompact, '___');
+
+  const normSent = normPinyin(sentPinyin);
+  const normAns  = normPinyin(answerPinyin);
+  if (!normAns) return sentPinyin;
+
+  const matchIdx = normSent.indexOf(normAns);
+  if (matchIdx === -1) return sentPinyin; // couldn't locate — show as-is
+
+  // Build a mapping: normSent index → sentPinyin index (letter positions only)
+  const mapping = [];
+  for (let i = 0; i < sentPinyin.length; i++) {
+    const bare = sentPinyin[i].normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/ü/g, 'u').toLowerCase();
+    if (/[a-z]/.test(bare)) mapping.push(i);
+  }
+
+  const startSent = mapping[matchIdx];
+  const endSent   = mapping[matchIdx + normAns.length - 1] + 1;
+  if (startSent === undefined || endSent === undefined) return sentPinyin;
+
+  return sentPinyin.slice(0, startSent) + '___' + sentPinyin.slice(endSent);
 }
 
 // ═══════════════════════════════════════════════
