@@ -320,6 +320,7 @@ body {
 .radar-wrap { width: min(380px, 88vw); margin: 16px auto; }
 
 .results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+.print-ios-hint  { text-align: center; font-size: .8rem; color: rgba(255,255,255,.45); margin: 8px auto 0; max-width: 420px; line-height: 1.5; }
 
 .review-panel { width: min(700px, 92vw); margin-top: 28px; }
 .review-round { margin-bottom: 28px; }
@@ -499,6 +500,7 @@ body {
   .page > .screen            { display: none !important; }
   #screen-results            { display: block !important; }
   .results-actions           { display: none !important; }
+  .print-ios-hint            { display: none !important; }
 
   /* Show print header */
   #print-header { display: block !important; margin-bottom: 16px; }

@@ -786,10 +786,12 @@ function gradeSentenceBuild() {
     item:     { hanzi: q.sentence.chinese_tr, pinyin: '' },
   };
 
-  // Per-block colour feedback
+  // Per-block colour feedback (compare hanzi content, not segment index)
   const ansArea = document.getElementById('build-answer-area');
   ansArea?.querySelectorAll('.build-block').forEach((block, pos) => {
-    block.classList.add(arranged[pos] === pos ? 'correct' : 'wrong');
+    const placed   = q.segments[arranged[pos]].hanzi;
+    const expected = q.segments[pos].hanzi;
+    block.classList.add(placed === expected ? 'correct' : 'wrong');
   });
 
   hd('submitBtn');

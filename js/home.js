@@ -1,6 +1,6 @@
 /* ===== 0. Access-API 端點 ===== */
 const accessApi =
-  "https://script.google.com/macros/s/AKfycbw1izdhjanSmUX31wlidvpuDsMmP7mXjesBW6s7Nff6a_5G7OYXUEXHBQP9eehyYQs5/exec";
+  "https://script.google.com/macros/s/AKfycbxgqJEmFXhFL6RB0HO5ZaO5wFDpAa-oN98fP7jwt72_ugI3gknmG07CZQssdh9vSxwz/exec";
 
 /* ===== 1. 讀 email；若沒有就回到登入頁 ===== */
 const email = sessionStorage.getItem("jlmsUserEmail");
