@@ -604,6 +604,51 @@ function makeBuildBlock(segIdx, srcArea) {
     e.dataTransfer.effectAllowed = 'move';
   });
 
+  // Allow reordering within the answer area by dragging over answer blocks
+  if (srcArea === 'answer') {
+    block.addEventListener('dragover', e => {
+      e.preventDefault(); e.stopPropagation();
+      if (S.buildState.graded) return;
+      const rect   = block.getBoundingClientRect();
+      const isLeft = e.clientX < rect.left + rect.width / 2;
+      block.classList.toggle('drop-before', isLeft);
+      block.classList.toggle('drop-after', !isLeft);
+    });
+    block.addEventListener('dragleave', () => {
+      block.classList.remove('drop-before', 'drop-after');
+    });
+    block.addEventListener('drop', e => {
+      e.preventDefault(); e.stopPropagation();
+      block.classList.remove('drop-before', 'drop-after');
+      if (S.buildState.graded) return;
+      const dragSegIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
+      const dragArea   = e.dataTransfer.getData('src-area');
+      if (isNaN(dragSegIdx)) return;
+
+      const { arranged, pool } = S.buildState;
+      const targetPos = arranged.indexOf(segIdx);
+      const rect   = block.getBoundingClientRect();
+      const insertBefore = e.clientX < rect.left + rect.width / 2;
+      const insertPos = insertBefore ? targetPos : targetPos + 1;
+
+      if (dragArea === 'answer') {
+        // Reorder within answer area
+        const fromPos = arranged.indexOf(dragSegIdx);
+        if (fromPos === -1 || fromPos === targetPos) return;
+        arranged.splice(fromPos, 1);
+        const newPos = fromPos < insertPos ? insertPos - 1 : insertPos;
+        arranged.splice(newPos, 0, dragSegIdx);
+      } else {
+        // Move from pool into answer area at specific position
+        const pi = pool.indexOf(dragSegIdx);
+        if (pi === -1) return;
+        pool.splice(pi, 1);
+        arranged.splice(insertPos, 0, dragSegIdx);
+      }
+      renderBuildState();
+    });
+  }
+
   return block;
 }
 
@@ -627,8 +672,12 @@ function renderBuildState() {
   pool.forEach(segIdx => poolEl.appendChild(makeBuildBlock(segIdx, 'pool')));
 
   // Show submit only when all segments placed
-  if (arranged.length === q.segments.length) sh('submitBtn');
-  else hd('submitBtn');
+  if (arranged.length === q.segments.length) {
+    $('submitBtn').textContent = S.lang === 'fr' ? 'Soumettre ✓' : 'Submit ✓';
+    sh('submitBtn');
+  } else {
+    hd('submitBtn');
+  }
 }
 
 function moveSegToAnswer(segIdx) {
