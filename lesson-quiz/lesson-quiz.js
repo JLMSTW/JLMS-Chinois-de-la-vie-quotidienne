@@ -1073,17 +1073,24 @@ function endQuiz() {
   $('ph-score').textContent   = `${total.toFixed(1)} / ${MAX_PTS}  ·  ${formatTime(S.totalTime)}`;
 
   $('printBtn').onclick = () => {
-    // Ensure review is built & visible before printing
     buildReview();
     $('review-panel').classList.remove('hidden');
-    window.print();
+    drawRadar(true);                   // redraw with print-friendly (dark) colors
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => drawRadar(false), 500); // restore screen colors after print
+    }, 120);                           // wait for canvas to re-render
   };
 
   drawRadar();
   showScreen('results');
 }
 
-function drawRadar() {
+let _radarChart = null;
+
+function drawRadar(printMode = false) {
+  if (_radarChart) { _radarChart.destroy(); _radarChart = null; }
+
   // Compute actual max per round; exclude Coming Soon (maxPts = 0)
   const maxPts = S.rounds.map((qs, ri) => {
     if (!qs || !qs.length) return 0;
@@ -1095,7 +1102,10 @@ function drawRadar() {
   const labels = activeIdx.map(i => ROUND_DEF[i][S.lang]?.name || ROUND_DEF[i].en.name);
   const pcts   = activeIdx.map(i => Math.round((S.scores[i] / maxPts[i]) * 100));
 
-  new Chart($('radarChart'), {
+  const gridColor  = printMode ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.12)';
+  const labelColor = printMode ? '#1a1a2e'           : '#fff';
+
+  _radarChart = new Chart($('radarChart'), {
     type: 'radar',
     data: {
       labels,
@@ -1112,11 +1122,12 @@ function drawRadar() {
       scales: { r: {
         min: 0, max: 100,
         ticks: { display: false },
-        grid:        { color: 'rgba(255,255,255,0.12)' },
-        angleLines:  { color: 'rgba(255,255,255,0.12)' },
-        pointLabels: { color: '#fff', font: { size: 11, family: 'ui-sans-serif, system-ui, sans-serif' } },
+        grid:        { color: gridColor },
+        angleLines:  { color: gridColor },
+        pointLabels: { color: labelColor, font: { size: 11, family: 'ui-sans-serif, system-ui, sans-serif' } },
       }},
       plugins: { legend: { display: false } },
+      animation: { duration: printMode ? 0 : 400 }, // no animation when printing
     },
   });
 }
