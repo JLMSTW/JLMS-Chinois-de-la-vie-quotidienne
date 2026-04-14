@@ -2,7 +2,7 @@
 
 ## 專案規格書 Project Specification
 
-> **版本**：v1.3
+> **版本**：v1.4
 > **日期**：2026-04-14
 > **狀態**：已上線，持續開發中
 
@@ -99,7 +99,7 @@ JLMS-Chinois-de-la-vie-quotidienne/
 │   ├── classifier-quiz/
 │   ├── flash-cards/
 │   ├── memory-match/
-│   ├── sentence-builder/   # 造句練習（開發中）
+│   ├── sentence-puzzle/    # Sentence Puzzle 造句遊戲 ✅
 │   ├── games.css
 │   ├── games.js
 │   └── index.html
@@ -325,9 +325,20 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 **模式**：看中文猜外語 / 看外語說中文，Show Pinyin 開關，計時
 
-#### 5.4.4 Sentence Builder 造句練習 🔧 開發中
+#### 5.4.4 Sentence Puzzle 造句遊戲 ✅
 
-**待完成**：`segments_tr` 欄位填寫完畢後即可啟用拖曳重組功能
+**路徑**：`games/sentence-puzzle/`（不需登入）
+
+**篩選**：Book（B1–B5）、Lesson（單課 or All lessons）、Meaning 語言（FR/EN）
+
+**機制**：
+- 每局 5 題，從 Sentence Builder 分頁隨機抽取（含 `segments_tr` 的句子）
+- 看外文翻譯，將漢字詞組點選或拖曳排列成正確句子
+- 點選詞組即發音（TTS）
+- 每題作答後顯示結果：正確率 %、來源（Book/Lesson/Grammar #）、彩色詞組（對/錯）、正確答案（拼音 + 漢字 + 翻譯）
+- 最後顯示 5 題總結
+
+**互動方式**：點選（依序移入作答欄）+ 拖曳（含作答欄內換位）
 
 ### 5.5 單課測驗 Lesson Quiz（lesson-quiz/，需登入）✅
 
@@ -396,11 +407,6 @@ JLMS-Chinois-de-la-vie-quotidienne/
 **狀態**：程式架構已預留，待 Google Sheet 新增欄位  
 **說明**：部分句子詞序可自由互換（如「我/昨天」與「昨天/我」），兩種排列皆應視為正確  
 **待完成**：Sentence Builder 分頁新增 `segments_alt_tr` 欄位後，程式同時比對主答案與備選答案
-
-### 6.2 Sentence Builder 造句遊戲（games/sentence-builder/）
-
-**狀態**：資料庫已建立，遊戲邏輯待開發  
-**待完成**：`segments_tr` 欄位填寫完畢後實作拖曳重組
 
 ---
 
