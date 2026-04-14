@@ -1,5 +1,9 @@
 // js/config.js
 
+// ✅ 學生資料 / 權限 API（JLMS_access_API）
+export const ACCESS_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbw1izdhjanSmUX31wlidvpuDsMmP7mXjesBW6s7Nff6a_5G7OYXUEXHBQP9eehyYQs5/exec";
+
 // ✅ 你的 Web App /exec 連結（一定要 /exec）
 export const GAS_ENDPOINT =
   "https://script.google.com/macros/s/AKfycby8K9W8qZliOl55y4ueQTeRmvLV1cYJGiW0yRmluMu-W8eGQZNWyJPlI3fR6ugrin9j1Q/exec";

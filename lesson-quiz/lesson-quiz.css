@@ -481,3 +481,52 @@ body {
   .quiz-header { gap: 6px; }
   .speed-slider { width: 90px; }
 }
+
+/* ══════════════════════════════════════════════
+   PRINT HEADER (hidden on screen, shown in print)
+══════════════════════════════════════════════ */
+#print-header { display: none; }
+
+/* ══════════════════════════════════════════════
+   @media print
+══════════════════════════════════════════════ */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  body { background: #fff !important; color: #1a1a2e !important; margin: 0; }
+
+  /* Hide everything except the results screen */
+  .page > .screen            { display: none !important; }
+  #screen-results            { display: block !important; }
+  .results-actions           { display: none !important; }
+
+  /* Show print header */
+  #print-header { display: block !important; margin-bottom: 16px; }
+  .ph-title  { font-size: 1.4rem; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+  .ph-row    { display: flex; gap: 12px; font-size: .9rem; color: #1a1a2e; margin: 2px 0; }
+  .ph-label  { font-weight: 600; min-width: 160px; color: #444; }
+  .ph-divider { border: none; border-top: 1.5px solid #999; margin: 10px 0 16px; }
+
+  /* Results header */
+  .results-header h2,
+  .score-big, .score-sub { color: #1a1a2e !important; }
+
+  /* Radar chart */
+  .radar-wrap { max-width: 320px; margin: 0 auto; }
+  #radarChart { background: transparent !important; }
+
+  /* Force show review panel */
+  #review-panel { display: block !important; }
+
+  /* Review items */
+  .review-round   { page-break-inside: avoid; margin-bottom: 12px; }
+  .review-item    { background: #f5f5f5 !important; color: #1a1a2e !important;
+                    border-color: #ddd !important; margin: 4px 0; padding: 8px 12px; }
+  .review-item.correct { border-left: 4px solid #4caf84 !important; }
+  .review-item.wrong   { border-left: 4px solid #c64049 !important; }
+  .review-icon    { color: inherit !important; }
+  .review-hanzi   { color: #1a1a2e !important; font-size: 1rem; }
+  .review-pinyin  { color: #555 !important; }
+  .review-sub     { color: #555 !important; font-size: .85rem; }
+  .review-rnd-title { color: #1a1a2e !important; font-weight: 700; margin: 10px 0 4px; }
+}

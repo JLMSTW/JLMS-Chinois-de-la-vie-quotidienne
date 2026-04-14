@@ -1,4 +1,4 @@
-import { GAS_ENDPOINT, SHEETS } from "../js/config.js";
+import { GAS_ENDPOINT, SHEETS, ACCESS_ENDPOINT } from "../js/config.js";
 import { shuffle, sample } from "../js/shared/shuffle.js";
 import { formatTime } from "../js/shared/timer.js";
 import { adaptMemoryItem } from "../js/shared/dataAdapter.js";
@@ -49,8 +49,9 @@ const S = {
   scores:  [0, 0, 0, 0, 0],
   timerSec: 0, _tid: null, totalTime: 0,
   fillState:  null,    // runtime state for fill-blank round
-  buildState: null,    // runtime state for sentence-build round
-  speechRate: 1.0,     // listening speed (0.5 – 1.5)
+  buildState:  null,    // runtime state for sentence-build round
+  speechRate:  1.0,     // listening speed (0.5 – 1.5)
+  studentName: '',      // fetched from access API on load
 };
 
 // ═══════════════════════════════════════════════
@@ -341,7 +342,18 @@ function updateLessonSel() {
 // ═══════════════════════════════════════════════
 //  INIT & START
 // ═══════════════════════════════════════════════
+async function fetchStudentName() {
+  try {
+    const email = sessionStorage.getItem('jlmsUserEmail');
+    if (!email) return;
+    const res  = await fetch(`${ACCESS_ENDPOINT}?email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+    if (data.name) S.studentName = data.name;
+  } catch (_) { /* silent — name optional */ }
+}
+
 async function init() {
+  fetchStudentName(); // fire-and-forget; will be ready long before quiz ends
   updateLessonSel();
   $('filterBook').addEventListener('change', updateLessonSel);
   $('startBtn').addEventListener('click', startQuiz);
@@ -1048,6 +1060,24 @@ function endQuiz() {
   $('resultsTitle').textContent = title;
   $('scoreDisplay').textContent = `${total.toFixed(1)} / ${MAX_PTS}`;
   $('timeDisplay').textContent  = `Time: ${formatTime(S.totalTime)}`;
+
+  // Populate print header
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+  const lessonStr = S.lesson === 'all'
+    ? (S.lang === 'fr' ? 'Toutes les leçons' : 'All lessons')
+    : `Lesson ${S.lesson}`;
+  $('ph-date').textContent    = dateStr;
+  $('ph-student').textContent = S.studentName || sessionStorage.getItem('jlmsUserEmail') || '';
+  $('ph-book').textContent    = `Book ${S.book.replace('B','')} — ${lessonStr} | ${S.lang.toUpperCase()}`;
+  $('ph-score').textContent   = `${total.toFixed(1)} / ${MAX_PTS}  ·  ${formatTime(S.totalTime)}`;
+
+  $('printBtn').onclick = () => {
+    // Ensure review is built & visible before printing
+    buildReview();
+    $('review-panel').classList.remove('hidden');
+    window.print();
+  };
 
   drawRadar();
   showScreen('results');
