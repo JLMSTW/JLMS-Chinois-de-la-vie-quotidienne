@@ -51,7 +51,7 @@ function updateLessonSel() {
   const sel = $('filterLesson');
   sel.innerHTML = `<option value="all">All lessons in ${book}</option>`;
   for (let i = min; i <= max; i++) {
-    sel.innerHTML += `<option value="${i}">Lesson ${i}</option>`;
+    sel.innerHTML += `<option value="L${i}">Lesson ${i}</option>`;
   }
 }
 
@@ -69,7 +69,7 @@ function genQuestions(sents, book, lesson, lang) {
   const byBook = sents.filter(s => s.book === book);
   const byLesson = lesson === 'all'
     ? byBook
-    : byBook.filter(s => String(s.lesson) === String(lesson) || String(s.Lesson) === String(lesson));
+    : byBook.filter(s => s.lesson === lesson);
 
   const pool = byLesson.filter(s => s.segments_tr && s.segments_tr.includes('/'));
 
