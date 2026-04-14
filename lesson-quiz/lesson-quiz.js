@@ -15,24 +15,24 @@ const ROUND_DEF = [
     en: { name: 'Fill in the Blank',     desc: 'Pick the correct word for each sentence. 3 words are extra — use only what fits!' },
     fr: { name: 'Complétez les phrases', desc: 'Choisissez le bon mot pour chaque phrase. 3 mots sont en trop !' } },
 
-  { icon: '🧩', type: 'coming-soon',  qCount: 0,  pts: 0,
-    en: { name: 'Sentence Building',     desc: '🔧 Coming soon! This round will be available once the sentence data is ready.' },
-    fr: { name: 'Construction de phrases', desc: '🔧 Bientôt disponible ! Ce round sera disponible une fois les données prêtes.' } },
+  { icon: '🧩', type: 'sentence-build', qCount: 5,  pts: 1,
+    en: { name: 'Sentence Building',     desc: 'Arrange the word blocks in the correct order. Tap a block to hear it.' },
+    fr: { name: 'Construction de phrases', desc: 'Arrangez les blocs dans le bon ordre. Appuyez sur un bloc pour l\'entendre.' } },
 
-  { icon: '🔊', type: 'listening',    qCount: 5,  pts: 1,
-    en: { name: 'Listening',            desc: 'Tap the speaker to hear a word, then choose the correct meaning.' },
-    fr: { name: 'Compréhension orale',  desc: 'Appuyez sur le haut-parleur, puis choisissez la bonne signification.' } },
+  { icon: '🔊', type: 'listening',    qCount: 10, pts: 0.5,
+    en: { name: 'Listening',            desc: 'Part 1: Hear a word → choose its meaning. Part 2: Hear a sentence → choose its meaning.' },
+    fr: { name: 'Compréhension orale',  desc: 'Partie 1 : Écoutez un mot → choisissez sa signification. Partie 2 : Écoutez une phrase → choisissez sa signification.' } },
 
   { icon: '🎵', type: 'pinyin',       qCount: 5,  pts: 1,
     en: { name: 'Pinyin Quiz',          desc: 'Look at the character and its meaning, then choose the correct pinyin (with tones).' },
     fr: { name: 'Quiz de pinyin',       desc: 'Regardez le caractère et sa signification, puis choisissez le bon pinyin (avec les tons).' } },
 ];
 
-// Q counter: global Q index start per round (coming-soon has 0 questions)
-// Active rounds: 0,1,3,4  → Q1-10, Q11-15, [skip], Q16-20, Q21-25
-const Q_START  = [0, 10, -1, 15, 20]; // -1 = no questions
-const TOTAL_Q  = 25;
-const MAX_PTS  = 20;
+// Q counter: global Q index start per round
+// R1:0-9  R2:10-14  R3:15-19  R4:20-29  R5:30-34
+const Q_START  = [0, 10, 15, 20, 30];
+const TOTAL_Q  = 35;
+const MAX_PTS  = 25;
 
 const LESSON_MAP = { B1:[1,5], B2:[6,10], B3:[11,15], B4:[16,20], B5:[21,25] };
 
@@ -48,7 +48,8 @@ const S = {
   answers: new Array(TOTAL_Q).fill(null),
   scores:  [0, 0, 0, 0, 0],
   timerSec: 0, _tid: null, totalTime: 0,
-  fillState: null,     // runtime state for fill-blank round
+  fillState:  null,    // runtime state for fill-blank round
+  buildState: null,    // runtime state for sentence-build round
   speechRate: 1.0,     // listening speed (0.5 – 1.5)
 };
 
@@ -90,7 +91,8 @@ async function fetchSheet(sheet) {
 // ═══════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════
-const meaning = v => v.meaning?.[S.lang] || '';
+const meaning     = v => v.meaning?.[S.lang] || '';
+const sentMeaning = s => s[S.lang === 'fr' ? 'french_tr' : 'english_tr'] || '';
 
 function mc4(correct, pool, getFn) {
   const distractors = sample(pool.filter(v => getFn(v) && getFn(v) !== correct), 3).map(getFn);
@@ -220,23 +222,84 @@ function genR2(vocab, sents) {
   }];
 }
 
-// Round 3 = coming-soon, no questions generated
+function genR3(sents) {
+  // Filter sentences that have segment data (split by '/')
+  const pool = sents.filter(s => s.segments_tr && s.segments_tr.includes('/'));
 
-function genR4(vocab) {
+  let selected = [];
+  if (pool.length > 0) {
+    if (S.lesson === 'all') {
+      // One sentence per grammar point, then fill up to 5
+      const byGram = groupBy(pool, s => s.gram_no || s.phrase_id || s.set_id);
+      for (const group of shuffle(Object.values(byGram))) {
+        if (selected.length >= 5) break;
+        selected.push(sample(group, 1)[0]);
+      }
+      const usedSet = new Set(selected);
+      const rest = shuffle(pool.filter(s => !usedSet.has(s)));
+      while (selected.length < 5 && rest.length) selected.push(rest.shift());
+    } else {
+      selected = sample(pool, Math.min(5, pool.length));
+    }
+  }
+
+  return selected.map(s => {
+    const segHanzi  = s.segments_tr.split('/').map(h => h.trim()).filter(Boolean);
+    const segPinyin = (s.segments_pinyin_tw || '').split('/').map(p => p.trim());
+    return {
+      type:     'sentence-build',
+      pts:      1,
+      sentence: s,
+      segments: segHanzi.map((hanzi, i) => ({ hanzi, pinyin: segPinyin[i] || '' })),
+    };
+  });
+}
+
+function genR4(vocab, sents) {
+  // ── Part 1: 5 vocab listening (1 pt each) ────────────────────────────────
   const usedInR1 = new Set((S.rounds[0] || []).map(q => q.item?.hanzi));
-  const pool = vocab.filter(v => !usedInR1.has(v.hanzi));
-  const items = sample(pool.length >= 5 ? pool : vocab, Math.min(5, vocab.length));
-  return items.map(item => ({
-    type: 'listening',
+  const vocabPool = vocab.filter(v => !usedInR1.has(v.hanzi));
+  const vocabItems = sample(vocabPool.length >= 5 ? vocabPool : vocab, Math.min(5, vocab.length));
+  const vocabQs = vocabItems.map(item => ({
+    type: 'listening-vocab',
+    pts:  0.5,
     item,
     answer:  meaning(item),
     choices: mc4(meaning(item), vocab.filter(v => v !== item), meaning),
   }));
+
+  // ── Part 2: 5 sentence listening (0.5 pt each) ───────────────────────────
+  const sentPool = sents.filter(s => sentMeaning(s));
+
+  // One sentence per grammar point (gram_no), then fill up to 5
+  let selectedSents = [];
+  if (sentPool.length > 0) {
+    const byGram = groupBy(sentPool, s => s.gram_no || s.phrase_id || s.set_id);
+    for (const group of shuffle(Object.values(byGram))) {
+      if (selectedSents.length >= 5) break;
+      selectedSents.push(sample(group, 1)[0]);
+    }
+    // Fill remaining slots if fewer than 5 grammar points
+    const usedSet = new Set(selectedSents);
+    const rest = shuffle(sentPool.filter(s => !usedSet.has(s)));
+    while (selectedSents.length < 5 && rest.length) selectedSents.push(rest.shift());
+  }
+
+  const sentQs = selectedSents.map(s => ({
+    type:     'listening-sent',
+    pts:      0.5,
+    sentence: s,
+    answer:   sentMeaning(s),
+    choices:  mc4(sentMeaning(s), sentPool.filter(x => x !== s), sentMeaning),
+  }));
+
+  return [...vocabQs, ...sentQs];
 }
 
 function genR5(vocab) {
   const usedR1 = new Set((S.rounds[0] || []).map(q => q.item?.hanzi));
-  const usedR4 = new Set((S.rounds[3] || []).map(q => q.item?.hanzi));
+  // R4 now has mixed types; only vocab questions have .item
+  const usedR4 = new Set((S.rounds[3] || []).filter(q => q.item).map(q => q.item.hanzi));
   const pool = vocab.filter(v => v.pinyin && !usedR1.has(v.hanzi) && !usedR4.has(v.hanzi));
   const items = sample(pool.length >= 5 ? pool : vocab.filter(v => v.pinyin), Math.min(5, vocab.length));
   return items.map(item => ({
@@ -317,8 +380,8 @@ function startQuiz() {
   S.rounds    = new Array(5).fill(null);
   S.rounds[0] = genR1(S.vocab);
   S.rounds[1] = genR2(S.vocab, S.sents);
-  S.rounds[2] = [];                         // coming-soon
-  S.rounds[3] = genR4(S.vocab);
+  S.rounds[2] = genR3(S.sents);
+  S.rounds[3] = genR4(S.vocab, S.sents);
   S.rounds[4] = genR5(S.vocab);
 
   showRoundIntro(0);
@@ -381,10 +444,12 @@ function renderQuestion() {
   $('question-area').innerHTML = '';
 
   switch (q.type) {
-    case 'vocab-match': renderMC(q); break;
-    case 'fill-blank':  renderFillBlank(q); break;
-    case 'listening':   renderListening(q); break;
-    case 'pinyin':      renderPinyin(q); break;
+    case 'vocab-match':    renderMC(q); break;
+    case 'fill-blank':     renderFillBlank(q); break;
+    case 'sentence-build': renderSentenceBuild(q); break;
+    case 'listening-vocab':
+    case 'listening-sent': renderListening(q); break;
+    case 'pinyin':         renderPinyin(q); break;
   }
 }
 
@@ -407,16 +472,27 @@ function renderMC(q) {
 // ── Listening ─────────────────────────────────────────────────────────────────
 function renderListening(q) {
   const area = $('question-area');
+  const isSent = q.type === 'listening-sent';
+  const textToSpeak = isSent ? q.sentence.chinese_tr : q.item.hanzi;
+  const fr = S.lang === 'fr';
 
   const wrap = el('div', 'listen-wrap');
+
+  // Sentence: show pinyin above the play button as context
+  if (isSent) {
+    const badge = el('div', 'listen-badge',
+      fr ? 'Écoutez la phrase' : 'Listen to the sentence');
+    wrap.appendChild(badge);
+  }
+
   const btn  = el('button', 'listen-btn', '🔊');
-  const hint = el('div', 'listen-hint', S.lang === 'fr' ? 'Appuyez pour écouter' : 'Tap to listen');
-  btn.addEventListener('click', () => speak(q.item.hanzi));
+  const hint = el('div', 'listen-hint', fr ? 'Appuyez pour écouter' : 'Tap to listen');
+  btn.addEventListener('click', () => speak(textToSpeak));
 
   // Speed control
-  const speedWrap  = el('div', 'speed-wrap');
-  const speedLbl   = el('span', 'speed-label', S.lang === 'fr' ? 'Vitesse :' : 'Speed:');
-  const slider     = document.createElement('input');
+  const speedWrap = el('div', 'speed-wrap');
+  const speedLbl  = el('span', 'speed-label', fr ? 'Vitesse :' : 'Speed:');
+  const slider    = document.createElement('input');
   slider.type = 'range'; slider.min = '0.5'; slider.max = '1.5';
   slider.step = '0.25'; slider.value = String(S.speechRate);
   slider.className = 'speed-slider';
@@ -431,7 +507,7 @@ function renderListening(q) {
   area.appendChild(wrap);
 
   // Auto-play on load
-  setTimeout(() => speak(q.item.hanzi), 400);
+  setTimeout(() => speak(textToSpeak), 400);
 
   area.appendChild(buildChoices(q));
 }
@@ -449,6 +525,152 @@ function renderPinyin(q) {
   const grid = buildChoices(q);
   grid.classList.add('choices--pinyin');
   area.appendChild(grid);
+}
+
+// ── Sentence Building ─────────────────────────────────────────────────────────
+function renderSentenceBuild(q) {
+  const langKey = S.lang === 'fr' ? 'french_tr' : 'english_tr';
+  S.buildState = {
+    q,
+    arranged: [],
+    pool:     shuffle(q.segments.map((_, i) => i)),
+    graded:   false,
+  };
+
+  const area = $('question-area');
+
+  // Translation prompt
+  const prompt = el('div', 'build-prompt', q.sentence[langKey] || '');
+  area.appendChild(prompt);
+
+  // Answer area
+  const ansArea = el('div', 'build-answer-area');
+  ansArea.id = 'build-answer-area';
+  ansArea.addEventListener('dragover', e => {
+    e.preventDefault(); ansArea.classList.add('drag-over');
+  });
+  ansArea.addEventListener('dragleave', () => ansArea.classList.remove('drag-over'));
+  ansArea.addEventListener('drop', e => {
+    e.preventDefault(); ansArea.classList.remove('drag-over');
+    if (S.buildState.graded) return;
+    const srcIdx  = parseInt(e.dataTransfer.getData('text/plain'), 10);
+    const srcArea = e.dataTransfer.getData('src-area');
+    if (!isNaN(srcIdx) && srcArea === 'pool') moveSegToAnswer(srcIdx);
+  });
+  area.appendChild(ansArea);
+
+  // Pool area
+  const poolEl = el('div', 'build-pool');
+  poolEl.id = 'build-pool';
+  poolEl.addEventListener('dragover', e => e.preventDefault());
+  poolEl.addEventListener('drop', e => {
+    e.preventDefault();
+    if (S.buildState.graded) return;
+    const srcIdx  = parseInt(e.dataTransfer.getData('text/plain'), 10);
+    const srcArea = e.dataTransfer.getData('src-area');
+    if (!isNaN(srcIdx) && srcArea === 'answer') {
+      const pos = S.buildState.arranged.indexOf(srcIdx);
+      if (pos !== -1) removeSegFromAnswer(pos);
+    }
+  });
+  area.appendChild(poolEl);
+
+  renderBuildState();
+}
+
+function makeBuildBlock(segIdx, srcArea) {
+  const seg   = S.buildState.q.segments[segIdx];
+  const block = el('div', 'build-block');
+  block.dataset.segIdx = segIdx;
+  block.dataset.area   = srcArea;
+  block.append(el('span', 'block-hanzi', seg.hanzi), el('span', 'block-pinyin', seg.pinyin));
+
+  block.addEventListener('click', () => {
+    if (S.buildState.graded) { speak(seg.hanzi); return; }
+    speak(seg.hanzi);
+    if (srcArea === 'pool') {
+      moveSegToAnswer(segIdx);
+    } else {
+      const pos = S.buildState.arranged.indexOf(segIdx);
+      if (pos !== -1) removeSegFromAnswer(pos);
+    }
+  });
+
+  block.draggable = true;
+  block.addEventListener('dragstart', e => {
+    if (S.buildState.graded) { e.preventDefault(); return; }
+    e.dataTransfer.setData('text/plain', String(segIdx));
+    e.dataTransfer.setData('src-area', srcArea);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  return block;
+}
+
+function renderBuildState() {
+  const { q, arranged, pool } = S.buildState;
+  const ansArea = document.getElementById('build-answer-area');
+  const poolEl  = document.getElementById('build-pool');
+  if (!ansArea || !poolEl) return;
+
+  ansArea.innerHTML = '';
+  poolEl.innerHTML  = '';
+
+  if (arranged.length === 0) {
+    const hint = el('div', 'build-hint',
+      S.lang === 'fr' ? 'Placez les blocs ici →' : 'Place blocks here →');
+    ansArea.appendChild(hint);
+  } else {
+    arranged.forEach(segIdx => ansArea.appendChild(makeBuildBlock(segIdx, 'answer')));
+  }
+
+  pool.forEach(segIdx => poolEl.appendChild(makeBuildBlock(segIdx, 'pool')));
+
+  // Show submit only when all segments placed
+  if (arranged.length === q.segments.length) sh('submitBtn');
+  else hd('submitBtn');
+}
+
+function moveSegToAnswer(segIdx) {
+  const { arranged, pool } = S.buildState;
+  const i = pool.indexOf(segIdx);
+  if (i === -1) return;
+  pool.splice(i, 1);
+  arranged.push(segIdx);
+  renderBuildState();
+}
+
+function removeSegFromAnswer(pos) {
+  const { arranged, pool } = S.buildState;
+  const [segIdx] = arranged.splice(pos, 1);
+  pool.push(segIdx);
+  renderBuildState();
+}
+
+function gradeSentenceBuild() {
+  const { q, arranged } = S.buildState;
+  S.buildState.graded = true;
+  const gIdx = globalQ(S.ri, S.qi);
+
+  const studentText = arranged.map(i => q.segments[i].hanzi).join('');
+  const correctText = q.segments.map(s => s.hanzi).join('');
+  const correct     = studentText === correctText;
+
+  if (correct) S.scores[S.ri] += 1;
+  S.answers[gIdx] = {
+    correct,
+    given:    studentText,
+    expected: correctText,
+    item:     { hanzi: q.sentence.chinese_tr, pinyin: '' },
+  };
+
+  // Per-block colour feedback
+  const ansArea = document.getElementById('build-answer-area');
+  ansArea?.querySelectorAll('.build-block').forEach((block, pos) => {
+    block.classList.add(arranged[pos] === pos ? 'correct' : 'wrong');
+  });
+
+  hd('submitBtn');
 }
 
 // ── Shared choice builder ─────────────────────────────────────────────────────
@@ -472,7 +694,7 @@ function buildChoices(q) {
       // Record
       const gIdx = globalQ(S.ri, S.qi);
       S.answers[gIdx] = { correct, given: choice, expected: q.answer, item: q.item };
-      if (correct) S.scores[S.ri] += ROUND_DEF[S.ri].pts;
+      if (correct) S.scores[S.ri] += q.pts ?? ROUND_DEF[S.ri].pts;
 
       if (isLast) sh('submitBtn');
       else        sh('nextBtn');
@@ -677,6 +899,16 @@ function onSubmit() {
     return;
   }
 
+  if (q.type === 'sentence-build') {
+    gradeSentenceBuild();
+    const isLastQ = S.qi === ROUND_DEF[S.ri].qCount - 1;
+    setTimeout(() => {
+      if (isLastQ) advanceRound();
+      else { S.qi++; hd('submitBtn'); renderQuestion(); }
+    }, 1500);
+    return;
+  }
+
   // MC types: answer already recorded, just advance round
   advanceRound();
 }
@@ -699,9 +931,9 @@ function endQuiz() {
   const total = S.scores.reduce((a, b) => a + b, 0);
 
   let title = '💪 Keep going!';
-  if (total >= 18) title = '🏆 Excellent!';
-  else if (total >= 14) title = '👍 Good job!';
-  else if (total >= 10) title = '📚 Not bad!';
+  if (total >= 22) title = '🏆 Excellent!';
+  else if (total >= 17) title = '👍 Good job!';
+  else if (total >= 12) title = '📚 Not bad!';
 
   $('resultsTitle').textContent = title;
   $('scoreDisplay').textContent = `${total.toFixed(1)} / ${MAX_PTS}`;
@@ -712,9 +944,16 @@ function endQuiz() {
 }
 
 function drawRadar() {
-  const maxPts = ROUND_DEF.map(d => d.qCount * d.pts); // [5,5,0,5,5]
-  const pcts   = S.scores.map((s, i) => maxPts[i] > 0 ? Math.round((s / maxPts[i]) * 100) : 0);
-  const labels = ROUND_DEF.map(d => d[S.lang]?.name || d.en.name);
+  // Compute actual max per round; exclude Coming Soon (maxPts = 0)
+  const maxPts = S.rounds.map((qs, ri) => {
+    if (!qs || !qs.length) return 0;
+    return qs.reduce((sum, q) => sum + (q.pts ?? ROUND_DEF[ri].pts), 0);
+  });
+
+  // Only include rounds that have questions (exclude Coming Soon)
+  const activeIdx = ROUND_DEF.map((_d, i) => i).filter(i => maxPts[i] > 0);
+  const labels = activeIdx.map(i => ROUND_DEF[i][S.lang]?.name || ROUND_DEF[i].en.name);
+  const pcts   = activeIdx.map(i => Math.round((S.scores[i] / maxPts[i]) * 100));
 
   new Chart($('radarChart'), {
     type: 'radar',
@@ -772,6 +1011,26 @@ function buildReview() {
       return;
     }
 
+    if (def.type === 'sentence-build') {
+      questions.forEach((q, qi) => {
+        const gIdx = globalQ(ri, qi);
+        const ans  = S.answers[gIdx];
+        const item = el('div', `review-item ${ans?.correct ? 'correct' : 'wrong'}`);
+        item.innerHTML = `
+          <span class="review-icon">${ans?.correct ? '✅' : '❌'}</span>
+          <div class="review-text">
+            <div>${q.sentence?.chinese_tr || ''}</div>
+            <div class="sub">${ans?.correct
+              ? 'Correct!'
+              : `Expected: ${ans?.expected || '—'} | Your answer: ${ans?.given || '—'}`
+            }</div>
+          </div>`;
+        section.appendChild(item);
+      });
+      panel.appendChild(section);
+      return;
+    }
+
     if (def.type === 'fill-blank') {
       const q = questions[0];
       if (!q) { panel.appendChild(section); return; }
@@ -792,10 +1051,16 @@ function buildReview() {
         const gIdx = globalQ(ri, qi);
         const ans  = S.answers[gIdx];
         const item = el('div', `review-item ${ans?.correct ? 'correct' : 'wrong'}`);
+
+        // Vocab / pinyin questions have .item; sentence listening has .sentence
+        const mainText = q.type === 'listening-sent'
+          ? q.sentence?.chinese_tr || ''
+          : `${q.item?.hanzi || ''} ${q.item?.pinyin ? `<span style="opacity:.6">(${q.item.pinyin})</span>` : ''}`;
+
         item.innerHTML = `
           <span class="review-icon">${ans?.correct ? '✅' : '❌'}</span>
           <div class="review-text">
-            <div>${q.item?.hanzi || ''} ${q.item?.pinyin ? `<span style="opacity:.6">(${q.item.pinyin})</span>` : ''}</div>
+            <div>${mainText}</div>
             <div class="sub">
               ${ans?.correct ? 'Correct!' : `Expected: ${ans?.expected || '—'} | Your answer: ${ans?.given || '—'}`}
             </div>
