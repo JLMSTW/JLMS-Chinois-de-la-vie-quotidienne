@@ -211,6 +211,7 @@ function genR2(vocab, sents) {
 
   return [{
     type: 'fill-blank',
+    pts: selected.length,   // each slot is worth 1pt; maxPts = total slots
     slots: selected.map(p => ({
       text:        p.s.chinese_tr,
       pinyin:      p.s.pinyin_tw || '',
