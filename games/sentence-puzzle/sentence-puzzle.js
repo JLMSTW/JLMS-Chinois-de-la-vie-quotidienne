@@ -353,7 +353,14 @@ function gradeAndShowResult() {
     // Correct answer (if wrong)
     const correctEl = $('resultCorrect');
     if (!allCorrect) {
-      correctEl.textContent = `✓ ${segments.map(s => s.hanzi).join('')}`;
+      const pinyinLine  = segments.map(sg => sg.pinyin).filter(Boolean).join('  ');
+      const hanziLine   = segments.map(sg => sg.hanzi).join('');
+      const langKey     = fr ? 'french_tr' : 'english_tr';
+      const translation = s[langKey] || s.chinese_tr || '';
+      correctEl.innerHTML =
+        (pinyinLine ? `<div class="rc-pinyin-line">${pinyinLine}</div>` : '') +
+        `<div class="rc-hanzi-line">✓ ${hanziLine}</div>` +
+        (translation ? `<div class="rc-trans-line">${translation}</div>` : '');
       sh('resultCorrect');
     } else {
       hd('resultCorrect');

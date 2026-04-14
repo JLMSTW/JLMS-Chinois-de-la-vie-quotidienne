@@ -210,19 +210,24 @@ body {
 .result-sentence { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .result-block {
   display: inline-flex; flex-direction: column; align-items: center;
-  padding: 6px 14px 5px; border-radius: var(--r-pill);
+  padding: 8px 16px 7px; border-radius: var(--r-pill);
   border: 1.5px solid rgba(255,255,255,.25);
   background: rgba(255,255,255,.12); cursor: pointer;
 }
+.result-block .block-hanzi  { font-size: 20px; }
+.result-block .block-pinyin { font-size: 13px; }
 .result-block.correct { background: rgba(76,175,132,.9); border-color: var(--correct); }
 .result-block.wrong   { background: rgba(198,64,73,.9);  border-color: var(--wrong); }
 .result-block .block-pinyin { color: rgba(255,255,255,.8); }
 
 .result-correct {
   text-align: center; background: rgba(76,175,132,.15); border: 1px solid var(--correct);
-  border-radius: 10px; padding: 10px 16px; font-size: .95rem;
-  color: #fff; font-family: "Noto Sans TC","PingFang TC",serif;
+  border-radius: 10px; padding: 12px 16px;
+  color: #fff; display: flex; flex-direction: column; gap: 4px;
 }
+.rc-pinyin-line { font-size: .85rem; color: rgba(255,255,255,.65); font-family: var(--font); letter-spacing: .02em; }
+.rc-hanzi-line  { font-size: 1.1rem; font-weight: 700; font-family: "Noto Sans TC","PingFang TC",serif; }
+.rc-trans-line  { font-size: .9rem; color: rgba(255,255,255,.7); font-style: italic; font-family: var(--font); }
 
 /* ── Summary screen ── */
 .summary-header { text-align: center; padding: 24px 0 8px; }
