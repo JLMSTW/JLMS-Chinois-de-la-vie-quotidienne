@@ -167,12 +167,28 @@ function maskPinyin(sentPinyin, answerPinyin) {
 // ═══════════════════════════════════════════════
 function genR1(vocab) {
   const items = sample(vocab, Math.min(10, vocab.length));
-  return items.map(item => ({
-    type: 'vocab-match',
-    item,
-    answer:  meaning(item),
-    choices: mc4(meaning(item), vocab.filter(v => v !== item), meaning),
-  }));
+  return items.map((item, idx) => {
+    if (idx < 5) {
+      // Forward: show Chinese → choose meaning
+      return {
+        type: 'vocab-match',
+        item,
+        answer:  meaning(item),
+        choices: mc4(meaning(item), vocab.filter(v => v !== item), meaning),
+      };
+    } else {
+      // Reverse: show meaning → choose Chinese
+      const distractors = sample(vocab.filter(v => v !== item), 3);
+      const choiceItems = shuffle([item, ...distractors]);
+      return {
+        type:        'vocab-match-reverse',
+        item,
+        answer:      item.hanzi,
+        choiceItems,
+        choices:     choiceItems.map(v => v.hanzi), // kept for review/grading compat
+      };
+    }
+  });
 }
 
 function genR2(vocab, sents) {
@@ -445,7 +461,8 @@ function renderQuestion() {
   $('question-area').innerHTML = '';
 
   switch (q.type) {
-    case 'vocab-match':    renderMC(q); break;
+    case 'vocab-match':
+    case 'vocab-match-reverse': renderMC(q); break;
     case 'fill-blank':     renderFillBlank(q); break;
     case 'sentence-build': renderSentenceBuild(q); break;
     case 'listening-vocab':
@@ -458,16 +475,59 @@ function renderQuestion() {
 function renderMC(q) {
   const area = $('question-area');
 
-  // Stem: hanzi button + pinyin
-  const stem = el('div', 'mc-stem');
-  const hBtn = el('button', 'hanzi-btn', q.item.hanzi);
-  hBtn.addEventListener('click', () => speak(q.item.hanzi));
-  const pSub = el('div', 'pinyin-sub', q.item.pinyin);
-  stem.append(hBtn, pSub);
-  area.appendChild(stem);
+  if (q.type === 'vocab-match-reverse') {
+    // Reverse: stem = meaning, choices = Chinese hanzi+pinyin
+    const stem = el('div', 'mc-stem');
+    const mText = el('div', 'meaning-display', meaning(q.item));
+    stem.appendChild(mText);
+    area.appendChild(stem);
+    area.appendChild(buildChoicesReverse(q));
+  } else {
+    // Forward: stem = hanzi button + pinyin, choices = meaning text
+    const stem = el('div', 'mc-stem');
+    const hBtn = el('button', 'hanzi-btn', q.item.hanzi);
+    hBtn.addEventListener('click', () => speak(q.item.hanzi));
+    const pSub = el('div', 'pinyin-sub', q.item.pinyin);
+    stem.append(hBtn, pSub);
+    area.appendChild(stem);
+    area.appendChild(buildChoices(q));
+  }
+}
 
-  // Choices
-  area.appendChild(buildChoices(q));
+function buildChoicesReverse(q) {
+  const isLast = S.qi === ROUND_DEF[S.ri].qCount - 1;
+  const grid   = el('div', 'choices choices--reverse');
+
+  for (const item of q.choiceItems) {
+    const btn = el('button', 'choice-btn choice-btn--reverse');
+    btn.dataset.hanzi = item.hanzi;
+
+    const pinyinSpan = el('span', 'rc-pinyin', item.pinyin);
+    const hanziSpan  = el('span', 'rc-hanzi',  item.hanzi);
+    btn.append(pinyinSpan, hanziSpan);
+
+    btn.addEventListener('click', () => {
+      speak(item.hanzi);
+      if (btn.disabled) return;
+      const correct = item.hanzi === q.answer;
+
+      grid.querySelectorAll('.choice-btn--reverse').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.hanzi === q.answer) b.classList.add('correct');
+      });
+      if (!correct) btn.classList.add('wrong');
+
+      const gIdx = globalQ(S.ri, S.qi);
+      S.answers[gIdx] = { correct, given: item.hanzi, expected: q.answer, item: q.item };
+      if (correct) S.scores[S.ri] += q.pts ?? ROUND_DEF[S.ri].pts;
+
+      if (isLast) sh('submitBtn');
+      else        sh('nextBtn');
+    });
+
+    grid.appendChild(btn);
+  }
+  return grid;
 }
 
 // ── Listening ─────────────────────────────────────────────────────────────────

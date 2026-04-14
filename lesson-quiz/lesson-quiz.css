@@ -439,6 +439,40 @@ body {
   padding: 18px 12px; line-height: 1.3;
 }
 
+/* ── Round 1 reverse — meaning stem ── */
+.meaning-display {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  padding: 18px 12px;
+  background: var(--card);
+  border-radius: 14px;
+  line-height: 1.4;
+}
+
+/* ── Round 1 reverse — hanzi+pinyin choice buttons ── */
+.choices--reverse { grid-template-columns: 1fr 1fr; }
+.choice-btn--reverse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 10px;
+  line-height: 1.3;
+}
+.rc-pinyin {
+  font-size: 1.3rem;
+  letter-spacing: .04em;
+  color: rgba(255,255,255,.85);
+}
+.rc-hanzi {
+  font-size: 1.05rem;
+  font-family: "Noto Sans TC", "PingFang TC", serif;
+  font-weight: 700;
+  color: #fff;
+}
+
 /* ── Mobile ── */
 @media (max-width: 480px) {
   .choices { grid-template-columns: 1fr; }
