@@ -2,8 +2,8 @@
 
 ## 專案規格書 Project Specification
 
-> **版本**：v1.2
-> **日期**：2026-04-13
+> **版本**：v1.3
+> **日期**：2026-04-14
 > **狀態**：已上線，持續開發中
 
 ---
@@ -236,13 +236,14 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | pinyin_cn | 中國拼音 | ✅ |
 | segments_sp | 簡體斷句 | 🔧 填寫中 |
 | segments_pinyin_cn | 簡體斷句拼音 | 🔧 填寫中 |
-| **french_tr** | **法語例句翻譯** | ⏳ 待新增 |
-| **english_tr** | **英語例句翻譯** | ⏳ 待新增 |
+| french_tr | 法語例句翻譯 | ✅ |
+| english_tr | 英語例句翻譯 | ✅ |
+| **segments_alt_tr** | **重組題備選正確答案**（以 `/` 分隔，供詞序可互換的句子使用） | ⏳ 待新增 |
 | tocfl_level | TOCFL 等級 | ✅ |
 | active | 是否啟用 | ✅ |
 | review_status | 審核狀態 | ✅ |
 
-> **注意**：`french_tr` 和 `english_tr` 為計畫新增欄位，新增後可啟用單課測驗 Round 4 的**句子聽力理解題**功能。
+> **注意**：`segments_alt_tr` 為計畫新增欄位，供詞序可自由互換的句子（如「我/昨天」與「昨天/我」）提供第二組正確答案，程式將同時接受兩種排列。
 
 ### 4.4 JLMS_ChatbotPrompt設定 分頁
 
@@ -340,73 +341,66 @@ JLMS-Chinois-de-la-vie-quotidienne/
 - 題數顯示：`Q1/25`（選擇題）/ `Q11–15/25`（填空整關）
 - 題目每次隨機抽取，可無限重玩
 
-**測驗結構（目前）**：5 關，共 25 題，滿分 20 分
+**測驗結構**：5 關，共 35 題，滿分 25 分
 
 | 關卡 | 類型 | 題數 | 分數 | 狀態 |
 |------|------|------|------|------|
-| 1 🔤 Vocabulary Match | 看漢字+拼音，點發音，四選一外文意思 | 10 | 0.5×10 = 5 | ✅ |
+| 1 🔤 Vocabulary Match | 前5題：看漢字選外文 / 後5題：看外文選漢字（大拼音選項，可發音） | 10 | 0.5×10 = 5 | ✅ |
 | 2 ✏️ Fill in the Blank | 8 生字（5+3干擾）填入 5 個句子 | 5 | 1×5 = 5 | ✅ |
-| 3 🧩 Sentence Building | 詞組拖曳重組 | — | 0 | ⏳ Coming Soon |
-| 4 🔊 Listening | 聽生詞發音，四選一外文意思 | 5 | 1×5 = 5 | ✅ |
+| 3 🧩 Sentence Building | 詞組拖曳／點選重組，顯示翻譯提示，全對才得分 | 5 | 1×5 = 5 | ✅ |
+| 4 🔊 Listening | 前5題：聽生詞選外文意思 / 後5題：聽例句選正確翻譯 | 10 | 0.5×10 = 5 | ✅ |
 | 5 🎵 Pinyin Quiz | 看漢字+意思，四選一聲調（同字四聲） | 5 | 1×5 = 5 | ✅ |
+
+**Round 1 Vocabulary Match 細節**：
+- 前 5 題：顯示漢字（可點發音），四選一外文意思
+- 後 5 題：顯示外文意思（大字），四選一漢字；選項顯示大拼音 + 漢字，點選立即發音
 
 **Round 2 Fill in the Blank 細節**：
 - 生字卡片顯示漢字 + 拼音
 - 句子框內漢字下方顯示拼音，答案位置用 `___` 遮蔽
 - 空格為半透明圓角色塊，整塊可點選
-- 互動：點擊選字+點空格（手機）/ HTML5 drag-and-drop（電腦）
+- 互動：點擊選字 + 點空格（手機）/ HTML5 drag-and-drop（電腦）
+
+**Round 3 Sentence Building 細節**：
+- 題幹顯示 FR/EN 翻譯，學生重組漢字詞組
+- 互動：點選（依序跳入作答欄）/ 拖曳（含作答欄內拖曳排序）
+- 點選詞組即發音
+- 每題獨立送出按鈕（FR：Soumettre ✓ / EN：Submit ✓）
+- 全部詞組順序正確才得 1 分（相同漢字的詞組不拘順序）
+- 待新增：`segments_alt_tr` 支援多組正確答案
 
 **Round 4 Listening 細節**：
+- 前 5 題：聽生詞發音，四選一外文意思
+- 後 5 題：聽完整例句，四選一 FR/EN 翻譯
 - 進題自動播放，可重播
 - 速度滑桿（0.5x – 1.5x），設定跨題保留
 
 **Round 5 Pinyin Quiz 細節**：
 - `toneVariants()` 自動產生同字四個聲調選項（如 `mǎi → māi / mái / mǎi / mài`）
 - 無聲調符號時 fallback 至隨機四選一
+- 選項字體放大（1.35rem）
 
 **結算畫面**：
-- 雷達圖（Chart.js，五個維度）
+- 雷達圖（Chart.js，僅顯示有題目的關卡）
 - 總分 + 用時
-- 「Review Answers」展開各題對錯詳情（預設隱藏）
+- 「Review Answers」展開各題對錯詳情（含漢字 + 拼音，預設隱藏）
+- 🖨️ Print / PDF 按鈕：列印成績單（學生姓名、日期、雷達圖、完整詳解）
+- iOS 列印說明提示（分享 → 儲存至檔案）
 
 ---
 
 ## 6. 開發中功能 In Development
 
-### 6.1 Round 3 Sentence Building（單課測驗內）
+### 6.1 segments_alt_tr 重組題雙重正確答案
 
-**狀態**：UI 框架已完成，顯示「Coming Soon」  
-**待完成**：Google Sheet Sentence Builder 分頁的 `segments_tr` 欄位填寫完畢後即可實作
+**狀態**：程式架構已預留，待 Google Sheet 新增欄位  
+**說明**：部分句子詞序可自由互換（如「我/昨天」與「昨天/我」），兩種排列皆應視為正確  
+**待完成**：Sentence Builder 分頁新增 `segments_alt_tr` 欄位後，程式同時比對主答案與備選答案
 
-### 6.2 Round 4 句子聽力理解（單課測驗內）
-
-**目標**：在現有 5 題生詞聽力之外，新增 5 題句子聽力理解
-
-**設計**：
-- 播放句子音頻 → 四選一選出正確外文意思
-- 每題 0.5 分（5 題 = 2.5 分）
-- 按語法點選句：每個 `gram_no` 至少選出一句
-
-**前置條件**：Sentence Builder 分頁需新增 `french_tr` 和 `english_tr` 欄位
-
-**新增後分數結構**：
-
-| 關卡 | 題數 | 分數 |
-|------|------|------|
-| 1 Vocabulary Match | 10 | 5 |
-| 2 Fill in the Blank | 5 | 5 |
-| 3 Sentence Building | 5 | 5 |
-| 4 Listening — 生詞 | 5 | 5 |
-| 4 Listening — 句子 | 5 | 2.5 |
-| 5 Pinyin Quiz | 5 | 5 |
-| **合計** | **35** | **27.5** |
-
-> 待 Round 3 與 Round 4 句子題完成後，分數結構需重新確認。
-
-### 6.3 Sentence Builder 造句遊戲（games/sentence-builder/）
+### 6.2 Sentence Builder 造句遊戲（games/sentence-builder/）
 
 **狀態**：資料庫已建立，遊戲邏輯待開發  
-**待完成**：`segments_tr` 欄位填好後實作拖曳重組
+**待完成**：`segments_tr` 欄位填寫完畢後實作拖曳重組
 
 ---
 
@@ -485,12 +479,12 @@ JLMS-Chinois-de-la-vie-quotidienne/
     │
     ├── 3. 單課測驗 Lesson Quiz（lesson-quiz/）        ← 學完了？來測試
     │   └── 選 Book + Lesson + 語言
-    │       → Round 1 生詞配對（10 題）
+    │       → Round 1 生詞配對（10 題：前5看漢字選外文 / 後5看外文選漢字）
     │       → Round 2 句子填空（5 題）
-    │       → Round 3 Sentence Building（Coming Soon）
-    │       → Round 4 聽力（5 題，句子題待翻譯欄位）
+    │       → Round 3 句子重組（5 題）
+    │       → Round 4 聽力（10 題：前5生詞 / 後5例句）
     │       → Round 5 拼音聲調（5 題）
-    │       → 雷達圖結算 + 答題檢討
+    │       → 雷達圖結算 + 答題檢討 + 列印成績單
     │
     └── 4. 口說練習 Speaking（speaking.html）         ← 實戰對話（開發中）
         ├── Speaking Practice
@@ -529,3 +523,4 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | v1.0 | 2026-03-20 | 初版規格書，記錄所有已上線與計畫中功能 |
 | v1.1 | 2026-04-01 | 新增 Dashboard；Shadowing 例句遷移至 Google Sheet；單課測驗 Round 5 確定四選一方案；更新導覽結構 |
 | v1.2 | 2026-04-13 | 單課測驗 Lesson Quiz 正式上線（Round 1、2、4、5 完成，Round 3 Coming Soon）；全站 UI 設計系統統一（#1f213b / #566fb8 / 藥丸按鈕）；新增 Sentence Builder 翻譯欄位規劃（french_tr / english_tr）；更新檔案結構、登入規則、資料庫欄位說明 |
+| v1.3 | 2026-04-14 | Round 3 Sentence Building 正式上線（拖曳＋點選重組、動畫、多語言送出按鈕）；Round 1 後5題改為看外文選漢字（大拼音選項，可發音）；Round 4 新增後5題例句聽力理解（french_tr / english_tr 已上線）；分數結構更新為 5 關 × 5 分 = 25 分；新增成績單列印功能（Print/PDF，含學生姓名、雷達圖、詳解）；Access API 新增回傳 name 欄位；規劃 segments_alt_tr 雙重正確答案欄位 |
