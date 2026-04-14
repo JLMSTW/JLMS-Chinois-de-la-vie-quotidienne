@@ -1,0 +1,132 @@
+/* ══════════════════════════════════════════
+   Sentence Puzzle — styles
+══════════════════════════════════════════ */
+
+:root {
+  --bg:      #1f213b;
+  --card:    #566fb8;
+  --card-dk: #3d5294;
+  --correct: #4caf84;
+  --wrong:   #c64049;
+  --r-pill:  999px;
+  --font:    ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ── Filter screen ── */
+.filter-card  { background: var(--card-dk); border-radius: 18px; padding: 28px 24px;
+                max-width: 480px; margin: 24px auto; display: flex; flex-direction: column; gap: 18px; }
+.filters      { display: flex; flex-direction: column; gap: 10px; }
+.filters select { background: var(--bg); color: #fff; border: 1.5px solid rgba(255,255,255,.2);
+                  border-radius: var(--r-pill); padding: 10px 16px; font-size: 1rem;
+                  font-family: var(--font); width: 100%; }
+.load-status  { color: rgba(255,255,255,.55); font-size: .9rem; text-align: center; margin: 0; }
+
+/* ── Header bar ── */
+.sb-header    { display: flex; justify-content: space-between; align-items: center;
+                padding: 12px 20px; max-width: 700px; margin: 0 auto; width: 100%; }
+.q-label      { font-weight: 700; font-size: 1rem; color: rgba(255,255,255,.7); }
+.btn-sm       { padding: 6px 16px; font-size: .85rem; }
+
+/* ── Question area ── */
+.question-area { max-width: 700px; margin: 0 auto; padding: 0 16px; width: 100%; }
+
+.build-prompt  { background: var(--card-dk); border-radius: 14px; padding: 16px 20px;
+                 font-size: 1.1rem; font-style: italic; color: rgba(255,255,255,.9);
+                 text-align: center; line-height: 1.5; margin-bottom: 16px; }
+
+.build-answer-area {
+  min-height: 64px;
+  border: 2px dashed rgba(255,255,255,.3);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  margin-bottom: 12px;
+  transition: border-color .15s, background .15s;
+}
+.build-answer-area.drag-over { border-color: var(--card); background: rgba(86,111,184,.15); }
+
+.build-pool    { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 4px; }
+
+.build-hint    { color: rgba(255,255,255,.35); font-size: .9rem; padding: 4px 8px; }
+
+/* ── Build blocks ── */
+.build-block {
+  display: inline-flex; flex-direction: column; align-items: center;
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  background: rgba(255,255,255,.15);
+  border: 1.5px solid rgba(255,255,255,.25);
+  cursor: pointer;
+  transition: border-color .1s, transform .1s, background .15s;
+  user-select: none;
+}
+.build-block:hover  { border-color: var(--card); transform: translateY(-2px); background: rgba(255,255,255,.25); }
+.build-block:active { transform: scale(.93); background: rgba(255,255,255,.4); border-color: #fff; }
+.build-block.correct { background: rgba(76,175,132,.9);  color: #fff; border-color: var(--correct); }
+.build-block.wrong   { background: rgba(198,64,73,.9);   color: #fff; border-color: var(--wrong); }
+.build-block.drop-before { border-left:  3px solid #fff; }
+.build-block.drop-after  { border-right: 3px solid #fff; }
+
+@keyframes blockPop {
+  0%   { transform: scale(.7);  opacity: 0; }
+  65%  { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+#build-answer-area .build-block { animation: blockPop .22s ease-out both; }
+
+.block-hanzi  { font-size: 16px; font-weight: 700; font-family: "Noto Sans TC","PingFang TC",serif; line-height: 1.3; }
+.block-pinyin { font-size: 12px; color: rgba(31,41,55,.6); font-family: var(--font); line-height: 1.2; }
+.build-block.correct .block-pinyin,
+.build-block.wrong   .block-pinyin { color: rgba(255,255,255,.75); }
+
+/* ── Nav ── */
+.quiz-nav { display: flex; justify-content: center; padding: 16px; }
+
+/* ── Result screen ── */
+.result-card   { max-width: 600px; margin: 20px auto; padding: 0 16px; display: flex;
+                 flex-direction: column; gap: 16px; }
+
+.result-pct    { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.pct-number    { font-size: 3rem; font-weight: 900; line-height: 1; }
+.pct-perfect   { color: var(--correct); }
+.pct-good      { color: #f5c542; }
+.pct-low       { color: var(--wrong); }
+.pct-sub       { font-size: .95rem; color: rgba(255,255,255,.65); }
+
+.result-source { text-align: center; background: var(--card-dk); border-radius: 10px;
+                 padding: 10px 16px; font-size: .9rem; color: rgba(255,255,255,.75); }
+
+.result-sentence { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.result-block    { display: inline-flex; flex-direction: column; align-items: center;
+                   padding: 8px 14px; border-radius: var(--r-pill);
+                   border: 1.5px solid rgba(255,255,255,.25);
+                   background: rgba(255,255,255,.12); cursor: pointer; }
+.result-block.correct { background: rgba(76,175,132,.9);  border-color: var(--correct); }
+.result-block.wrong   { background: rgba(198,64,73,.9);   border-color: var(--wrong); }
+.result-block .block-pinyin { color: rgba(255,255,255,.8); }
+
+.result-correct { text-align: center; background: rgba(76,175,132,.15); border: 1px solid var(--correct);
+                  border-radius: 10px; padding: 10px 16px; font-size: .95rem;
+                  color: #fff; font-family: "Noto Sans TC","PingFang TC",serif; }
+
+/* ── Summary screen ── */
+.summary-header { text-align: center; padding: 20px 0 8px; }
+.summary-header h2 { font-size: 1.8rem; font-weight: 900; }
+
+.summary-list  { max-width: 600px; margin: 0 auto; padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.summary-row   { display: flex; align-items: center; gap: 12px;
+                 background: var(--card-dk); border-radius: 12px; padding: 12px 16px; }
+.sum-num       { font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,.5); min-width: 20px; }
+.sum-info      { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.sum-sentence  { font-family: "Noto Sans TC","PingFang TC",serif; font-size: 1rem; font-weight: 700; }
+.sum-source    { font-size: .8rem; color: rgba(255,255,255,.5); }
+.sum-pct       { font-size: 1.2rem; font-weight: 900; min-width: 52px; text-align: right; }
+
+.summary-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+                   padding: 24px 16px; }
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .sb-header { padding: 10px 14px; }
+  .build-prompt { font-size: 1rem; padding: 12px 14px; }
+}

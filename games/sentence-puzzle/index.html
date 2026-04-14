@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JLMS | Sentence Puzzle</title>
+  <link rel="stylesheet" href="../../style/base.css" />
+  <link rel="stylesheet" href="./sentence-puzzle.css" />
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ SCREEN 1: FILTER ══ -->
+  <div id="screen-filter" class="screen">
+    <header class="page-header">
+      <h1>🧩 Sentence Puzzle</h1>
+    </header>
+    <div class="backbar">
+      <a href="../index.html" class="back-btn">← Back to Games</a>
+    </div>
+    <div class="filter-card">
+      <div class="filters">
+        <select id="filterBook">
+          <option value="B1">Book 1</option>
+          <option value="B2">Book 2</option>
+          <option value="B3">Book 3</option>
+          <option value="B4">Book 4</option>
+          <option value="B5">Book 5</option>
+        </select>
+        <select id="filterLesson"></select>
+        <select id="filterLang">
+          <option value="fr">Meaning: French</option>
+          <option value="en">Meaning: English</option>
+        </select>
+      </div>
+      <p id="loadStatus" class="load-status">Loading data…</p>
+      <button id="startBtn" class="btn-primary" disabled>Start →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: QUESTION ══ -->
+  <div id="screen-question" class="screen hidden">
+    <div class="sb-header">
+      <span class="q-label" id="qCounter">1 / 5</span>
+      <button id="skipBtn" class="btn-ghost btn-sm">Skip →</button>
+    </div>
+    <div id="question-area" class="question-area"></div>
+    <div class="quiz-nav">
+      <button id="submitBtn" class="btn-primary hidden">
+        Soumettre ✓
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: RESULT (per question) ══ -->
+  <div id="screen-result" class="screen hidden">
+    <div class="result-card">
+      <div class="result-pct" id="resultPct"></div>
+      <div class="result-source" id="resultSource"></div>
+      <div class="result-sentence" id="resultSentence"></div>
+      <div class="result-correct hidden" id="resultCorrect"></div>
+    </div>
+    <div class="quiz-nav">
+      <button id="nextBtn" class="btn-primary">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 4: SUMMARY ══ -->
+  <div id="screen-summary" class="screen hidden">
+    <div class="summary-header">
+      <h2>🎉 Terminé !</h2>
+    </div>
+    <div id="summary-list" class="summary-list"></div>
+    <div class="summary-actions">
+      <button id="replayBtn" class="btn-primary">🔄 Rejouer</button>
+      <button id="changeBtn" class="btn-ghost">← Changer de leçon</button>
+    </div>
+  </div>
+
+</div>
+<script type="module" src="./sentence-puzzle.js"></script>
+</body>
+</html>
