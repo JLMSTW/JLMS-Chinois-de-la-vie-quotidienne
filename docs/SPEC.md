@@ -2,8 +2,8 @@
 
 ## 專案規格書 Project Specification
 
-> **版本**：v1.4
-> **日期**：2026-04-14
+> **版本**：v1.5
+> **日期**：2026-06-10
 > **狀態**：已上線，持續開發中
 
 ---
@@ -132,8 +132,9 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 1. 教師在 Firebase Console 預先建立學生帳號（email + 固定密碼）
 2. 學生使用指定的 email 和密碼登入
-3. 登入成功後，系統讀取 Google Sheet「學生資料總表」中該 email 對應的 `accessLevel`
-4. 根據 `accessLevel` 控制可存取的書本範圍
+3. 登入成功後，email 存入 `localStorage`（`jlmsUserEmail`），Firebase Auth 採用 `browserLocalPersistence`，關閉視窗後下次開啟同一台裝置無需重新登入
+4. 系統讀取 Google Sheet「學生資料總表」中該 email 對應的 `accessLevel`
+5. 根據 `accessLevel` 控制可存取的書本範圍
 
 ### 3.2 權限邏輯
 
@@ -147,10 +148,20 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 | 功能 | 是否需要登入 |
 |------|-------------|
-| Interactive Games（遊戲區） | 不需要 |
+| Interactive Games（遊戲區） | 不需要（訪客僅限 Book 1，見 3.5） |
 | 句子跟讀練習 Shadowing | 需要登入 |
 | 單課測驗 Lesson Quiz | 需要登入 |
 | 口說練習 Speaking | 需要登入（計畫中） |
+
+### 3.5 訪客權限與登入守衛
+
+**Dashboard 登入守衛**：`dashboard.html` 載入時檢查 `localStorage` 是否有 `jlmsUserEmail`，未登入一律導回 `index.html`，防止訪客直接輸入網址進入。
+
+**互動遊戲訪客限制**：Memory Match、Flashcards、Sentence Puzzle 三個遊戲對訪客限制如下：
+- 頁面載入時若 URL state 帶有 Book 2+ 紀錄，自動重設回 Book 1
+- 訪客手動選 Book 2+ 時，彈出「This content requires a login to access.」modal
+- Modal 提供 Login → 按鈕導向登入頁，或 Cancel 維持 Book 1
+- 未來新增 Book 6、7、8 自動適用，無需修改程式碼
 
 ### 3.4 學生資料總表欄位
 
@@ -269,6 +280,7 @@ JLMS-Chinois-de-la-vie-quotidienne/
 ### 5.1 登入頁 Login（index.html）
 
 - Firebase Authentication 帳號密碼登入
+- 登入狀態以 `browserLocalPersistence` 保存，同一台裝置下次開啟自動維持登入
 - 「Play without login」藥丸按鈕 → 直接進遊戲區
 - 設計：深藍底色、#566fb8 登入按鈕、藥丸樣式
 
@@ -289,6 +301,7 @@ JLMS-Chinois-de-la-vie-quotidienne/
 - EN / FR 語言切換按鈕（右上角）
 - 未上線功能卡片透明度 0.3，不可點擊
 - 各功能頁均有「← Back to Homepage」藥丸按鈕返回
+- 未登入時直接輸入網址會被導回登入頁（`localStorage` 守衛）
 
 ### 5.3 句子跟讀練習 Shadowing（home.html，需登入）
 
@@ -304,6 +317,8 @@ JLMS-Chinois-de-la-vie-quotidienne/
 ### 5.4 互動遊戲區 Interactive Games（games/index.html，不需登入）
 
 進入遊戲區後以卡片呈現，遊戲列表由 Google Sheet Games 分頁控制。
+
+**訪客限制**：未登入的訪客在 Memory Match、Flashcards、Sentence Puzzle 中只能選 Book 1；選 Book 2+ 時彈出登入提示 modal（見 3.5）。
 
 #### 5.4.1 Memory Match 記憶配對 ✅
 
@@ -340,11 +355,13 @@ JLMS-Chinois-de-la-vie-quotidienne/
 
 **互動方式**：點選（依序移入作答欄）+ 拖曳（含作答欄內換位）
 
+**Quit 按鈕**：答題頁 Skip 旁有 `✕ Quit` 按鈕，按下後彈出確認 modal（FR/EN 雙語），確認後導回 Interactive Games 頁面
+
 ### 5.5 單課測驗 Lesson Quiz（lesson-quiz/，需登入）✅
 
 **目的**：學生學完一課後進行綜合測驗，評估學習成效。
 
-**篩選**：Book（B1–B5）、Lesson（單課 or All lessons in this book）、語言（EN/FR）
+**篩選**：Book（依登入學生的 `accessLevel` 限制可選範圍）、Lesson（單課 or All lessons in this book）、語言（EN/FR）
 
 **系統設計**：
 - 全程一個計時器，進關卡介紹頁時暫停
@@ -397,6 +414,8 @@ JLMS-Chinois-de-la-vie-quotidienne/
 - 「Review Answers」展開各題對錯詳情（含漢字 + 拼音，預設隱藏）
 - 🖨️ Print / PDF 按鈕：列印成績單（學生姓名、日期、雷達圖、完整詳解）
 - iOS 列印說明提示（分享 → 儲存至檔案）
+
+**Quit 按鈕**：關卡介紹頁與答題頁均有 `✕ Quit` 按鈕，按下後彈出確認 modal（FR/EN 雙語），確認後回到篩選畫面
 
 ---
 
@@ -530,3 +549,4 @@ JLMS-Chinois-de-la-vie-quotidienne/
 | v1.1 | 2026-04-01 | 新增 Dashboard；Shadowing 例句遷移至 Google Sheet；單課測驗 Round 5 確定四選一方案；更新導覽結構 |
 | v1.2 | 2026-04-13 | 單課測驗 Lesson Quiz 正式上線（Round 1、2、4、5 完成，Round 3 Coming Soon）；全站 UI 設計系統統一（#1f213b / #566fb8 / 藥丸按鈕）；新增 Sentence Builder 翻譯欄位規劃（french_tr / english_tr）；更新檔案結構、登入規則、資料庫欄位說明 |
 | v1.3 | 2026-04-14 | Round 3 Sentence Building 正式上線（拖曳＋點選重組、動畫、多語言送出按鈕）；Round 1 後5題改為看外文選漢字（大拼音選項，可發音）；Round 4 新增後5題例句聽力理解（french_tr / english_tr 已上線）；分數結構更新為 5 關 × 5 分 = 25 分；新增成績單列印功能（Print/PDF，含學生姓名、雷達圖、詳解）；Access API 新增回傳 name 欄位；規劃 segments_alt_tr 雙重正確答案欄位 |
+| v1.5 | 2026-06-10 | Lesson Quiz 依 accessLevel 限制 Book 選單；Lesson Quiz 與 Sentence Puzzle 新增 Quit 按鈕（確認 modal）；Dashboard 加入未登入守衛；登入狀態改用 browserLocalPersistence（localStorage），關閉視窗後維持登入；互動遊戲訪客限制（Memory Match、Flashcards、Sentence Puzzle）：僅限 Book 1，選 Book 2+ 彈出登入提示 modal |
