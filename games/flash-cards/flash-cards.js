@@ -569,15 +569,36 @@ window.addEventListener("keydown", (e)=>{
   else if (e.key?.toLowerCase?.() === "s") speakCurrent();
 });
 
+function applyGuestBookRestriction() {
+  if (!selBook) return;
+  if (localStorage.getItem('jlmsUserEmail')) return;
+  Array.from(selBook.options).forEach(opt => {
+    if (opt.value !== 'B1') {
+      opt.disabled = true;
+      if (opt.value) opt.text = '🔒 ' + opt.text;
+    }
+  });
+  selBook.value = 'B1';
+  setLessonOptionsForBook('B1', false);
+  if (!document.getElementById('guestBookHint')) {
+    const p = document.createElement('p');
+    p.id = 'guestBookHint';
+    p.className = 'guest-hint';
+    p.innerHTML = '🔒 Books 2–5 require login &nbsp;·&nbsp; <a href="../../index.html">Login →</a>';
+    selBook.insertAdjacentElement('afterend', p);
+  }
+}
+
 // ---------- 初始化 ----------
 async function init(){
   ensureFlipDom();        // 1) 先確保翻牌骨架
   buildModes();           // 2) 產生模式（避免重複）
   await loadAllItems();   // 3) 載資料
   buildFiltersOptions();  // 4) 建立篩選下拉
-  restoreFromUrl();       // 5) 從網址還原控制項與模式
+  applyGuestBookRestriction(); // 5) 訪客限制 Book 1
+  restoreFromUrl();       // 6) 從網址還原控制項與模式
 
   // 預設：直接起一回合（依目前 URL 篩選）
-  applyAndStart();        // 6) Start（會建立/沿用牌堆並抽本回合）
+  applyAndStart();        // 7) Start（會建立/沿用牌堆並抽本回合）
 }
 init();

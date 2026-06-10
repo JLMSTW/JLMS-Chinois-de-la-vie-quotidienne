@@ -45,6 +45,13 @@
     text-shadow:0 2px 6px rgba(0,0,0,0.40);
   }
   
+  /* ===== Guest hint ===== */
+  .guest-hint {
+    text-align: center; font-size: .82rem;
+    color: rgba(255,255,255,.5); margin: 4px 0 0;
+  }
+  .guest-hint a { color: rgba(255,255,255,.75); text-decoration: underline; }
+
   /* ===== Controls ===== */
   .controls{
     width: min(1100px, 92vw);

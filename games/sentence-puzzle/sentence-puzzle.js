@@ -450,6 +450,26 @@ function onSkip() {
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
+function applyGuestBookRestriction() {
+  if (localStorage.getItem('jlmsUserEmail')) return;
+  const selBook = $('filterBook');
+  Array.from(selBook.options).forEach(opt => {
+    if (opt.value !== 'B1') {
+      opt.disabled = true;
+      opt.text = '🔒 ' + opt.text;
+    }
+  });
+  selBook.value = 'B1';
+  updateLessonSel();
+  if (!document.getElementById('guestBookHint')) {
+    const p = document.createElement('p');
+    p.id = 'guestBookHint';
+    p.className = 'guest-hint';
+    p.innerHTML = '🔒 Books 2–5 require login &nbsp;·&nbsp; <a href="../../index.html">Login →</a>';
+    selBook.insertAdjacentElement('afterend', p);
+  }
+}
+
 function quitGame() {
   const msg = S.lang === 'fr'
     ? "Êtes-vous sûr(e) de vouloir quitter ?\nVotre progression sera perdue."
@@ -460,6 +480,7 @@ function quitGame() {
 
 async function init() {
   updateLessonSel();
+  applyGuestBookRestriction();
   $('filterBook').addEventListener('change', updateLessonSel);
   $('startBtn').addEventListener('click', startGame);
   $('submitBtn').addEventListener('click', gradeAndShowResult);

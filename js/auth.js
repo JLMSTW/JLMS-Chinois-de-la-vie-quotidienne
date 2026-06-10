@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword }
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence }
         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { firebaseConfig } from "./firebase-config.js";
 
@@ -12,10 +12,10 @@ document.getElementById("loginBtn").addEventListener("click", () => {
   const email    = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  signInWithEmailAndPassword(auth, email, password)
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => signInWithEmailAndPassword(auth, email, password))
     .then(() => {
-      /* 把 email 暫存，讓 home.html 可以拿來查權限 */
-      sessionStorage.setItem("jlmsUserEmail", email);
+      localStorage.setItem("jlmsUserEmail", email);
       window.location.href = "dashboard.html";
     })
     .catch(err => {

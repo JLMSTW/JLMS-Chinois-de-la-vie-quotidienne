@@ -345,7 +345,7 @@ function updateLessonSel() {
 // ═══════════════════════════════════════════════
 async function fetchStudentAccess() {
   try {
-    const email = sessionStorage.getItem('jlmsUserEmail');
+    const email = localStorage.getItem('jlmsUserEmail');
     if (!email) return;
     const res  = await fetch(`${ACCESS_ENDPOINT}?email=${encodeURIComponent(email)}`);
     const data = await res.json();
@@ -1105,7 +1105,7 @@ function endQuiz() {
     ? (S.lang === 'fr' ? 'Toutes les leçons' : 'All lessons')
     : `Lesson ${S.lesson}`;
   $('ph-date').textContent    = dateStr;
-  $('ph-student').textContent = S.studentName || sessionStorage.getItem('jlmsUserEmail') || '';
+  $('ph-student').textContent = S.studentName || localStorage.getItem('jlmsUserEmail') || '';
   $('ph-book').textContent    = `Book ${S.book.replace('B','')} — ${lessonStr} | ${S.lang.toUpperCase()}`;
   $('ph-score').textContent   = `${total.toFixed(1)} / ${MAX_PTS}  ·  ${formatTime(S.totalTime)}`;
 

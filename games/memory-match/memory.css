@@ -41,6 +41,11 @@ body{
 .filters{
   display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px;
 }
+.guest-hint {
+  text-align: center; font-size: .82rem;
+  color: rgba(255,255,255,.5); margin: 4px 0 0;
+}
+.guest-hint a { color: rgba(255,255,255,.75); text-decoration: underline; }
 
 /* Stats */
 .stats{

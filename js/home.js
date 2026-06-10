@@ -3,10 +3,10 @@ const accessApi =
   "https://script.google.com/macros/s/AKfycbxgqJEmFXhFL6RB0HO5ZaO5wFDpAa-oN98fP7jwt72_ugI3gknmG07CZQssdh9vSxwz/exec";
 
 /* ===== 1. 讀 email；若沒有就回到登入頁 ===== */
-const email = sessionStorage.getItem("jlmsUserEmail");
+const email = localStorage.getItem("jlmsUserEmail");
 if (!email) {
   window.location.href = "index.html";
-  throw new Error("no email in sessionStorage");
+  throw new Error("no email in localStorage");
 }
 
 /* ===== 2. 呼叫 API 取得 accessLevel ===== */
