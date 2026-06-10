@@ -245,31 +245,18 @@ function endGame(victory){
 }
 
 // ---- main flows ----
-function applyGuestBookRestriction() {
-  if (localStorage.getItem('jlmsUserEmail')) return;
-  Array.from(selBook.options).forEach(opt => {
-    if (opt.value !== 'B1') {
-      opt.disabled = true;
-      if (opt.value) opt.text = '🔒 ' + opt.text;
-    }
-  });
-  selBook.value = 'B1';
-  setLessonOptionsForBook('B1', false);
-  if (!document.getElementById('guestBookHint')) {
-    const p = document.createElement('p');
-    p.id = 'guestBookHint';
-    p.className = 'guest-hint';
-    p.innerHTML = '🔒 Books 2–5 require login &nbsp;·&nbsp; <a href="../../index.html">Login →</a>';
-    selBook.insertAdjacentElement('afterend', p);
-  }
+function showLoginModal() {
+  document.getElementById('loginModal').classList.remove('hidden');
 }
+document.getElementById('loginModalCancel').addEventListener('click', () => {
+  document.getElementById('loginModal').classList.add('hidden');
+});
 
 async function init(){
   // Difficulty/filters 初始值（可從 URL 還原）
   try{
     await fetchItems();
     buildFilters();
-    applyGuestBookRestriction();
     // ← 改成在這裡再還原（確保不被預設值覆蓋）
     selDifficulty.value = url.difficulty || "easy";
 
@@ -296,7 +283,16 @@ async function init(){
 
   [selDifficulty, selBook, selLesson, selLevel, selPos, selLang].forEach(sel => {
     sel.addEventListener("change", () => {
-      if (sel === selBook) setLessonOptionsForBook(selBook.value, true);
+      if (sel === selBook) {
+        const bookNum = parseInt(selBook.value.replace('B', ''), 10);
+        if (!localStorage.getItem('jlmsUserEmail') && !isNaN(bookNum) && bookNum > 1) {
+          selBook.value = 'B1';
+          setLessonOptionsForBook('B1', true);
+          showLoginModal();
+          return;
+        }
+        setLessonOptionsForBook(selBook.value, true);
+      }
       // 寫回 URL（集中在 /js/shared/urlState.js）
       urlState.set({
         difficulty: selDifficulty.value,

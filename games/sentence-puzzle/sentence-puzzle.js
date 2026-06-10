@@ -450,24 +450,8 @@ function onSkip() {
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
-function applyGuestBookRestriction() {
-  if (localStorage.getItem('jlmsUserEmail')) return;
-  const selBook = $('filterBook');
-  Array.from(selBook.options).forEach(opt => {
-    if (opt.value !== 'B1') {
-      opt.disabled = true;
-      opt.text = '🔒 ' + opt.text;
-    }
-  });
-  selBook.value = 'B1';
-  updateLessonSel();
-  if (!document.getElementById('guestBookHint')) {
-    const p = document.createElement('p');
-    p.id = 'guestBookHint';
-    p.className = 'guest-hint';
-    p.innerHTML = '🔒 Books 2–5 require login &nbsp;·&nbsp; <a href="../../index.html">Login →</a>';
-    selBook.insertAdjacentElement('afterend', p);
-  }
+function showLoginModal() {
+  $('loginModal').classList.remove('hidden');
 }
 
 function quitGame() {
@@ -480,8 +464,14 @@ function quitGame() {
 
 async function init() {
   updateLessonSel();
-  applyGuestBookRestriction();
-  $('filterBook').addEventListener('change', updateLessonSel);
+  $('filterBook').addEventListener('change', () => {
+    const bookNum = parseInt($('filterBook').value.replace('B', ''), 10);
+    if (!localStorage.getItem('jlmsUserEmail') && !isNaN(bookNum) && bookNum > 1) {
+      $('filterBook').value = 'B1';
+      showLoginModal();
+    }
+    updateLessonSel();
+  });
   $('startBtn').addEventListener('click', startGame);
   $('submitBtn').addEventListener('click', gradeAndShowResult);
   $('nextBtn').addEventListener('click', onNext);
@@ -489,6 +479,7 @@ async function init() {
   $('replayBtn').addEventListener('click', startGame);
   $('changeBtn').addEventListener('click', () => showScreen('filter'));
   $('quitBtn').addEventListener('click', quitGame);
+  $('loginModalCancel').addEventListener('click', () => $('loginModal').classList.add('hidden'));
   $('quitModalCancel').addEventListener('click', () => $('quitModal').classList.add('hidden'));
   $('quitModalConfirm').addEventListener('click', () => {
     window.location.href = '../index.html';

@@ -550,9 +550,14 @@ if (selLang)  selLang.addEventListener("change", () => refreshModeLabels());
 // ✅ 新增：Book 改變時，重建對應 Lesson 選單（若原選項不在清單內則清空）
 if (selBook) {
   selBook.addEventListener("change", () => {
-    const before = selLesson ? selLesson.value : "";
+    const bookNum = parseInt(selBook.value.replace('B', ''), 10);
+    if (!localStorage.getItem('jlmsUserEmail') && !isNaN(bookNum) && bookNum > 1) {
+      selBook.value = 'B1';
+      setLessonOptionsForBook('B1', true);
+      showLoginModal();
+      return;
+    }
     setLessonOptionsForBook(selBook.value || "", true);
-    // 如果原來選的 lesson 不在新清單中，setLessonOptionsForBook 已清空
   });
 }
 
@@ -569,25 +574,12 @@ window.addEventListener("keydown", (e)=>{
   else if (e.key?.toLowerCase?.() === "s") speakCurrent();
 });
 
-function applyGuestBookRestriction() {
-  if (!selBook) return;
-  if (localStorage.getItem('jlmsUserEmail')) return;
-  Array.from(selBook.options).forEach(opt => {
-    if (opt.value !== 'B1') {
-      opt.disabled = true;
-      if (opt.value) opt.text = '🔒 ' + opt.text;
-    }
-  });
-  selBook.value = 'B1';
-  setLessonOptionsForBook('B1', false);
-  if (!document.getElementById('guestBookHint')) {
-    const p = document.createElement('p');
-    p.id = 'guestBookHint';
-    p.className = 'guest-hint';
-    p.innerHTML = '🔒 Books 2–5 require login &nbsp;·&nbsp; <a href="../../index.html">Login →</a>';
-    selBook.insertAdjacentElement('afterend', p);
-  }
+function showLoginModal() {
+  document.getElementById('loginModal').classList.remove('hidden');
 }
+document.getElementById('loginModalCancel').addEventListener('click', () => {
+  document.getElementById('loginModal').classList.add('hidden');
+});
 
 // ---------- 初始化 ----------
 async function init(){
@@ -595,10 +587,9 @@ async function init(){
   buildModes();           // 2) 產生模式（避免重複）
   await loadAllItems();   // 3) 載資料
   buildFiltersOptions();  // 4) 建立篩選下拉
-  applyGuestBookRestriction(); // 5) 訪客限制 Book 1
-  restoreFromUrl();       // 6) 從網址還原控制項與模式
+  restoreFromUrl();       // 5) 從網址還原控制項與模式
 
   // 預設：直接起一回合（依目前 URL 篩選）
-  applyAndStart();        // 7) Start（會建立/沿用牌堆並抽本回合）
+  applyAndStart();        // 6) Start（會建立/沿用牌堆並抽本回合）
 }
 init();
