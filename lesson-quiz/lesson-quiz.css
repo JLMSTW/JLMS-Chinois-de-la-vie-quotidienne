@@ -121,12 +121,51 @@ body {
   border: 1px solid rgba(255,255,255,.2);
   color: rgba(255,255,255,.45);
   border-radius: var(--r-pill);
-  padding: 4px 12px;
-  font-size: 13px; font-weight: 700; font-family: var(--font);
+  padding: 10px 22px;
+  min-height: 44px;
+  font-size: 14px; font-weight: 700; font-family: var(--font);
   cursor: pointer;
   transition: border-color .15s, color .15s;
 }
 .btn-quit-sm:hover { border-color: rgba(198,64,73,.6); color: rgba(198,64,73,.85); }
+
+.quit-bar {
+  margin-top: 18px;
+  display: flex; justify-content: center;
+}
+
+/* ── Quit confirm modal ── */
+.quit-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999;
+}
+.quit-modal-box {
+  background: #2a2e54;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 18px;
+  padding: 28px 24px;
+  width: min(340px, 88vw);
+  text-align: center;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.quit-modal-box p {
+  color: rgba(255,255,255,.9);
+  font-size: 1rem; line-height: 1.5; margin: 0;
+  font-family: var(--font);
+}
+.quit-modal-actions {
+  display: flex; gap: 12px; justify-content: center;
+}
+.btn-quit-confirm {
+  padding: 10px 26px; border-radius: var(--r-pill);
+  background: #c64049; color: #fff; border: none;
+  font-size: 15px; font-weight: 700; font-family: var(--font);
+  cursor: pointer; min-height: 44px;
+  transition: filter .15s;
+}
+.btn-quit-confirm:hover { filter: brightness(1.12); }
 
 .hidden { display: none !important; }
 

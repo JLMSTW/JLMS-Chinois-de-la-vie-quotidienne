@@ -61,12 +61,14 @@
       <span class="q-label" id="qCounter">Q1 / 25</span>
       <span class="timer-live" id="timerDisplay">00:00</span>
       <span class="round-chip" id="roundChip">Round 1</span>
-      <button id="quitBtnQ" class="btn-quit-sm">✕ Quit</button>
     </div>
     <div id="question-area" class="question-area"></div>
     <div class="quiz-nav">
       <button id="nextBtn"   class="btn-primary hidden">Next →</button>
       <button id="submitBtn" class="btn-primary hidden">Submit ✓</button>
+    </div>
+    <div class="quit-bar">
+      <button id="quitBtnQ" class="btn-quit-sm">✕ Quit</button>
     </div>
   </div>
 
@@ -100,6 +102,17 @@
       📱 iOS : dans l'aperçu d'impression, appuyez sur l'icône de partage en bas à gauche → « Enregistrer dans Fichiers » pour obtenir un PDF.
     </p>
     <div id="review-panel" class="review-panel hidden"></div>
+  </div>
+
+  <!-- ═══════════════════ QUIT CONFIRM MODAL ═══════════════════ -->
+  <div id="quitModal" class="quit-modal-overlay hidden">
+    <div class="quit-modal-box">
+      <p id="quitModalMsg"></p>
+      <div class="quit-modal-actions">
+        <button id="quitModalCancel" class="btn-ghost">Cancel</button>
+        <button id="quitModalConfirm" class="btn-quit-confirm">Quit</button>
+      </div>
+    </div>
   </div>
 
 </div>

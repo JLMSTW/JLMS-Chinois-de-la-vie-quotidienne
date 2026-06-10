@@ -372,12 +372,10 @@ function applyBookAccess(level) {
 
 function quitQuiz() {
   const msg = S.lang === 'fr'
-    ? "Êtes-vous sûr(e) de vouloir quitter ? Votre progression sera perdue."
-    : "Are you sure you want to quit? Your progress will be lost.";
-  if (!confirm(msg)) return;
-  clearInterval(S._tid);
-  S._tid = null;
-  showScreen('filter');
+    ? "Êtes-vous sûr(e) de vouloir quitter ?\nVotre progression sera perdue."
+    : "Are you sure you want to quit?\nYour progress will be lost.";
+  $('quitModalMsg').textContent = msg;
+  $('quitModal').classList.remove('hidden');
 }
 
 async function init() {
@@ -392,6 +390,13 @@ async function init() {
   $('retryBtn').addEventListener('click', () => showScreen('filter'));
   $('quitBtnIntro').addEventListener('click', quitQuiz);
   $('quitBtnQ').addEventListener('click', quitQuiz);
+  $('quitModalCancel').addEventListener('click', () => $('quitModal').classList.add('hidden'));
+  $('quitModalConfirm').addEventListener('click', () => {
+    $('quitModal').classList.add('hidden');
+    clearInterval(S._tid);
+    S._tid = null;
+    showScreen('filter');
+  });
 
   try {
     const [rawVocab, rawSents] = await Promise.all([
