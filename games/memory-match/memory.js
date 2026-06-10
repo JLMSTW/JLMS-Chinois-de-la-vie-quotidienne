@@ -252,11 +252,21 @@ document.getElementById('loginModalCancel').addEventListener('click', () => {
   document.getElementById('loginModal').classList.add('hidden');
 });
 
+function resetBookIfGuest() {
+  if (localStorage.getItem('jlmsUserEmail')) return;
+  const bookNum = parseInt(selBook.value.replace('B', ''), 10);
+  if (!isNaN(bookNum) && bookNum > 1) {
+    selBook.value = 'B1';
+    setLessonOptionsForBook('B1', false);
+  }
+}
+
 async function init(){
   // Difficulty/filters 初始值（可從 URL 還原）
   try{
     await fetchItems();
     buildFilters();
+    resetBookIfGuest();
     // ← 改成在這裡再還原（確保不被預設值覆蓋）
     selDifficulty.value = url.difficulty || "easy";
 

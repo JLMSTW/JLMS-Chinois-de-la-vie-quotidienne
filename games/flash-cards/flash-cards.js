@@ -581,6 +581,16 @@ document.getElementById('loginModalCancel').addEventListener('click', () => {
   document.getElementById('loginModal').classList.add('hidden');
 });
 
+function resetBookIfGuest() {
+  if (!selBook) return;
+  if (localStorage.getItem('jlmsUserEmail')) return;
+  const bookNum = parseInt(selBook.value.replace('B', ''), 10);
+  if (!isNaN(bookNum) && bookNum > 1) {
+    selBook.value = 'B1';
+    setLessonOptionsForBook('B1', false);
+  }
+}
+
 // ---------- 初始化 ----------
 async function init(){
   ensureFlipDom();        // 1) 先確保翻牌骨架
@@ -588,8 +598,9 @@ async function init(){
   await loadAllItems();   // 3) 載資料
   buildFiltersOptions();  // 4) 建立篩選下拉
   restoreFromUrl();       // 5) 從網址還原控制項與模式
+  resetBookIfGuest();     // 6) 訪客時確保不超過 Book 1
 
   // 預設：直接起一回合（依目前 URL 篩選）
-  applyAndStart();        // 6) Start（會建立/沿用牌堆並抽本回合）
+  applyAndStart();        // 7) Start（會建立/沿用牌堆並抽本回合）
 }
 init();

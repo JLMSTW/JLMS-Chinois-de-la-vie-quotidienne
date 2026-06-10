@@ -454,6 +454,16 @@ function showLoginModal() {
   $('loginModal').classList.remove('hidden');
 }
 
+function resetBookIfGuest() {
+  if (localStorage.getItem('jlmsUserEmail')) return;
+  const sel = $('filterBook');
+  const bookNum = parseInt(sel.value.replace('B', ''), 10);
+  if (!isNaN(bookNum) && bookNum > 1) {
+    sel.value = 'B1';
+    updateLessonSel();
+  }
+}
+
 function quitGame() {
   const msg = S.lang === 'fr'
     ? "Êtes-vous sûr(e) de vouloir quitter ?\nVotre progression sera perdue."
@@ -464,6 +474,7 @@ function quitGame() {
 
 async function init() {
   updateLessonSel();
+  resetBookIfGuest();
   $('filterBook').addEventListener('change', () => {
     const bookNum = parseInt($('filterBook').value.replace('B', ''), 10);
     if (!localStorage.getItem('jlmsUserEmail') && !isNaN(bookNum) && bookNum > 1) {
