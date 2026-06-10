@@ -470,8 +470,7 @@ async function init() {
   $('quitBtn').addEventListener('click', quitGame);
   $('quitModalCancel').addEventListener('click', () => $('quitModal').classList.add('hidden'));
   $('quitModalConfirm').addEventListener('click', () => {
-    $('quitModal').classList.add('hidden');
-    showScreen('filter');
+    window.location.href = '../index.html';
   });
 
   try {
