@@ -41,7 +41,10 @@
   <div id="screen-question" class="screen hidden">
     <div class="sb-header">
       <span class="q-label" id="qCounter">1 / 5</span>
-      <button id="skipBtn" class="btn-ghost btn-sm">Skip →</button>
+      <div class="sb-header-actions">
+        <button id="skipBtn" class="btn-ghost btn-sm">Skip →</button>
+        <button id="quitBtn" class="btn-quit-sm">✕ Quit</button>
+      </div>
     </div>
     <div id="question-area" class="question-area"></div>
     <div class="quiz-nav">
@@ -73,6 +76,17 @@
     <div class="summary-actions">
       <button id="replayBtn" class="btn-primary">🔄 Rejouer</button>
       <button id="changeBtn" class="btn-ghost">← Changer de leçon</button>
+    </div>
+  </div>
+
+  <!-- ══ QUIT CONFIRM MODAL ══ -->
+  <div id="quitModal" class="quit-modal-overlay hidden">
+    <div class="quit-modal-box">
+      <p id="quitModalMsg"></p>
+      <div class="quit-modal-actions">
+        <button id="quitModalCancel" class="btn-ghost">Cancel</button>
+        <button id="quitModalConfirm" class="btn-quit-confirm">Quit</button>
+      </div>
     </div>
   </div>
 

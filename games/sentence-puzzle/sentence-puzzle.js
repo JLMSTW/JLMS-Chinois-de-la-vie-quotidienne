@@ -450,6 +450,14 @@ function onSkip() {
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
+function quitGame() {
+  const msg = S.lang === 'fr'
+    ? "Êtes-vous sûr(e) de vouloir quitter ?\nVotre progression sera perdue."
+    : "Are you sure you want to quit?\nYour progress will be lost.";
+  $('quitModalMsg').textContent = msg;
+  $('quitModal').classList.remove('hidden');
+}
+
 async function init() {
   updateLessonSel();
   $('filterBook').addEventListener('change', updateLessonSel);
@@ -459,6 +467,12 @@ async function init() {
   $('skipBtn').addEventListener('click', onSkip);
   $('replayBtn').addEventListener('click', startGame);
   $('changeBtn').addEventListener('click', () => showScreen('filter'));
+  $('quitBtn').addEventListener('click', quitGame);
+  $('quitModalCancel').addEventListener('click', () => $('quitModal').classList.add('hidden'));
+  $('quitModalConfirm').addEventListener('click', () => {
+    $('quitModal').classList.add('hidden');
+    showScreen('filter');
+  });
 
   try {
     const raw = await fetchSheet(SHEETS.sentence);
