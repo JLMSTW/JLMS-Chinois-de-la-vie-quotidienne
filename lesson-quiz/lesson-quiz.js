@@ -370,6 +370,16 @@ function applyBookAccess(level) {
   }
 }
 
+function quitQuiz() {
+  const msg = S.lang === 'fr'
+    ? "Êtes-vous sûr(e) de vouloir quitter ? Votre progression sera perdue."
+    : "Are you sure you want to quit? Your progress will be lost.";
+  if (!confirm(msg)) return;
+  clearInterval(S._tid);
+  S._tid = null;
+  showScreen('filter');
+}
+
 async function init() {
   fetchStudentAccess(); // fire-and-forget; will be ready long before quiz ends
   updateLessonSel();
@@ -380,6 +390,8 @@ async function init() {
   $('submitBtn').addEventListener('click', onSubmit);
   $('reviewBtn').addEventListener('click', toggleReview);
   $('retryBtn').addEventListener('click', () => showScreen('filter'));
+  $('quitBtnIntro').addEventListener('click', quitQuiz);
+  $('quitBtnQ').addEventListener('click', quitQuiz);
 
   try {
     const [rawVocab, rawSents] = await Promise.all([

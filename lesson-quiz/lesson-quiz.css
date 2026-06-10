@@ -116,6 +116,18 @@ body {
 }
 .btn-ghost:hover { border-color: #fff; color: #fff; }
 
+.btn-quit-sm {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.2);
+  color: rgba(255,255,255,.45);
+  border-radius: var(--r-pill);
+  padding: 4px 12px;
+  font-size: 13px; font-weight: 700; font-family: var(--font);
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.btn-quit-sm:hover { border-color: rgba(198,64,73,.6); color: rgba(198,64,73,.85); }
+
 .hidden { display: none !important; }
 
 /* ── Round intro ── */
