@@ -1,3 +1,5 @@
+.hidden { display: none !important; }
+
 /* ===== Theme & tokens ===== */
 :root{
     --bg1:#1f213b;

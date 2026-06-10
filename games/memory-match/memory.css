@@ -1,3 +1,5 @@
+.hidden { display: none !important; }
+
 :root{
   --glass: rgba(255,255,255,.2);
   --glass-bd: rgba(255,255,255,.35);
