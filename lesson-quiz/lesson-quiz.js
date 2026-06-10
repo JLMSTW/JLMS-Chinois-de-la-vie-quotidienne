@@ -52,6 +52,7 @@ const S = {
   buildState:  null,    // runtime state for sentence-build round
   speechRate:  1.0,     // listening speed (0.5 – 1.5)
   studentName: '',      // fetched from access API on load
+  accessLevel: 5,       // default permissive; overwritten by fetchStudentAccess()
 };
 
 // ═══════════════════════════════════════════════
@@ -342,18 +343,35 @@ function updateLessonSel() {
 // ═══════════════════════════════════════════════
 //  INIT & START
 // ═══════════════════════════════════════════════
-async function fetchStudentName() {
+async function fetchStudentAccess() {
   try {
     const email = sessionStorage.getItem('jlmsUserEmail');
     if (!email) return;
     const res  = await fetch(`${ACCESS_ENDPOINT}?email=${encodeURIComponent(email)}`);
     const data = await res.json();
     if (data.name) S.studentName = data.name;
-  } catch (_) { /* silent — name optional */ }
+    if (data.accessLevel) {
+      S.accessLevel = +data.accessLevel;
+      applyBookAccess(S.accessLevel);
+    }
+  } catch (_) { /* silent — falls back to default accessLevel 5 */ }
+}
+
+function applyBookAccess(level) {
+  const sel = $('filterBook');
+  Array.from(sel.options).forEach(opt => {
+    const bookNum = parseInt(opt.value.replace('B', ''), 10);
+    opt.disabled = bookNum > level;
+  });
+  // If currently selected book is out of range, reset to highest allowed
+  if (parseInt(sel.value.replace('B', ''), 10) > level) {
+    sel.value = `B${level}`;
+    updateLessonSel();
+  }
 }
 
 async function init() {
-  fetchStudentName(); // fire-and-forget; will be ready long before quiz ends
+  fetchStudentAccess(); // fire-and-forget; will be ready long before quiz ends
   updateLessonSel();
   $('filterBook').addEventListener('change', updateLessonSel);
   $('startBtn').addEventListener('click', startQuiz);
